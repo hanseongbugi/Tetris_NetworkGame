@@ -25,7 +25,7 @@ public class GamePanel extends JPanel implements Runnable
 	JLabel[][] fieldLabel = new JLabel[20][10];
 
 	Thread th;
-	TimeThread timeTh;
+
 	int gameSpeed = 1000;
 	int speedCount = 0;
 	int preSpeed;
@@ -76,16 +76,11 @@ public class GamePanel extends JPanel implements Runnable
 				tetrisArea.setVisible(true);
 				blackPanel.setVisible(false);
 
-				synchronized (timeTh)
-				{
-					timeTh.notify();
-				}
 				synchronized (th)
 				{
 					th.notify();
 				}
 				Gaming = true;
-				// repaint();
 			}
 		};
 		textTh.start();
@@ -136,51 +131,7 @@ public class GamePanel extends JPanel implements Runnable
 		nextBlock.setBorder(WhiteLineBorder);
 		nextBlock.setBounds(255, 60, 90, 90);
 		add(nextBlock);
-
-		score = new JLabel("0", SwingConstants.RIGHT);
-		score.setText("0");
-		score.setFont(new Font("verdana", 0, 20));
-		score.setForeground(Color.WHITE);
-		score.setBackground(Color.BLACK);
-		score.setOpaque(true);
-		score.setBorder(WhiteLineBorder);
-		score.setBounds(255, 160, 90, 30);
-		add(score);
-
-		highestScore = new JLabel("0", SwingConstants.RIGHT);
-		highestScore.setText("999999");
-		highestScore.setFont(new Font("verdana", 0, 20));
-		highestScore.setForeground(Color.WHITE);
-		highestScore.setBackground(Color.BLACK);
-		highestScore.setOpaque(true);
-		highestScore.setBorder(WhiteLineBorder);
-		highestScore.setBounds(255, 200, 90, 30);
-		add(highestScore);
-
-		time = new JLabel("", SwingConstants.CENTER);
-		time.setText("time");
-		time.setFont(new Font("verdana", 0, 12));
-		time.setForeground(Color.WHITE);
-		time.setBackground(Color.BLACK);
-		time.setOpaque(true);
-		time.setBorder(WhiteLineBorder);
-		time.setBounds(255, 240, 90, 30);
-		add(time);
-		timeTh = new TimeThread(this, n);
-		timeTh.start();
-
-		item_using = new JPanel(null);
-		item_using.setBackground(Color.BLACK);
-		item_using.setBorder(WhiteLineBorder);
-		item_using.setBounds(10, 25, 240, 30);
-		add(item_using);
-
-		item = new JPanel(null);
-		item.setBackground(Color.BLACK);
-		item.setBorder(WhiteLineBorder);
-		item.setBounds(10, 545, 240, 30);
-		add(item);
-
+		
 		blackPanel.setLayout(null);
 		blackPanel.add(textLabel);
 		textLabel.setBounds(20, 50, 200, 50);
@@ -192,7 +143,6 @@ public class GamePanel extends JPanel implements Runnable
 		textLabel.setBorder(null);
 
 	}
-
 	public void makeTetrisArea(int n)
 	{
 		tetrisArea.setLayout(new GridLayout(20, 10));
@@ -221,10 +171,6 @@ public class GamePanel extends JPanel implements Runnable
 	int[][] field = new int[21][12];
 	int[][] copy;
 
-	Vector<JLabel> itemLabel = new Vector<JLabel>();
-	Vector<UsingItemLabel> usingItemLabel = new Vector<UsingItemLabel>();
-
-	UseItem uItem = new UseItem();
 
 	/******************** 테트리스 동작 그리기 ********************/
 
@@ -274,8 +220,7 @@ public class GamePanel extends JPanel implements Runnable
 		block = b.getBlock();
 		start_x = b.getStart_x();
 		start_y = b.getStart_y();
-		// System.out.println(start_x + "  " + start_y);
-
+		
 		this.block = block;
 		this.blockNum = blockNum;
 		x = start_x;
@@ -296,16 +241,12 @@ public class GamePanel extends JPanel implements Runnable
 		for (int row = y; row < y + blockHSize; row++)
 			for (int col = x; col < x + blockWSize; col++)
 				if (array[row][col] > 0 && field[row][col] > 0)
-					count++;
-		if (count > 0)
+					count++; // 필드의 가장 윗족에 블록이 있는지 검사
+		
+		if (count > 0) // 블록이 끝에 있다면 종료
 		{
 			gameRun = false;
 			th.interrupt();
-			timeTh.interrupt();
-			// th = null;
-			// timeTh = null;
-			// System.gc();
-			// drawEndTetris();
 			if (GameFrame.gameMode == 2)
 			{
 				textLabel.setText("LOSE");
@@ -323,7 +264,7 @@ public class GamePanel extends JPanel implements Runnable
 		else
 		{
 			drawTetris();
-			checkArray();
+			setArray();
 			th = new Thread(this);
 			th.start();
 		}
@@ -372,12 +313,8 @@ public class GamePanel extends JPanel implements Runnable
 		for (int row = 0; row < fieldLabel.length; row++)
 			for (int col = 0; col < fieldLabel[0].length; col++)
 			{
-				//
-				// field[row][col] += 10;
 				fieldLabel[row][col].setIcon(ImageSource.block_gray);
 			}
-		// try{Thread.sleep(1000);}
-		// catch (InterruptedException e){e.printStackTrace();}
 	}
 
 	public void drawTetris()
@@ -537,7 +474,6 @@ public class GamePanel extends JPanel implements Runnable
 	{
 		int deleteCount = 0;
 		// 정지된 y값의 줄부터 블럭의 length까지 계산한다.
-		// System.out.println("마지막 y의 위치 : " + y);
 		
 		for (int i = y; i < y + block.length; i++)
 		{
@@ -545,88 +481,18 @@ public class GamePanel extends JPanel implements Runnable
 			for (int j = 1; j < field[0].length - 1; j++)
 				if (field[i][j] != 0)
 					count++;
-			// System.out.println(i + "번 라인의 1의 개수 : " + count);
-			
+
 			if (count == 10)
 			{
-				for (int j = 1; j < field[0].length; j++)
-				{
-					if (field[i][j] >= 80 && field[i][j] < 90 && itemLabel.size() < 7)
-					{
-						JLabel itemL = new JLabel();
-
-						switch (field[i][j] - 80)
-						{
-						case 0:
-							itemL.setIcon(ImageSource.item_blackout);
-							itemL.setName("0");
-							break;
-						case 1:
-							itemL.setIcon(ImageSource.item_fast);
-							itemL.setName("1");
-							break;
-						case 2:
-							itemL.setIcon(ImageSource.item_lineup_1);
-							itemL.setName("2");
-							break;
-						case 3:
-							itemL.setIcon(ImageSource.item_lineup_3);
-							itemL.setName("3");
-							break;
-						case 4:
-							itemL.setIcon(ImageSource.item_zigzag);
-							itemL.setName("4");
-							break;
-						case 5:
-							itemL.setIcon(ImageSource.item_bomb);
-							itemL.setName("5");
-							break;
-						case 6:
-							itemL.setIcon(ImageSource.item_change);
-							itemL.setName("6");
-							break;
-						case 7:
-							itemL.setIcon(ImageSource.item_linedown_1);
-							itemL.setName("7");
-							break;
-						case 8:
-							itemL.setIcon(ImageSource.item_linedown_3);
-							itemL.setName("8");
-							break;
-						case 9:
-							itemL.setIcon(ImageSource.item_slow);
-							itemL.setName("9");
-							break;
-						}
-
-						itemLabel.add(itemL);
-						item.removeAll();
-
-						for (int k = 0; k < itemLabel.size(); k++)
-						{
-							item.add(itemLabel.get(k));
-							itemLabel.get(k).setBounds(30 * k, 0, 30, 30);
-						}
-					}
-				}
-
 				lineDelete(i);
-				// System.out.println("삭제한 줄" + i);
-
 				deleteCount++;
 			}
-		}
-		if (deleteCount > 0)
-		{
-			addItem(deleteCount);
-			addScore(deleteCount);
 		}
 
 	}
 
 	public void lineDelete(int num)
 	{
-		/* 전역: int[][] */
 		copy = new int[field.length][field[0].length];
 		
 		for (int row = 0; row < field.length - 1; row++)
@@ -641,154 +507,11 @@ public class GamePanel extends JPanel implements Runnable
 		copy = null;
 	}
 
-	public void addItem(int num)
-	{
-		int itemCount = 0;
-
-		for (int i = 0; i < field.length; i++)
-		{
-			for (int j = 1; j < field[0].length - 1; j++)
-			{
-				if (field[i][j] > 90)
-				{
-					for (int k = 1; k <= num; k++)
-					{
-						// 전체 아이템 개수 7개로 제한하기 필요.(나중에 추가할것)
-						int chance = (int) (Math.random() * 20);
-
-						if (chance == 1)
-						{
-							field[i][j] = (int) (Math.random() * 10) + 80;
-//							 field[i][j] = 80;
-							itemCount++;
-						}
-						if (itemCount == 2)
-						{
-							return;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	public void addScore(int num)
-	{
-		int addScore = Integer.parseInt(score.getText());
-
-		if (num == 4)
-			addScore += (120 * 1000 / gameSpeed);
-		else if (num == 3)
-			addScore += (70 * 1000 / gameSpeed);
-		else if (num == 2)
-			addScore += (30 * 1000 / gameSpeed);
-		else
-			addScore += (10 * 1000 / gameSpeed);
-
-		score.setText(Integer.toString(addScore));
-	}
-
-	public void useItem()
-	{
-		String numStr = itemLabel.get(0).getName();
-
-		switch (numStr)
-		{
-		case "0":
-			uItem.blackout();
-			break;
-		case "1":
-			uItem.fast();
-			break;
-		case "2":
-			uItem.oneLineUp();
-			break;
-		case "3":
-			uItem.threeLineUp();
-			break;
-		case "4":
-			uItem.zigzag();
-			break;
-		case "5":
-			uItem.bomb();
-			break;
-		case "6":
-			uItem.change();
-			break;
-		case "7":
-			uItem.oneLineDown();
-			break;
-		case "8":
-			uItem.threeLineDown();
-			break;
-		case "9":
-			uItem.slow();
-			break;
-		}
-		deleteItem();
-	}
-
-	public void attackItem()
-	{
-		String numStr = itemLabel.get(0).getName();
-		// System.out.println("공격공격");
-		switch (numStr)
-		{
-		case "0":
-			uItem.blackout();
-			break;
-		case "1":
-			uItem.fast();
-			break;
-		case "2":
-			uItem.oneLineUp();
-			break;
-		case "3":
-			uItem.threeLineUp();
-			break;
-		case "4":
-			uItem.zigzag();
-			break;
-		case "5":
-			uItem.bomb();
-			break;
-		case "6":
-			uItem.change();
-			break;
-		case "7":
-			uItem.oneLineDown();
-			break;
-		case "8":
-			uItem.threeLineDown();
-			break;
-		case "9":
-			uItem.slow();
-			break;
-		}
-		deleteItem();
-	}
-
-	public void deleteItem()
-	{
-		if (itemLabel.size() > 0)
-		{
-			item.removeAll();
-			item.repaint();
-			itemLabel.remove(0);
-
-			for (int i = 0; i < itemLabel.size(); i++)
-			{
-				item.add(itemLabel.get(i));
-				itemLabel.get(i).setBounds(i * 30, 0, 30, 30);
-			}
-		}
-	}
-
 	/******************** 테트리스 키 이벤트 ********************/
 
 	public void move_left()
 	{
-		/* 전역: int[][] */copy = new int[array.length][array[0].length];
+		copy = new int[array.length][array[0].length];
 		for (int row = 0; row < array.length; row++)
 			for (int col = 1; col < array[0].length; col++)
 				copy[row][col - 1] = array[row][col];
@@ -814,7 +537,6 @@ public class GamePanel extends JPanel implements Runnable
 
 	public void move_right()
 	{
-		/* 전역: int[][] */
 		copy = new int[array.length][array[0].length];
 		
 		for (int row = 0; row < array.length; row++)
@@ -844,7 +566,7 @@ public class GamePanel extends JPanel implements Runnable
 
 	public void move_down()
 	{
-		/* 전역: int[][] */copy = new int[array.length][array[0].length];
+		copy = new int[array.length][array[0].length];
 		for (int row = 0; row < array.length - 1; row++)
 			for (int col = 0; col < array[0].length; col++)
 				copy[row + 1][col] = array[row][col];
@@ -881,7 +603,6 @@ public class GamePanel extends JPanel implements Runnable
 
 	public void move_up()
 	{
-		/* 전역: int[][] */
 		copy = new int[array.length][array[0].length];
 		
 		for (int row = 1; row < array.length - 1; row++)
@@ -979,27 +700,6 @@ public class GamePanel extends JPanel implements Runnable
 				array[row][col] = copy[row][col];
 	}
 
-	/******************** 테트리스 검사용 메소드 ********************/
-
-	public void checkArray() // 테트리스 배열데이터 출력
-	{
-		setArray();
-		// System.out.println("블럭좌표 : x " + x + " ---- y " + y);
-		
-		/*
-		for (int row = 0; row < field.length; row++)
-		{
-			// System.out.printf("%2d -- ", row);
-			for (int col = 0; col < field[0].length; col++)
-				// if (field[row][col] >= 1)
-					// System.out.print('n' + " ");
-				// else
-					// System.out.print(field[row][col] + " ");
-			// System.out.println();
-		}
-		*/
-	}
-
 	/******************** 테트리스 쓰레드 메소드 ********************/
 
 	public void run()
@@ -1022,7 +722,6 @@ public class GamePanel extends JPanel implements Runnable
 							return;
 						}
 						move_down();
-						// checkArray();
 						drawTetris();
 					}
 				}
@@ -1044,362 +743,9 @@ public class GamePanel extends JPanel implements Runnable
 				{
 					return;
 				}
-				move_down();
-				// checkArray();
+				move_down(); 
 				drawTetris();
 			}
 		}
 	}
-
-	/******************** 테트리스 아이템 메소드 ********************/
-
-	class UseItem
-	{
-		int width;
-		int height;
-
-		UseItem()
-		{
-			width = field[0].length;
-			height = field.length;
-		}
-
-		public void bomb()
-		{
-			for (int row = 0; row < height; row++)
-				for (int col = 0; col < width; col++)
-				{
-					ogp.array[row][col] = 0;
-					ogp.field[row][col] = 0;
-				}
-			ogp.th.interrupt();
-			ogp.addBlock();
-		}
-
-		public void change()
-		{
-			int temp[][] = array;
-			array = ogp.array;
-			ogp.array = temp;
-
-			temp = field;
-			field = ogp.field;
-			ogp.field = temp;
-
-			temp = block;
-			block = ogp.block;
-			ogp.block = temp;
-
-			int tempVar = x;
-			x = ogp.x;
-			ogp.x = tempVar;
-
-			tempVar = y;
-			y = ogp.y;
-			ogp.y = tempVar;
-
-			tempVar = blockHSize;
-			blockHSize = ogp.blockHSize;
-			ogp.blockHSize = tempVar;
-
-			tempVar = blockWSize;
-			blockWSize = ogp.blockWSize;
-			ogp.blockWSize = tempVar;
-
-			tempVar = blockNum;
-			blockNum = ogp.blockNum;
-			ogp.blockNum = tempVar;
-
-			drawTetris();
-			ogp.drawTetris();
-
-			temp = null;
-		}
-
-		public void oneLineDown()
-		{
-			ogp.lineDelete((ogp.field.length - 1) - 1);
-			ogp.drawTetris();
-		}
-
-		public void threeLineDown()
-		{
-			for (int i = 3; i >= 1; i--)
-				ogp.lineDelete((ogp.field.length - 1) - i);
-			ogp.drawTetris();
-		}
-
-		public void slow()
-		{
-			ogp.gameSpeed += 200;
-			coolDown(ImageSource.item_slow);
-		}
-
-		public void blackout()
-		{
-			Thread blackTh = new Thread()
-			{
-				public void run()
-				{
-					int alpha = 255;
-					
-					blackPanel.setVisible(true);
-					blackPanel.remove(textLabel);
-					
-					while(alpha > 0)
-					{
-						blackPanel.setBackground(new Color(0,0,0,alpha));
-						alpha -= 25;
-						try { sleep(1000); }
-						catch(InterruptedException e) { e.printStackTrace(); }
-					}
-					blackPanel.setVisible(false);
-				}
-			};
-			blackTh.start();
-			coolDown(ImageSource.item_blackout);
-		}
-
-		public void zigzag()
-		{
-			int row = 0;
-
-			for (int i = 0; i < ogp.field.length; i++)
-			{
-				for (int j = 1; j < ogp.field[0].length - 1; j++)
-				{
-					if (ogp.field[i][j] > 0)
-					{
-						row = i;
-						break;
-					}
-				}
-				if (row > 0)
-					break;
-			}
-
-			if (row > 0)
-			{
-				for (int i = row; i < ogp.field.length; i++)
-				{
-					Vector<Integer> v = new Vector<Integer>();
-
-					for (int j = 1; j < ogp.field[0].length - 1; j++)
-						v.add(ogp.field[i][j]);
-
-					for (int j = 1; j < ogp.field[0].length - 1; j++)
-					{
-						int index = (int) (Math.random() * v.size());
-						ogp.field[i][j] = v.get(index);
-						v.remove(index);
-					}
-				}
-			}
-
-			ogp.drawTetris();
-		}
-
-		public void oneLineUp()
-		{
-			/* 전역: int[][] */ogp.copy = new int[ogp.field.length][ogp.field[0].length];
-			for (int row = 1; row < ogp.field.length - 1; row++)
-				for (int col = 0; col < ogp.field[0].length; col++)
-					ogp.copy[row - 1][col] = ogp.field[row][col];
-
-			backArray(ogp.field, ogp.copy);
-
-			int num = (int) (Math.random() * 10 + 1);
-			for (int col = 1; col < ogp.field[0].length - 1; col++)
-				if (col != num)
-					ogp.field[ogp.field.length - 2][col] = 100;
-
-			ogp.drawTetris();
-
-			ogp.copy = null;
-		}
-
-		public void threeLineUp()
-		{
-			/* 전역: int[][] */ogp.copy = new int[ogp.field.length][ogp.field[0].length];
-			for (int row = 3; row < ogp.field.length - 1; row++)
-				for (int col = 0; col < ogp.field[0].length; col++)
-					ogp.copy[row - 3][col] = ogp.field[row][col];
-
-			backArray(ogp.field, ogp.copy);
-
-			int num = (int) (Math.random() * 10 + 1);
-			for (int row = ogp.field.length - 4; row < ogp.field.length - 1; row++)
-				for (int col = 0; col < ogp.field[0].length - 1; col++)
-					if (col != num)
-						ogp.field[row][col] = 100;
-
-			ogp.drawTetris();
-
-			ogp.copy = null;
-		}
-
-		public void fast()
-		{
-			ogp.gameSpeed -= 200;
-			coolDown(ImageSource.item_fast);
-		}
-
-		public void coolDown(ImageIcon icon)
-		{
-			ogp.item_using.removeAll();
-			ogp.usingItemLabel.add(new UsingItemLabel(icon));
-
-			for (int i = 0; i < ogp.usingItemLabel.size(); i++)
-			{
-				ogp.item_using.add(ogp.usingItemLabel.get(i));
-				ogp.usingItemLabel.get(i).setLocation(i * 30, 0);
-			}
-			ogp.item_using.repaint();
-		}
-	}
-
-	class UsingItemLabel extends JLabel implements Runnable
-	{
-		int w, h;
-		int colSpeed = 1;
-		int rowSpeed = 1;
-		int x1, x2, x3, x4, x5, x6, x7;
-		int y1, y2, y3, y4, y5, y6, y7;
-		int Switch = 1;
-		int times = 10;
-		boolean End = true;
-		ImageIcon icon;
-
-		UsingItemLabel(ImageIcon icon)
-		{
-			w = 30;
-			h = 30;
-			setSize(w, h);
-
-			this.icon = icon;
-			Thread coolTimeTh = new Thread(this);
-
-			x1 = w / 2;
-			x2 = w / 2;
-			x3 = w;
-			x4 = w;
-			x5 = 0;
-			x6 = w / 2;
-			x7 = 0;
-
-			y1 = 0;
-			y2 = 0;
-			y3 = 0;
-			y4 = h;
-			y5 = h;
-			y6 = h / 2;
-			y7 = 0;
-
-			coolTimeTh.start();
-		}
-
-		public void run()
-		{
-			int i = 0;
-
-			while (End)
-			{
-				if (x2 < w)
-					x2 += colSpeed;
-				else
-				{
-					Switch = 2;
-
-					if (y3 < h)
-						y3 += rowSpeed;
-					else
-					{
-						Switch = 3;
-
-						if (x4 > 0)
-							x4 -= colSpeed;
-						else
-						{
-							Switch = 4;
-
-							if (y5 > 0)
-								y5 -= rowSpeed;
-							else
-							{
-								Switch = 5;
-
-								if (x7 < w / 2)
-									x7 += colSpeed;
-								else
-									End = false;
-							}
-						}
-					}
-				}
-				i++;
-				repaint();
-
-				if (i % 12 == 0)
-					times--;
-
-				try
-				{
-					Thread.sleep(80);
-				}
-				catch (InterruptedException e)
-				{
-					e.printStackTrace();
-				}
-			}
-
-			// 쿨타임 후 원래 스피드로 복구
-			String iconName = icon.toString().substring(14);
-			switch (iconName)
-			{
-			case "fast.png":
-				ogp.gameSpeed += 200;
-				break;
-			case "slow.png":
-				ogp.gameSpeed -= 200;
-				break;
-			}
-
-			ogp.item_using.removeAll();
-			ogp.usingItemLabel.remove(this);
-
-			for (int j = 0; j < ogp.usingItemLabel.size(); j++)
-			{
-				ogp.item_using.add(ogp.usingItemLabel.get(j));
-				ogp.usingItemLabel.get(j).setLocation(j * 30, 0);
-			}
-			ogp.item_using.repaint();
-		}
-
-		public void paintComponent(Graphics g)
-		{
-			super.paintComponent(g);
-			g.drawImage(icon.getImage(), 0, 0, this);
-			g.setColor(Color.BLACK);
-			if (Switch == 1)
-				g.fillPolygon(new int[] { x1, x2, x6 },
-						new int[] { y1, y2, y6 }, 3);
-			else if (Switch == 2)
-				g.fillPolygon(new int[] { x1, x2, x3, x6 }, new int[] { y1, y2,
-						y3, y6 }, 4);
-			else if (Switch == 3)
-				g.fillPolygon(new int[] { x1, x2, x3, x4, x6 }, new int[] { y1,
-						y2, y3, y4, y6 }, 5);
-			else if (Switch == 4)
-				g.fillPolygon(new int[] { x1, x2, x3, x4, x5, x6 }, new int[] {
-						y1, y2, y3, y4, y5, y6 }, 6);
-			else
-				g.fillPolygon(new int[] { x1, x2, x3, x4, x5, x7, x6 },
-						new int[] { y1, y2, y3, y4, y5, y7, y6 }, 7);
-
-			g.setColor(Color.WHITE);
-			g.setFont(new Font("Verdana", 1, 20));
-			g.drawString(Integer.toString(times), 7, 22);
-		}
-	}
-
 }

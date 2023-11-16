@@ -61,53 +61,32 @@ public class GameFrame extends JFrame
 					if (e.getKeyCode() == FirstPlayerKeySetting.FKeyType[0])
 					{
 						((GamePanel) gp).move_down();
-						((GamePanel) gp).checkArray();
+						((GamePanel) gp).setArray();
 						((GamePanel) gp).drawTetris();
 					}
 					else if (e.getKeyCode() == FirstPlayerKeySetting.FKeyType[1])
 					{
 						((GamePanel) gp).move_left();
-						((GamePanel) gp).checkArray();
+						((GamePanel) gp).setArray();
 						((GamePanel) gp).drawTetris();
 					}
 					else if (e.getKeyCode() == FirstPlayerKeySetting.FKeyType[2])
 					{
 						((GamePanel) gp).move_right();
-						((GamePanel) gp).checkArray();
+						((GamePanel) gp).setArray();
 						((GamePanel) gp).drawTetris();
 					}
+
 					else if (e.getKeyCode() == FirstPlayerKeySetting.FKeyType[3])
 					{
-						// 내게 쓰기
-						((GamePanel) gp).ogp = fgp;
-
-						JLabel labelNum = ((GamePanel) gp).itemLabel.get(0);
-//						if (labelNum.getName().equals("6"))
-//							((GamePanel) gp).ogp = sgp;
-
-						((GamePanel) gp).useItem();
+						((GamePanel) gp).move_drop();
+						((GamePanel) gp).setArray();
+						((GamePanel) gp).drawTetris();
 					}
 					else if (e.getKeyCode() == FirstPlayerKeySetting.FKeyType[4])
 					{
-						// 적에게 쓰기
-//						((GamePanel) gp).ogp = sgp;
-						((GamePanel) gp).attackItem();
-					}
-					else if (e.getKeyCode() == FirstPlayerKeySetting.FKeyType[5])
-					{
-						// 아이템 지우기
-						((GamePanel) gp).deleteItem();
-					}
-					else if (e.getKeyCode() == FirstPlayerKeySetting.FKeyType[6])
-					{
-						((GamePanel) gp).move_drop();
-						((GamePanel) gp).checkArray();
-						((GamePanel) gp).drawTetris();
-					}
-					else if (e.getKeyCode() == FirstPlayerKeySetting.FKeyType[7])
-					{
 						((GamePanel) gp).move_turn();
-						((GamePanel) gp).checkArray();
+						((GamePanel) gp).setArray();
 						((GamePanel) gp).drawTetris();
 					}
 				}
