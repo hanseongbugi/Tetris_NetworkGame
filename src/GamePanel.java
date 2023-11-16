@@ -26,7 +26,7 @@ public class GamePanel extends JPanel implements Runnable
 
 	Thread th;
 
-	int gameSpeed = 1000;
+	int gameSpeed = 500;
 	int speedCount = 0;
 	int preSpeed;
 
@@ -241,7 +241,7 @@ public class GamePanel extends JPanel implements Runnable
 		for (int row = y; row < y + blockHSize; row++)
 			for (int col = x; col < x + blockWSize; col++)
 				if (array[row][col] > 0 && field[row][col] > 0)
-					count++; // 필드의 가장 윗족에 블록이 있는지 검사
+					count++; // 필드의 가장 윗족에 블록이 있는지 검사 (더이상 놓을 수 없는지 확인)
 		
 		if (count > 0) // 블록이 끝에 있다면 종료
 		{

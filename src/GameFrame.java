@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import java.util.Vector;
 
 import javax.swing.*;
@@ -7,14 +8,16 @@ import javax.swing.border.AbstractBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.*;
 
+
+
 public class GameFrame extends JFrame
 {
 	GamePanel fgp;
 	static int gameMode = 1;
 	static JFrame jf;
+	GameThread gameThread;
 
-	GameFrame()
-	{
+	GameFrame() throws IOException{
 		setTitle("Tetris");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -40,8 +43,21 @@ public class GameFrame extends JFrame
 		setLocationRelativeTo(getParent());
 
 		setVisible(true);
+		
+		gameThread = new GameThread();
+		gameThread.start();
+		
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e){
+				try {
+					gameThread.sendGameOver();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 	}
-
 	public void remakePanel()
 	{
 		fgp.highestScore.setBounds(255, 200, 205, 30);
@@ -94,8 +110,7 @@ public class GameFrame extends JFrame
 		});
 	}
 
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) throws IOException{
 		new ImageSource();
 		new GameFrame();
 	}
