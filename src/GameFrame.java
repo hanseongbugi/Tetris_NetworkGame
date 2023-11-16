@@ -15,6 +15,8 @@ public class GameFrame extends JFrame
 	GamePanel fgp;
 	static int gameMode = 1;
 	static JFrame jf;
+
+	GamePanel enemyPanel;
 	GameThread gameThread;
 
 	GameFrame() throws IOException{
@@ -22,7 +24,7 @@ public class GameFrame extends JFrame
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		setLayout(null);
-		setSize(360, 640);
+		setSize(720, 640);
 		setResizable(false);
 
 		jf = this;
@@ -33,11 +35,16 @@ public class GameFrame extends JFrame
 		switch (gameMode)
 		{
 			case 1:
-				fgp = new GamePanel();
-				fgp.setBounds(0, 0, 360, 640);
-				add(fgp);
-				MyKey1(fgp);
-				break;
+				 	fgp = new GamePanel();
+		            fgp.setBounds(370, 0, 360, 640); // 기존 패널 위치 및 크기 조정
+		            add(fgp);
+
+		            enemyPanel = new GamePanel();
+		            enemyPanel.setBounds(0, 0, 360, 640); // 새로운 패널 위치 및 크기 설정
+		            add(enemyPanel);
+		            
+		            MyKey1(fgp);
+		            break;
 		}
 
 		setLocationRelativeTo(getParent());
@@ -66,8 +73,8 @@ public class GameFrame extends JFrame
 
 	public void MyKey1(JPanel gp)
 	{
-		this.setFocusable(true);
-		this.addKeyListener(new KeyAdapter()
+		gp.setFocusable(true);
+		gp.addKeyListener(new KeyAdapter()
 		{
 			public void keyPressed(KeyEvent e)
 			{
