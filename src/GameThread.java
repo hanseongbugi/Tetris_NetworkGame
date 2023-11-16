@@ -18,7 +18,7 @@ public class GameThread extends Thread{
 		while(true) {
 			try {
 				message = is.readUTF();
-				System.out.println(message);
+				System.out.println("send>> "+ message);
 			}catch (IOException e) {
 				e.printStackTrace();
 				break;

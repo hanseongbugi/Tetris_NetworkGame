@@ -43,9 +43,7 @@ public class ServerThread extends Thread {
 	public void requestStartButton() {
 		String message = "makeStartButton";
 		try {
-			for(ServerThread t : Server.list) {
-				t.os.writeUTF(message);
-			}
+			os.writeUTF(clientId+ message);
 		}catch(IOException e) {
 			e.printStackTrace();
 		}

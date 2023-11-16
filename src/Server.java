@@ -22,6 +22,7 @@ public class Server {
 			
 			if(list.size() == 2) {
 				for(ServerThread t : list) {
+					System.out.println("Send Message");
 					t.requestStartButton();
 				}
 			}
