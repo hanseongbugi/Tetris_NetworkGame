@@ -1,5 +1,5 @@
-import java.net.URL;
 import javax.swing.ImageIcon;
+import java.util.Objects;
 
 public class ImageSource
 {
@@ -60,59 +60,59 @@ public class ImageSource
 	
 	public ImageSource()
 	{
-		img_field = new ImageIcon(ImageSource.class.getClassLoader().getResource("field.png"));
-		img_logo = new ImageIcon(ImageSource.class.getClassLoader().getResource("logo.png"));				// 360x640
-		img_logo2 = new ImageIcon(ImageSource.class.getClassLoader().getResource("logo2.png"));			// 320x480
-		img_button = new ImageIcon(ImageSource.class.getClassLoader().getResource("button.png"));         // 
-		img_buttonP = new ImageIcon(ImageSource.class.getClassLoader().getResource("button_push.png"));    // 
-		img_KNUT = new ImageIcon(ImageSource.class.getClassLoader().getResource("KNUT.png"));
+		img_field = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/field.png")));
+		img_logo = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/logo.png")));				// 360x640
+		img_logo2 = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/logo2.png")));			// 320x480
+		img_button = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/button.png")));         // 
+		img_buttonP = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/button_push.png")));    // 
+		img_KNUT = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/KNUT.png")));
 		
-		bg_ground = new ImageIcon(ImageSource.class.getClassLoader().getResource("bg_ground.png"));
-		kakao_tube = new ImageIcon(ImageSource.class.getClassLoader().getResource("kakao_tube.png"));
+		bg_ground = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/bg_ground.png")));
+		kakao_tube = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/kakao_tube.png")));
 		
-		block_I = new ImageIcon(ImageSource.class.getClassLoader().getResource("block_I.png"));
-		block_J = new ImageIcon(ImageSource.class.getClassLoader().getResource("block_J.png"));
-		block_L = new ImageIcon(ImageSource.class.getClassLoader().getResource("block_L.png"));
-		block_O = new ImageIcon(ImageSource.class.getClassLoader().getResource("block_O.png"));
-		block_S = new ImageIcon(ImageSource.class.getClassLoader().getResource("block_S.png"));
-		block_T = new ImageIcon(ImageSource.class.getClassLoader().getResource("block_T.png"));
-		block_Z = new ImageIcon(ImageSource.class.getClassLoader().getResource("block_Z.png"));
+		block_I = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/block_I.png")));
+		block_J = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/block_J.png")));
+		block_L = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/block_L.png")));
+		block_O = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/block_O.png")));
+		block_S = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/block_S.png")));
+		block_T = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/block_T.png")));
+		block_Z = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/block_Z.png")));
 		
-		block_blue = new ImageIcon(ImageSource.class.getClassLoader().getResource("blue.png"));
-		block_cyan = new ImageIcon(ImageSource.class.getClassLoader().getResource("cyan.png"));
-		block_gray = new ImageIcon(ImageSource.class.getClassLoader().getResource("gray.png"));
-		block_green = new ImageIcon(ImageSource.class.getClassLoader().getResource("green.png"));
-		block_lime = new ImageIcon(ImageSource.class.getClassLoader().getResource("lime.png"));
-		block_orange = new ImageIcon(ImageSource.class.getClassLoader().getResource("orange.png"));
-		block_puple = new ImageIcon(ImageSource.class.getClassLoader().getResource("puple.png"));
-		block_red = new ImageIcon(ImageSource.class.getClassLoader().getResource("red.png"));
-		block_yellow = new ImageIcon(ImageSource.class.getClassLoader().getResource("yellow.png"));
+		block_blue = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/blue.png")));
+		block_cyan = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/cyan.png")));
+		block_gray = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/gray.png")));
+		block_green = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/green.png")));
+		block_lime = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/lime.png")));
+		block_orange = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/orange.png")));
+		block_puple = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/puple.png")));
+		block_red = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/red.png")));
+		block_yellow = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/yellow.png")));
 		
-		block_blackout = new ImageIcon(ImageSource.class.getClassLoader().getResource("a_blackout.png"));
-		block_fast = new ImageIcon(ImageSource.class.getClassLoader().getResource("a_fast.png"));
-		block_lineup_1 = new ImageIcon(ImageSource.class.getClassLoader().getResource("a_lineup_1.png"));
-		block_lineup_3 = new ImageIcon(ImageSource.class.getClassLoader().getResource("a_lineup_3.png"));
-		block_zigzag = new ImageIcon(ImageSource.class.getClassLoader().getResource("a_zigzag.png"));
-		block_bomb = new ImageIcon(ImageSource.class.getClassLoader().getResource("p_bomb.png"));
-		block_change = new ImageIcon(ImageSource.class.getClassLoader().getResource("p_change.png"));
-		block_linedown_1 = new ImageIcon(ImageSource.class.getClassLoader().getResource("p_linedown_1.png"));
-		block_linedown_3 = new ImageIcon(ImageSource.class.getClassLoader().getResource("p_linedown_3.png"));
-		block_slow = new ImageIcon(ImageSource.class.getClassLoader().getResource("p_slow.png"));
+		block_blackout = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/a_blackout.png")));
+		block_fast = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/a_fast.png")));
+		block_lineup_1 = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/a_lineup_1.png")));
+		block_lineup_3 = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/a_lineup_3.png")));
+		block_zigzag = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/a_zigzag.png")));
+		block_bomb = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/p_bomb.png")));
+		block_change = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/p_change.png")));
+		block_linedown_1 = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/p_linedown_1.png")));
+		block_linedown_3 = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/p_linedown_3.png")));
+		block_slow = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/block/p_slow.png")));
 		
-		item_blackout = new ImageIcon(ImageSource.class.getClassLoader().getResource("a_blackout.png"));
-		item_fast = new ImageIcon(ImageSource.class.getClassLoader().getResource("a_fast.png"));
-		item_lineup_1 = new ImageIcon(ImageSource.class.getClassLoader().getResource("a_lineup_1.png"));
-		item_lineup_3 = new ImageIcon(ImageSource.class.getClassLoader().getResource("a_lineup_3.png"));
-		item_zigzag = new ImageIcon(ImageSource.class.getClassLoader().getResource("a_zigzag.png"));
-		item_bomb = new ImageIcon(ImageSource.class.getClassLoader().getResource("p_bomb.png"));
-		item_change = new ImageIcon(ImageSource.class.getClassLoader().getResource("p_change.png"));
-		item_linedown_1 = new ImageIcon(ImageSource.class.getClassLoader().getResource("p_linedown_1.png"));
-		item_linedown_3 = new ImageIcon(ImageSource.class.getClassLoader().getResource("p_linedown_3.png"));
-		item_slow = new ImageIcon(ImageSource.class.getClassLoader().getResource("p_slow.png"));
+		item_blackout = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/item/a_blackout.png")));
+		item_fast = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/item/a_fast.png")));
+		item_lineup_1 = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/item/a_lineup_1.png")));
+		item_lineup_3 = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/item/a_lineup_3.png")));
+		item_zigzag = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/item/a_zigzag.png")));
+		item_bomb = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/item/p_bomb.png")));
+		item_change = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/item/p_change.png")));
+		item_linedown_1 = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/item/p_linedown_1.png")));
+		item_linedown_3 = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/item/p_linedown_3.png")));
+		item_slow = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/item/p_slow.png")));
 		
-		info_i = new ImageIcon(ImageSource.class.getClassLoader().getResource("info_i.png"));
-		info_q = new ImageIcon(ImageSource.class.getClassLoader().getResource("info_q.png"));
-		btn_replay = new ImageIcon(ImageSource.class.getClassLoader().getResource("replay.png"));
-		img_pencil = new ImageIcon(ImageSource.class.getClassLoader().getResource("pencil.png"));	
+		info_i = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/info_i.png")));
+		info_q = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/info_q.png")));
+		btn_replay = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/replay.png")));
+		img_pencil = new ImageIcon(Objects.requireNonNull(ImageSource.class.getClassLoader().getResource("images/pencil.png")));	
 	}
 }
