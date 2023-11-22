@@ -18,7 +18,7 @@ public class Server {
 			ServerThread thread = new ServerThread(s, clientCount, is, os);
 			list.add(thread);
 			thread.start();
-			clientCount ++;
+			clientCount ++; 
 			
 			if(list.size() == 2) {
 				for(ServerThread t : list) {

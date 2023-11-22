@@ -115,8 +115,8 @@ public class GameFrame extends JFrame {
         startButton.setEnabled(false);
     }
 
-//    public static void main(String[] args) throws IOException {
-//        new ImageSource();
-//        new GameFrame();
-//    }
+    public static void main(String[] args) throws IOException {
+        new ImageSource();
+        new GameFrame();
+    }
 }
