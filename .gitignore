@@ -1,1 +1,5 @@
-bin/
+TetrisGame/bin/
+TetrisGame/.DS_Store
+TetrisGame/bin/.DS_Store
+.metadata/
+.DS_Store
