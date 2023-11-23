@@ -58,6 +58,10 @@ public class ImageSource
 	static ImageIcon btn_replay;
 	static ImageIcon img_pencil;
 	
+	static ImageIcon intro_background_img;
+	static ImageIcon btn_start;
+	static ImageIcon btn_exit;
+	
 	public ImageSource()
 	{
 		img_field = new ImageIcon("images/field.png");
@@ -113,6 +117,10 @@ public class ImageSource
 		info_i = new ImageIcon( "images/info_i.png");
 		info_q = new ImageIcon( "images/info_q.png");
 		btn_replay = new ImageIcon( "images/replay.png");
-		img_pencil = new ImageIcon( "images/pencil.png");	
+		img_pencil = new ImageIcon( "images/pencil.png");
+		
+		intro_background_img = new ImageIcon("images/introBackground.png");
+		btn_start = new ImageIcon("images/start.png");
+		btn_exit = new ImageIcon("images/exit.png");
 	}
 }
