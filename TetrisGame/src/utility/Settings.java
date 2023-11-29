@@ -40,6 +40,8 @@ public class Settings
 	public static ImageIcon intro_background_img;
 	public static ImageIcon btn_start;
 	public static ImageIcon btn_exit;
+	public static ImageIcon hover_btn_start;
+	public static ImageIcon hover_btn_exit;
 	
 	public Settings()
 	{
@@ -78,5 +80,8 @@ public class Settings
 		intro_background_img = new ImageIcon("images/introBackground.png");
 		btn_start = new ImageIcon("images/start.png");
 		btn_exit = new ImageIcon("images/exit.png");
+		
+		hover_btn_start = new ImageIcon("images/hoverStart.png");
+		hover_btn_exit = new ImageIcon("images/hoverExit.png");
 	}
 }

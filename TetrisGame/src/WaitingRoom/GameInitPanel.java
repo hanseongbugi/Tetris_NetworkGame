@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import utility.Settings;
@@ -18,34 +19,20 @@ import TetrisGame.TetrisGame;
 public class GameInitPanel extends JPanel{
 	private JTextField userName;
 	private Image backImg;
+	private JLabel startBtn;
+	private JLabel exitBtn;
 	public GameInitPanel() {
 		setLayout(null);
 		setOpaque(true);
 		System.out.println("GameInit");
 		backImg = Settings.intro_background_img.getImage();
 		
-        JLabel startBtn = new JLabel(Settings.btn_start);
-        startBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                // System.out.println("CLICK START!!");
-                //introPanel.setVisible(false);
-                if(!userName.getText().isEmpty()) {
-                	TetrisGame.isChange = true;
-                	TetrisGame.isWaitingRoom = true;
-                	GameInitPanel.this.setVisible(false);
-                	// System.out.println("TetrisGame " + TetrisGame.isChange);
-                }
-            }
-        });
+        startBtn = new JLabel(Settings.btn_start);
+        startBtn.addMouseListener(new ImageButtonEvent());
         
-        JLabel exitBtn = new JLabel(Settings.btn_exit);
-        exitBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                System.exit(0);
-            }
-        });
+        exitBtn = new JLabel(Settings.btn_exit);
+        exitBtn.addMouseListener(new ImageButtonEvent());
+        
         startBtn.setSize(100, 100);
         startBtn.setLocation(130,430);
         exitBtn.setSize(100,100);
@@ -78,5 +65,44 @@ public class GameInitPanel extends JPanel{
 	}
 	public String getUserName() {
 		return userName.getText();
+	}
+	
+	class ImageButtonEvent extends MouseAdapter{
+		@Override
+        public void mouseClicked(MouseEvent e) {
+			JLabel btn = (JLabel)e.getSource();
+			if(btn == startBtn) {
+				if(!userName.getText().isEmpty()) {
+					TetrisGame.isChange = true;
+					TetrisGame.isWaitingRoom = true;
+					GameInitPanel.this.setVisible(false);
+				}
+			}
+			if(btn == exitBtn) {
+				btn.setIcon(Settings.btn_exit);
+				int answer = JOptionPane.showConfirmDialog(
+						getParent(), "종료하시겠습니까?", "confirm",JOptionPane.YES_NO_OPTION );
+				if(answer==JOptionPane.YES_OPTION){  //사용자가 yes를 눌렀을 경우
+					System.exit(1);
+				} else{  //사용자가 Yes 이외의 값을 눌렀을 경우
+					System.out.println("종료를 취소합니다.");
+				}
+			}
+        }
+        @Override 
+        public void mouseEntered(MouseEvent e) {
+        	JLabel btn = (JLabel)e.getSource();
+        	if(btn == startBtn)
+        		btn.setIcon(Settings.hover_btn_start);
+        	if(btn == exitBtn)
+        		btn.setIcon(Settings.hover_btn_exit);        }
+        @Override
+        public void mouseExited(MouseEvent e) {
+        	JLabel btn = (JLabel)e.getSource();
+        	if(btn == startBtn)
+        		btn.setIcon(Settings.btn_start);
+        	if(btn == exitBtn)
+        		btn.setIcon(Settings.btn_exit); 
+        }
 	}
 }
