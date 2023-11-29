@@ -18,7 +18,6 @@ public class TetrisGame extends JFrame{
 	private GamePanel gamePanel;
 	private GameInitPanel initPanel;
 	private WaitingPanel waitingPanel;
-	private GameFramePanel gameFramePanel;
 	
 	private Timer loadingTimer = new Timer();
 	private TimerTask loadingTask;
