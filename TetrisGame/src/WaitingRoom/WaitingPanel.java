@@ -24,7 +24,7 @@ import TetrisGame.TetrisGame;
 public class WaitingPanel extends JLayeredPane{
 	private GamePanel gamePanel;
 	public static String userName;
-	public static int playerNum;
+	private static int playerNum;
 	
 	private JLabel p1NameLabel;
 	private JLabel p2NameLabel;
@@ -95,6 +95,9 @@ public class WaitingPanel extends JLayeredPane{
 	
 	public void setGamePanel(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
+	}
+	public static int getPlayerNum() {
+		return playerNum;
 	}
 	
 	private void serverConnect() {
@@ -192,10 +195,10 @@ public class WaitingPanel extends JLayeredPane{
 							setAllJoinPlayer(userMsg.getData().split("@@"));
 							break;
 						case "103": // 게임 시작
-							// startGame();
+							startGame();
 							break;
 						case "104": // 상대방 방 나감
-							// startGame();
+							startGame();
 							break;
 						case "300": // Map change
 							if (gamePanel != null) {

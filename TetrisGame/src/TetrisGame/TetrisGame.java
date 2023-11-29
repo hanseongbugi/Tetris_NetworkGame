@@ -11,6 +11,7 @@ import java.util.TimerTask;
 
 import WaitingRoom.GameInitPanel;
 import WaitingRoom.WaitingPanel;
+import utility.PlayerKeySetting;
 import utility.Settings;
 
 public class TetrisGame extends JFrame{
@@ -50,6 +51,7 @@ public class TetrisGame extends JFrame{
 	// 변수 초기화
 	public void init() {
 		new Settings();
+		new PlayerKeySetting();
 		isMain = false;
 		isGame = false;
 		isChange = true;
