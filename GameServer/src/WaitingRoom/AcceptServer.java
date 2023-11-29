@@ -1,4 +1,4 @@
-package WatingRoom;
+package WaitingRoom;
 
 import java.io.IOException;
 import java.net.*;

@@ -1,4 +1,4 @@
-package WatingRoom;
+package WaitingRoom;
 
 import java.io.*;
 import java.net.Socket;
@@ -21,7 +21,6 @@ public class UserService extends Thread {
 	public String UserStatus;
 	private static final int BUF_LEN = 128; // Windows 처럼 BUF_LEN 을 정의
 	
-	public int roomNum = 0;
 	private GameServer gameServer;
 
 	public UserService(Socket clientSocket, ArrayList userList, GameServer gameServer) {
@@ -39,14 +38,6 @@ public class UserService extends Thread {
 			this.gameServer.AppendText("userService error");
 		}
 	}
-	
-	public int getRoomNum() {
-		return roomNum;
-	}
-	
-	public void setRoomNum(int roomNum) {
-		this.roomNum = roomNum;
-	}
 
 
 
@@ -59,7 +50,6 @@ public class UserService extends Thread {
 		String msg = "[" + UserName + "]님이 퇴장 하였습니다.\n";
 		userList.remove(this); // Logout한 현재 객체를 배열에서 지운다
 		WriteAll(msg, "104"); // 나를 제외한 다른 User들에게 전송
-		gameServer.reduceRoomCount(getRoomNum());
 		gameServer.AppendText("사용자 " + "[" + UserName + "] 퇴장. 현재 참가자 수 " + userList.size());
 	}
 
@@ -67,7 +57,7 @@ public class UserService extends Thread {
 	public void WriteAll(String str, String code) {
 		for (int i = 0; i < userList.size(); i++) {
 			UserService user = (UserService) userList.get(i);
-			if (user.UserStatus == "O" && user.getRoomNum() == roomNum)
+			if (user.UserStatus == "O")
 				user.WriteOne(str, code);
 		}
 	}
@@ -84,16 +74,17 @@ public class UserService extends Thread {
 	public void WriteOthers(String str, String code) {
 		for (int i = 0; i < userList.size(); i++) {
 			UserService user = (UserService) userList.get(i);
-			if (user != this && user.getRoomNum() == roomNum)
+			if (user != this)
 				user.WriteOne(str, code);
 		}
 	}
 	
 	// 나를 제외한 User들에게 방송. 각각의 UserService Thread의 WriteONe() 을 호출한다.
 			public void WriteJoin() {
+				System.out.println("writeJoin");
 				for (int i = 0; i < userList.size(); i++) {
 					UserService user = (UserService) userList.get(i);
-					if (user != this && user.getRoomNum() == roomNum) {
+					if (user != this) {
 						user.WriteOne("player1@@" + UserName, "102");
 						WriteOne("player2@@" + user.UserName, "102");
 					}
@@ -121,8 +112,8 @@ public class UserService extends Thread {
 	// UserService Thread가 담당하는 Client 에게 1:1 전송
 	public void WriteOne(String msg, String code) {
 		try {
-			ChatMessage obcm = new ChatMessage("SERVER", code, msg);
-			if(obcm!=null) oos.writeObject(obcm);
+			UserMessage userMsg = new UserMessage("SERVER", code, msg);
+			if(userMsg!=null) oos.writeObject(userMsg);
 		} catch (IOException e) {
 			gameServer.AppendText("dos.writeObject() error");
 			try {
@@ -143,7 +134,7 @@ public class UserService extends Thread {
 	// 귓속말 전송
 	public void WritePrivate(String msg) {
 		try {
-			ChatMessage obcm = new ChatMessage("귓속말", "200", msg);
+			UserMessage obcm = new UserMessage("귓속말", "200", msg);
 			oos.writeObject(obcm);
 		} catch (IOException e) {
 			gameServer.AppendText("dos.writeObject() error");
@@ -187,79 +178,77 @@ public class UserService extends Thread {
 	public void run() {
 		while (true) { // 사용자 접속을 계속해서 받기 위해 while문
 			try {
-				Object obcm = null;
+				Object obj = null;
 				String msg = null;
-				ChatMessage cm = null;
+				UserMessage userMsg = null;
 				if (gameServer.getServerSocket() == null)
 					break;
 				try {
-					obcm = ois.readObject();
+					obj = ois.readObject();
 				} catch (ClassNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					return;
 				}
-				if (obcm == null)
+				if (obj == null)
 					break;
-				if (obcm instanceof ChatMessage) {
-					cm = (ChatMessage) obcm;
-					gameServer.AppendObject(cm);
+				if (obj instanceof UserMessage) {
+					userMsg = (UserMessage) obj;
+					gameServer.AppendObject(userMsg);
 				} else
 					continue;
-				if (cm.getCode().matches("101")) { // 방 만들기/방 참가
-					UserName = cm.getUserID();
+				if (userMsg.getCode().matches("101")) { // 방 만들기/방 참가
+					UserName = userMsg.getUserID();
 					UserStatus = "O"; // Online 상태
 					//1,2,3
-					roomNum = Integer.parseInt(cm.getData());
-					gameServer.addRoomCount(roomNum);
-					if(gameServer.getRoomCount(roomNum) >= 1) {
+					if(userList.size()>=1)
 						WriteJoin();
-					}
+					
 					Login();
-				} else if (cm.getCode().matches("103")) { // 게임 시작
+				} else if (userMsg.getCode().matches("103")) { // 게임 시작
 					WriteOthers("start","103");
-				}else if (cm.getCode().matches("300")) { // stage 이동
-					WriteOthers(cm.getData(),"300"); 
-					WriteOne(cm.getData(),"300");
-				} else if (cm.getCode().matches("401")) { // player 움직임 keyPressed
+				}else if (userMsg.getCode().matches("300")) { // stage 이동
+					WriteOthers(userMsg.getData(),"300"); 
+					WriteOne(userMsg.getData(),"300");
+				} else if (userMsg.getCode().matches("401")) { // player 움직임 keyPressed
 					System.out.println("401");
 					
-					WriteOthers(cm.getData(),"401"); 
-					WriteOne(cm.getData(),"401");
-				} else if (cm.getCode().matches("402")) { // player 움직임 keyReleased
+					WriteOthers(userMsg.getData(),"401"); 
+					WriteOne(userMsg.getData(),"401");
+				} else if (userMsg.getCode().matches("402")) { // player 움직임 keyReleased
 					System.out.println("402");
 					
-					WriteOthers(cm.getData(),"402"); 
-					WriteOne(cm.getData(),"402");
-				} else if (cm.getCode().matches("403")) { // player 움직임 (x,y)
+					WriteOthers(userMsg.getData(),"402"); 
+					WriteOne(userMsg.getData(),"402");
+				} else if (userMsg.getCode().matches("403")) { // player 움직임 (x,y)
 					System.out.println("403");
 					
-					WriteOthers(cm.getData(),"403"); 
-					WriteOne(cm.getData(),"403");
-				} else if (cm.getCode().matches("501")) { // bubble이랑 monster이랑 만남
+					WriteOthers(userMsg.getData(),"403"); 
+					WriteOne(userMsg.getData(),"403");
+				} else if (userMsg.getCode().matches("501")) { // bubble이랑 monster이랑 만남
 					System.out.println("501");
 					
-					WriteOthers(cm.getData(),"501"); 
-					WriteOne(cm.getData(),"501");
-				} else if (cm.getCode().matches("502")) { // bubble 천장 랜덤 움직임
+					WriteOthers(userMsg.getData(),"501"); 
+					WriteOne(userMsg.getData(),"501");
+				} else if (userMsg.getCode().matches("502")) { // bubble 천장 랜덤 움직임
 					System.out.println("502");
 					
-					WriteOthers(cm.getData(),"502"); 
-				} else if (cm.getCode().matches("601")) { // bubble 터짐 > item create
+					WriteOthers(userMsg.getData(),"502"); 
+				} else if (userMsg.getCode().matches("601")) { // bubble 터짐 > item create
 					System.out.println("601");
 					
-					WriteOthers(cm.getData(),"601"); 
-					WriteOne(cm.getData(),"601");
-				} else if (cm.getCode().matches("602")) { // item 위치 조정
+					WriteOthers(userMsg.getData(),"601"); 
+					WriteOne(userMsg.getData(),"601");
+				} else if (userMsg.getCode().matches("602")) { // item 위치 조정
 					System.out.println("602");
 					
-					WriteOthers(cm.getData(),"602"); 
-					WriteOne(cm.getData(),"602");
-				}   else if (cm.getCode().matches("603")) { // item 점수 증가
+					WriteOthers(userMsg.getData(),"602"); 
+					WriteOne(userMsg.getData(),"602");
+				}   else if (userMsg.getCode().matches("603")) { // item 점수 증가
 					System.out.println("603");
 					
-					WriteOthers(cm.getData(),"603"); 
-					WriteOne(cm.getData(),"603");
+					WriteOthers(userMsg.getData(),"603"); 
+					WriteOne(userMsg.getData(),"603");
 				} 
 			} catch (IOException e) {
 				gameServer.AppendText("ois.readObject() error");

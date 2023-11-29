@@ -1,11 +1,13 @@
+package TetrisGame.GameObejct;
+
 public class Blocks
 {
 	int[][] block;
 	int start_x;
 	int start_y;
-	int blockNum;
+	public int blockNum;
 
-	Blocks()
+	public Blocks()
 	{
 		// blockNum = (int)(Math.random() * 7 + 1);
 		// block = getBlock();

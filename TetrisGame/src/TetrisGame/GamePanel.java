@@ -1,3 +1,4 @@
+package TetrisGame;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -8,8 +9,10 @@ import javax.swing.SwingConstants;
 import javax.swing.border.AbstractBorder;
 import javax.swing.border.LineBorder;
 
-public class GamePanel extends JPanel implements Runnable
-{
+import TetrisGame.GameObejct.Blocks;
+import utility.Settings;
+
+public class GamePanel extends JPanel implements Runnable{
 	JPanel tetrisArea = new JPanel();
 	JLabel nextBlock = new JLabel();
 	JLabel score = new JLabel();
@@ -18,7 +21,6 @@ public class GamePanel extends JPanel implements Runnable
 	JPanel item_using = new JPanel();
 	JLabel time = new JLabel();
 	AbstractBorder WhiteLineBorder;
-
 	JLabel[][] fieldLabel = new JLabel[20][10];
 
 	Thread th;
@@ -94,15 +96,9 @@ public class GamePanel extends JPanel implements Runnable
 		setOpaque(false);
 		setBackground(new Color(30, 160, 255));
 
-		tube = new JLabel(ImageSource.kakao_tube);
-		int tubeWidth = ImageSource.kakao_tube.getIconWidth();
-		int tubeHeight = ImageSource.kakao_tube.getIconHeight();
-		tube.setBounds(240, 360, tubeWidth, tubeHeight);
-		add(tube);
-
-		ground = new JLabel(ImageSource.bg_ground);
-		int groundWidth = ImageSource.bg_ground.getIconWidth();
-		int groundHeight = ImageSource.bg_ground.getIconHeight();
+		ground = new JLabel(Settings.bg_ground);
+		int groundWidth = Settings.bg_ground.getIconWidth();
+		int groundHeight = Settings.bg_ground.getIconHeight();
 		ground.setBounds(0, 640 - groundHeight, groundWidth, groundHeight);
 		add(ground);
 	}
@@ -120,7 +116,7 @@ public class GamePanel extends JPanel implements Runnable
 		add(tetrisArea);
 		tetrisArea.setVisible(false);
 
-		nextBlock = new JLabel(ImageSource.block_L);
+		nextBlock = new JLabel(Settings.block_L);
 		nextBlock.setFont(new Font("verdana", 0, 12));
 		nextBlock.setForeground(Color.WHITE);
 		nextBlock.setBackground(Color.BLACK);
@@ -244,14 +240,14 @@ public class GamePanel extends JPanel implements Runnable
 		{
 			gameRun = false;
 			th.interrupt();
-			if (GameFrame.gameMode == 2)
+			/* if (GameFrame.gameMode == 2)
 			{
 				textLabel.setText("LOSE");
 			}
 			else if (GameFrame.gameMode == 1)
 			{
 				textLabel.setText("FAIL");
-			}
+			}*/
 			textLabel.setVisible(true);
 			blackPanel.setVisible(true);
 			tetrisArea.setVisible(false);
@@ -282,25 +278,25 @@ public class GamePanel extends JPanel implements Runnable
 		 * I : red, J : lime, L : orange, O : purple S : cyan T : blue Z : green
 		 **********************/
 		case 1:
-			nextBlock.setIcon(ImageSource.block_I);
+			nextBlock.setIcon(Settings.block_I);
 			break;
 		case 2:
-			nextBlock.setIcon(ImageSource.block_J);
+			nextBlock.setIcon(Settings.block_J);
 			break;
 		case 3:
-			nextBlock.setIcon(ImageSource.block_L);
+			nextBlock.setIcon(Settings.block_L);
 			break;
 		case 4:
-			nextBlock.setIcon(ImageSource.block_O);
+			nextBlock.setIcon(Settings.block_O);
 			break;
 		case 5:
-			nextBlock.setIcon(ImageSource.block_S);
+			nextBlock.setIcon(Settings.block_S);
 			break;
 		case 6:
-			nextBlock.setIcon(ImageSource.block_T);
+			nextBlock.setIcon(Settings.block_T);
 			break;
 		case 7:
-			nextBlock.setIcon(ImageSource.block_Z);
+			nextBlock.setIcon(Settings.block_Z);
 			break;
 		}
 	}
@@ -310,7 +306,7 @@ public class GamePanel extends JPanel implements Runnable
 		for (int row = 0; row < fieldLabel.length; row++)
 			for (int col = 0; col < fieldLabel[0].length; col++)
 			{
-				fieldLabel[row][col].setIcon(ImageSource.block_gray);
+				fieldLabel[row][col].setIcon(Settings.block_gray);
 			}
 	}
 
@@ -327,71 +323,30 @@ public class GamePanel extends JPanel implements Runnable
 					 * blue Z : green
 					 **********************/
 					case 1:
-						fieldLabel[row][col].setIcon(ImageSource.block_red);
+						fieldLabel[row][col].setIcon(Settings.block_red);
 						break;
 					case 2:
-						fieldLabel[row][col].setIcon(ImageSource.block_lime);
+						fieldLabel[row][col].setIcon(Settings.block_lime);
 						break;
 					case 3:
-						fieldLabel[row][col].setIcon(ImageSource.block_orange);
+						fieldLabel[row][col].setIcon(Settings.block_orange);
 						break;
 					case 4:
-						fieldLabel[row][col].setIcon(ImageSource.block_puple);
+						fieldLabel[row][col].setIcon(Settings.block_puple);
 						break;
 					case 5:
-						fieldLabel[row][col].setIcon(ImageSource.block_cyan);
+						fieldLabel[row][col].setIcon(Settings.block_cyan);
 						break;
 					case 6:
-						fieldLabel[row][col].setIcon(ImageSource.block_blue);
+						fieldLabel[row][col].setIcon(Settings.block_blue);
 						break;
 					case 7:
-						fieldLabel[row][col].setIcon(ImageSource.block_green);
+						fieldLabel[row][col].setIcon(Settings.block_green);
 						break;
 					}
 				else if (field[row][col + 1] >= 80 && field[row][col + 1] < 90)
 				{
-					switch (field[row][col + 1] - 80)
-					{
-					/**********************
-					 * I : red, J : lime, L : orange, O : purple S : cyan T :
-					 * blue Z : green
-					 **********************/
-					case 0:
-						fieldLabel[row][col]
-								.setIcon(ImageSource.block_blackout);
-						break;
-					case 1:
-						fieldLabel[row][col].setIcon(ImageSource.block_fast);
-						break;
-					case 2:
-						fieldLabel[row][col]
-								.setIcon(ImageSource.block_lineup_1);
-						break;
-					case 3:
-						fieldLabel[row][col]
-								.setIcon(ImageSource.block_lineup_3);
-						break;
-					case 4:
-						fieldLabel[row][col].setIcon(ImageSource.block_zigzag);
-						break;
-					case 5:
-						fieldLabel[row][col].setIcon(ImageSource.block_bomb);
-						break;
-					case 6:
-						fieldLabel[row][col].setIcon(ImageSource.block_change);
-						break;
-					case 7:
-						fieldLabel[row][col]
-								.setIcon(ImageSource.block_linedown_1);
-						break;
-					case 8:
-						fieldLabel[row][col]
-								.setIcon(ImageSource.block_linedown_3);
-						break;
-					case 9:
-						fieldLabel[row][col].setIcon(ImageSource.block_slow);
-						break;
-					}
+					// 원래 아이템 배치하던 부분
 				}
 				else if (field[row][col + 1] >= 90 && field[row][col + 1] < 100)
 				{
@@ -402,30 +357,30 @@ public class GamePanel extends JPanel implements Runnable
 					 * blue Z : green
 					 **********************/
 					case 1:
-						fieldLabel[row][col].setIcon(ImageSource.block_red);
+						fieldLabel[row][col].setIcon(Settings.block_red);
 						break;
 					case 2:
-						fieldLabel[row][col].setIcon(ImageSource.block_lime);
+						fieldLabel[row][col].setIcon(Settings.block_lime);
 						break;
 					case 3:
-						fieldLabel[row][col].setIcon(ImageSource.block_orange);
+						fieldLabel[row][col].setIcon(Settings.block_orange);
 						break;
 					case 4:
-						fieldLabel[row][col].setIcon(ImageSource.block_puple);
+						fieldLabel[row][col].setIcon(Settings.block_puple);
 						break;
 					case 5:
-						fieldLabel[row][col].setIcon(ImageSource.block_cyan);
+						fieldLabel[row][col].setIcon(Settings.block_cyan);
 						break;
 					case 6:
-						fieldLabel[row][col].setIcon(ImageSource.block_blue);
+						fieldLabel[row][col].setIcon(Settings.block_blue);
 						break;
 					case 7:
-						fieldLabel[row][col].setIcon(ImageSource.block_green);
+						fieldLabel[row][col].setIcon(Settings.block_green);
 						break;
 					}
 				}
 				else if (field[row][col + 1] >= 100)
-					fieldLabel[row][col].setIcon(ImageSource.block_gray);
+					fieldLabel[row][col].setIcon(Settings.block_gray);
 				else
 					fieldLabel[row][col].setIcon(null);
 			}
