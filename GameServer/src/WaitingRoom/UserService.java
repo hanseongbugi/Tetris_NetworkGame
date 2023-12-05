@@ -203,37 +203,19 @@ public class UserService extends Thread {
 					//1,2,3
 					if(userList.size()>=1)
 						WriteJoin();
-					
 					Login();
+					
 				} else if (userMsg.getCode().matches("103")) { // 게임 시작
 					WriteOthers("start","103");
-				}else if (userMsg.getCode().matches("300")) { // stage 이동
-					WriteOthers(userMsg.getData(),"300"); 
-					WriteOne(userMsg.getData(),"300");
-				} else if (userMsg.getCode().matches("401")) { // player 움직임 keyPressed
-					System.out.println("401");
-					
+				}else if (userMsg.getCode().matches("401")) { // player 움직임 keyPressed
 					WriteOthers(userMsg.getData(),"401"); 
 					WriteOne(userMsg.getData(),"401");
-				} else if (userMsg.getCode().matches("402")) { // player 움직임 keyReleased
-					System.out.println("402");
-					
-					WriteOthers(userMsg.getData(),"402"); 
-					WriteOne(userMsg.getData(),"402");
-				} else if (userMsg.getCode().matches("403")) { // player 움직임 (x,y)
-					System.out.println("403");
-					
-					WriteOthers(userMsg.getData(),"403"); 
-					WriteOne(userMsg.getData(),"403");
-				} else if (userMsg.getCode().matches("501")) { // bubble이랑 monster이랑 만남
-					System.out.println("501");
-					
+				} else if (userMsg.getCode().matches("501")) { // currentBlock 정보
 					WriteOthers(userMsg.getData(),"501"); 
 					WriteOne(userMsg.getData(),"501");
-				} else if (userMsg.getCode().matches("502")) { // bubble 천장 랜덤 움직임
-					System.out.println("502");
-					
+				} else if (userMsg.getCode().matches("502")) { // preBlock 정보
 					WriteOthers(userMsg.getData(),"502"); 
+					WriteOne(userMsg.getData(),"502");
 				} else if (userMsg.getCode().matches("601")) { // bubble 터짐 > item create
 					System.out.println("601");
 					

@@ -11,6 +11,9 @@ import javax.swing.border.AbstractBorder;
 import javax.swing.border.LineBorder;
 
 import TetrisGame.GamePanel;
+import WaitingRoom.UserMessage;
+import WaitingRoom.WaitingPanel;
+import utility.PlayerKeySetting;
 import utility.Settings;
 
 public class Player extends JPanel implements Runnable{
@@ -37,11 +40,12 @@ public class Player extends JPanel implements Runnable{
 	JPanel blackPanel = new JPanel();
 	public boolean Gaming = false;
 
-	// GamePanel ogp; // OtherGamePanel
+	String userName;
 
 	public Player(int playerNumber)
 	{
 		this.playerNumber = playerNumber;
+		userName = WaitingPanel.userName;
 		setLayout(null);
 		setSize(360, 640);
 		
@@ -209,7 +213,8 @@ public class Player extends JPanel implements Runnable{
 
 		block = b.getBlock();
 		blockNum = b.getBlockNum();
-		block = b.getBlock();
+
+		// block = b.getBlock();
 		start_x = b.getStart_x();
 		start_y = b.getStart_y();
 		
@@ -270,7 +275,7 @@ public class Player extends JPanel implements Runnable{
 		currentBlock = preBlock;
 		b.blockNum = currentBlock;
 		preBlock = (int) (Math.random() * 7 + 1);
-
+		
 		switch (preBlock)
 		{
 		/**********************
@@ -400,7 +405,7 @@ public class Player extends JPanel implements Runnable{
 		 * 조건 : 우측 벽에서 모형 손실에 대한 예방대책 세울것
 		 ****************************************/
 		if (x + blockWSize > array[0].length - 1)
-			move_left();
+			moveLeft();
 	}
 
 	public void fixBlock()
@@ -460,7 +465,7 @@ public class Player extends JPanel implements Runnable{
 
 	/******************** 테트리스 키 이벤트 ********************/
 
-	public void move_left()
+	public void moveLeft()
 	{
 		copy = new int[array.length][array[0].length];
 		for (int row = 0; row < array.length; row++)
@@ -486,7 +491,7 @@ public class Player extends JPanel implements Runnable{
 		copy = null;
 	}
 
-	public void move_right()
+	public void moveRight()
 	{
 		copy = new int[array.length][array[0].length];
 		
@@ -515,7 +520,7 @@ public class Player extends JPanel implements Runnable{
 		copy = null;
 	}
 
-	public void move_down()
+	public void moveDown()
 	{
 		copy = new int[array.length][array[0].length];
 		for (int row = 0; row < array.length - 1; row++)
@@ -566,7 +571,7 @@ public class Player extends JPanel implements Runnable{
 		copy = null;
 	}
 
-	public void move_drop()
+	public void moveDrop()
 	{
 		while (true)
 		{
@@ -608,7 +613,7 @@ public class Player extends JPanel implements Runnable{
 		}
 	}
 
-	public void move_turn()
+	public void moveTurn()
 	{
 		int[][] turn = new int[blockWSize][blockHSize];
 		for (int i = 0; i < blockWSize; i++)
@@ -672,7 +677,7 @@ public class Player extends JPanel implements Runnable{
 						{
 							return;
 						}
-						move_down();
+						moveDown();
 						drawTetris();
 					}
 				}
@@ -694,7 +699,7 @@ public class Player extends JPanel implements Runnable{
 				{
 					return;
 				}
-				move_down(); 
+				moveDown(); 
 				drawTetris();
 			}
 		}
