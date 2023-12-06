@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -12,22 +14,37 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JTextField;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.Timer;
+import javax.swing.UIManager;
 
 import TetrisGame.GamePanel;
 import TetrisGame.TetrisGame;
+import WaitingRoom.GameInitPanel.RoundJTextField;
 
 public class WaitingPanel extends JLayeredPane{
+	
+	private Timer typingTimer;
+    private int currentIndex;
+    private String[] typingText = { "Waiting", "Waiting.", "Waiting..", "Waiting...", "Waiting...." };
+	
 	private GamePanel gamePanel;
 	public static String userName;
 	private static int playerNum;
 	
 	private JLabel p1NameLabel;
 	private JLabel p2NameLabel;
+	
+	private JLabel imageLabel1;
+	private JLabel imageLabel2;
+	
 	private JLabel joinPlayer;
 	private JButton startBtn;
 	
@@ -44,29 +61,59 @@ public class WaitingPanel extends JLayeredPane{
 		setLayout(null);
 		this.userName = userName;
 		
+		currentIndex = 0;
+        typingTimer = new Timer(500, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                joinPlayer.setText(typingText[currentIndex]);
+                currentIndex = (currentIndex + 1) % typingText.length;
+            }
+        });
+        
+        typingTimer.start();
+        
+		setBackground(new Color(173, 216, 250)); //배경색 하늘색 지정
+        
 		Font font = new Font("HBIOS-SYS", Font.PLAIN, 30);
 		
 		joinPlayer = new JLabel("Waiting...");
-		joinPlayer.setBounds(250, 290, 250, 100);
-		joinPlayer.setFont(font);
-		joinPlayer.setForeground(new Color(255,186,0));
+		joinPlayer.setBounds(250,300, 250, 100);
+		joinPlayer.setFont(new Font("Rockwell", Font.BOLD, 25));
+		//joinPlayer.setForeground(new Color(255,186,0));
+		joinPlayer.setForeground(Color.blue);
 		joinPlayer.setHorizontalAlignment(JTextField.CENTER);
 		add(joinPlayer);
+		
+		imageLabel1 = new JLabel();
+		imageLabel1.setBounds(100,100,250,150); //이미지의 위치와 크기 설정
+		add(imageLabel1, JLayeredPane.DEFAULT_LAYER);
+		
+		ImageIcon imageIcon1 = new ImageIcon("images/kurome.png"); //이미지 설정
+		imageLabel1.setIcon(imageIcon1);
 		
 		font = new Font("HBIOS-SYS", Font.PLAIN, 30);
 		p1NameLabel = new JLabel(userName);
 		p1NameLabel.setBounds(60, 250, 200, 40);
-		p1NameLabel.setFont(font);
-		p1NameLabel.setForeground(new Color(0, 255, 0));
+		p1NameLabel.setFont(new Font("Rockwell", Font.BOLD, 20));
+		//p1NameLabel.setForeground(new Color(0, 255, 0));
+		p1NameLabel.setForeground(Color.BLACK);
 		p1NameLabel.setHorizontalAlignment(JTextField.CENTER);
+		p1NameLabel.setBorder(BorderFactory.createCompoundBorder(null, null));
 		add(p1NameLabel);
 		
+        
+		imageLabel2 = new JLabel();
+		imageLabel2.setBounds(500,100,280,160); //이미지의 위치와 크기 설정
+		add(imageLabel2, JLayeredPane.DEFAULT_LAYER);
+		
+		ImageIcon imageIcon2 = new ImageIcon("images/mymelody.png"); //이미지 설정
+		imageLabel2.setIcon(imageIcon2);
 		
 		font = new Font("HBIOS-SYS", Font.PLAIN, 30);
 		p2NameLabel = new JLabel("");
 		p2NameLabel.setBounds(450 ,250, 200, 40);
-		p2NameLabel.setFont(font);
-		p2NameLabel.setForeground(new Color(0, 186, 255));
+		p2NameLabel.setFont(new Font("Rockwell", Font.BOLD, 20));
+		p2NameLabel.setForeground(new Color(255, 105, 185));
 		p2NameLabel.setHorizontalAlignment(JTextField.CENTER);
 		
 		font = new Font("HBIOS-SYS", Font.PLAIN, 40);
@@ -77,6 +124,19 @@ public class WaitingPanel extends JLayeredPane{
 		startBtn.setForeground(Color.RED);
 		startBtn.setBorderPainted(false);
 		startBtn.setFocusPainted(false);
+		
+		// hover 효과를 위한 MouseListener 추가
+        startBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                startBtn.setBackground(Color.RED);
+                startBtn.setForeground(Color.WHITE);
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                startBtn.setBackground(UIManager.getColor("control"));
+                startBtn.setForeground(Color.RED);
+            }
+        });
 		
 		startBtn.addActionListener(new ActionListener() {
 			@Override
@@ -120,6 +180,7 @@ public class WaitingPanel extends JLayeredPane{
 	}
 	
 	public void setAllJoinPlayer(String info[]) {
+		typingTimer.stop();
 		joinPlayer.setText("Player Connected");
 		joinPlayer.setBounds(220, 290, 250, 100);
 		// player2 = Toolkit.getDefaultToolkit().createImage("src/image/player2-waiting.gif");
