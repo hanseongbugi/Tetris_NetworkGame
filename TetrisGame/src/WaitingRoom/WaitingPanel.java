@@ -248,7 +248,6 @@ public class WaitingPanel extends JLayeredPane{
 						if (obj instanceof UserMessage) {
 							userMsg = (UserMessage) obj;
 							msg = String.format("[%s] %s", userMsg.getUserID(), userMsg.getData());
-							System.out.println(userMsg.getCode());
 						} else
 							continue;
 						switch (userMsg.getCode()) {
@@ -261,35 +260,21 @@ public class WaitingPanel extends JLayeredPane{
 						case "104": // 상대방 방 나감
 							startGame();
 							break;
-						case "300": // Map change
-							if (gamePanel != null) {
-								// gamePanel.SocketNextStge();
-							}
-							break;
+
 						case "401": // 게임 player 움직임
 							if (gamePanel != null) {
-								// gamePanel.movePlayerTrue(cm.getData().split("@@"));
+								gamePanel.movePlayer(userMsg.getData().split("@@"));
 							}
 							break;
-						case "402": // 게임 player 움직임
+						
+						case "501": // currentBlock 메시지
 							if (gamePanel != null) {
-								// gamePanel.movePlayerFalse(cm.getData().split("@@"));
+								//gamePanel.SocketMeetBubbleMonster(userMsg.getData().split(","));
 							}
 							break;
-						case "403":
+						case "502": // preBlock 메시지
 							if (gamePanel != null) {
-								// gamePanel.movePlayerPosition(cm.getData().split("@@"));
-								// ChatMsg(userName, "403", myPlayerNum+"@@" +x +"," +y);
-							}
-							break;
-						case "501": // bubble이랑 monster이랑 만남
-							if (gamePanel != null) {
-								// gamePanel.SocketMeetBubbleMonster(cm.getData().split(","));
-							}
-							break;
-						case "502": // bubble 천장 랜덤 움직임
-							if (gamePanel != null) {
-								// gamePanel.SocketbubbleMove(cm.getData().split(","));
+								//gamePanel.SocketbubbleMove(userMsg.getData().split(","));
 							}
 							break;
 						case "601": // bubble 터짐 > item create

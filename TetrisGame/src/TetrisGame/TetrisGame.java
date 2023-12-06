@@ -90,7 +90,6 @@ public class TetrisGame extends JFrame{
 			setVisible(true);
 		}else if(isWaitingRoom) {
 			this.isWaitingRoom = false;
-			// System.out.println("waiting Root create");
 			waitingPanel = new WaitingPanel(initPanel.getUserName());
 			add(waitingPanel);
 			this.setVisible(true);
@@ -102,7 +101,6 @@ public class TetrisGame extends JFrame{
 		public void run() {
 			while(true) {
 				if(isChange) {
-					System.out.println("change detected");
 					isChange = false;
 					gameModeChanged();
 				}

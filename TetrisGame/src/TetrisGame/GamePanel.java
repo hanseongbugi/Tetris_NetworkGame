@@ -15,6 +15,7 @@ import javax.swing.border.LineBorder;
 import TetrisGame.GameObejct.Blocks;
 import TetrisGame.GameObejct.Player;
 import utility.Settings;
+import WaitingRoom.UserMessage;
 import WaitingRoom.WaitingPanel;
 import utility.PlayerKeySetting;
 
@@ -53,43 +54,64 @@ public class GamePanel extends JPanel {
 		MyKey(controlPlayer);
 		
 	}
-
-	/*public void remakePanel() {
-		fpanel.highestScore.setBounds(255, 200, 205, 30);
-		fpanel.time.setBounds(255, 240, 205, 30);
-	}*/
+	public void movePlayer(String[] playerInformation) {
+		String keyType = playerInformation[1];
+		
+		Player otherPlayer;
+		if(playerInformation[0].equals("1"))
+			otherPlayer = player1;
+		else
+			otherPlayer = player2;
+		if (keyType.equals(PlayerKeySetting.StringKeyType[0])) {
+			otherPlayer.moveDown();
+			otherPlayer.setArray();
+			otherPlayer.drawTetris();
+		} else if (keyType.equals(PlayerKeySetting.StringKeyType[1])) {
+			otherPlayer.moveLeft();
+			otherPlayer.setArray();
+			otherPlayer.drawTetris();
+		} else if (keyType.equals(PlayerKeySetting.StringKeyType[2])) {
+			otherPlayer.moveRight();
+			otherPlayer.setArray();
+			otherPlayer.drawTetris();
+		} else if (keyType.equals(PlayerKeySetting.StringKeyType[3])) {
+			otherPlayer.moveDrop();
+			otherPlayer.setArray();
+			otherPlayer.drawTetris();
+		} else if (keyType.equals(PlayerKeySetting.StringKeyType[4])) {
+			otherPlayer.moveTurn();
+			otherPlayer.setArray();
+			otherPlayer.drawTetris();
+		}
+	}
 
 	public void MyKey(JPanel panel) {
-		System.out.println(panel);
-		panel.setFocusable(true);
 		panel.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
-				System.out.println(e.getKeyCode());
 				if (((Player) panel).gameRun && ((Player) panel).Gaming) {
 					if (e.getKeyCode() == PlayerKeySetting.FKeyType[0]) {
-						((Player) panel).move_down();
-						((Player) panel).setArray();
-						((Player) panel).drawTetris();
+						WaitingPanel.SendObject(new UserMessage(
+								userName,"401",controlPlayerNum+"@@"+PlayerKeySetting.FKeyType[0]));
 					} else if (e.getKeyCode() == PlayerKeySetting.FKeyType[1]) {
-						((Player) panel).move_left();
-						((Player) panel).setArray();
-						((Player) panel).drawTetris();
+						WaitingPanel.SendObject(new UserMessage(
+								userName,"401",controlPlayerNum+"@@"+PlayerKeySetting.FKeyType[1]));
 					} else if (e.getKeyCode() == PlayerKeySetting.FKeyType[2]) {
-						((Player) panel).move_right();
-						((Player) panel).setArray();
-						((Player) panel).drawTetris();
+						WaitingPanel.SendObject(new UserMessage(
+								userName,"401",controlPlayerNum+"@@"+PlayerKeySetting.FKeyType[2]));
+
 					} else if (e.getKeyCode() == PlayerKeySetting.FKeyType[3]) {
-						((Player) panel).move_drop();
-						((Player) panel).setArray();
-						((Player) panel).drawTetris();
+						WaitingPanel.SendObject(new UserMessage(
+								userName,"401",controlPlayerNum+"@@"+PlayerKeySetting.FKeyType[3]));
+
 					} else if (e.getKeyCode() == PlayerKeySetting.FKeyType[4]) {
-						((Player) panel).move_turn();
-						((Player) panel).setArray();
-						((Player) panel).drawTetris();
+						WaitingPanel.SendObject(new UserMessage(
+								userName,"401",controlPlayerNum+"@@"+PlayerKeySetting.FKeyType[4]));
 					}
 				}
 			}
 		});
+		panel.setFocusable(true);
+		panel.requestFocus();
 	}
 
 }
