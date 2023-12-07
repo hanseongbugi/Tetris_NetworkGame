@@ -104,6 +104,7 @@ public class WaitingPanel extends JLayeredPane{
         
 		imageLabel2 = new JLabel();
 		imageLabel2.setBounds(500,100,280,160); //이미지의 위치와 크기 설정
+		imageLabel2.setVisible(false);
 		add(imageLabel2, JLayeredPane.DEFAULT_LAYER);
 		
 		ImageIcon imageIcon2 = new ImageIcon("images/mymelody.png"); //이미지 설정
@@ -185,14 +186,19 @@ public class WaitingPanel extends JLayeredPane{
 		joinPlayer.setBounds(220, 290, 250, 100);
 		// player2 = Toolkit.getDefaultToolkit().createImage("src/image/player2-waiting.gif");
 		add(p2NameLabel);
+		
 		if (info[0].trim().equals("player1")) {
 			p2NameLabel.setText(info[1]);
 			add(startBtn);
 			playerNum = 1;
+			
+			imageLabel2.setVisible(true);
 		} else {
 			p1NameLabel.setText(info[1]);
 			p2NameLabel.setText(userName);
 			playerNum = 2;
+			
+			imageLabel2.setVisible(true);  
 		}
 	}
 	
