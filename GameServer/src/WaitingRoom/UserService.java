@@ -20,7 +20,7 @@ public class UserService extends Thread {
 	public String UserName = "";
 	public String UserStatus;
 	private static final int BUF_LEN = 128; // Windows 처럼 BUF_LEN 을 정의
-	
+
 	private GameServer gameServer;
 
 	public UserService(Socket clientSocket, ArrayList userList, GameServer gameServer) {
@@ -41,124 +41,99 @@ public class UserService extends Thread {
 
 
 
-	public void Login() {
+	public void Login(UserMessage msg) {
 		gameServer.AppendText("새로운 참가자 " + UserName + " 입장.");
-		String msg = "[" + UserName + "]님이 입장 하였습니다.\n";
+
 	}
 
 	public void Logout() {
 		String msg = "[" + UserName + "]님이 퇴장 하였습니다.\n";
 		userList.remove(this); // Logout한 현재 객체를 배열에서 지운다
-		WriteAll(msg, "104"); // 나를 제외한 다른 User들에게 전송
+		UserMessage userMsg = new UserMessage(UserName,"600");
+		for (int i = 0; i < userList.size(); i++) {
+			UserService user = (UserService) userList.get(i);
+			if (user != this)
+				userMsg.getUserList().add(user.UserName);
+		}
+		WriteAll(userMsg); // 나를 제외한 다른 User들에게 전송
 		gameServer.AppendText("사용자 " + "[" + UserName + "] 퇴장. 현재 참가자 수 " + userList.size());
 	}
 
 	// 모든 User들에게 방송. 각각의 UserService Thread의 WriteONe() 을 호출한다.
-	public void WriteAll(String str, String code) {
+	public void WriteAll(UserMessage msg) {
 		for (int i = 0; i < userList.size(); i++) {
 			UserService user = (UserService) userList.get(i);
-			if (user.UserStatus == "O")
-				user.WriteOne(str, code);
+			user.WriteMessage(msg);
 		}
 	}
-	// 모든 User들에게 Object를 방송. 채팅 message와 image object를 보낼 수 있다
-	public void WriteAllObject(Object ob) {
-		for (int i = 0; i < userList.size(); i++) {
+	public void WriteMe(UserMessage msg) {
+		for(int i = 0;i<userList.size();i++) {
 			UserService user = (UserService) userList.get(i);
-			if (user.UserStatus == "O")
-				user.WriteOneObject(ob);
+			if(user==this)
+				user.WriteMessage(msg);
 		}
 	}
 
 	// 나를 제외한 User들에게 방송. 각각의 UserService Thread의 WriteONe() 을 호출한다.
-	public void WriteOthers(String str, String code) {
+	public void WriteOthers(UserMessage msg) {
 		for (int i = 0; i < userList.size(); i++) {
 			UserService user = (UserService) userList.get(i);
 			if (user != this)
-				user.WriteOne(str, code);
+				user.WriteMessage(msg);
 		}
 	}
-	
-	// 나를 제외한 User들에게 방송. 각각의 UserService Thread의 WriteONe() 을 호출한다.
-			public void WriteJoin() {
-				System.out.println("writeJoin");
-				for (int i = 0; i < userList.size(); i++) {
-					UserService user = (UserService) userList.get(i);
-					if (user != this) {
-						user.WriteOne("player1@@" + UserName, "102");
-						WriteOne("player2@@" + user.UserName, "102");
-					}
-				}
+	public void WriteJoin(UserMessage msg) {
+		for(int i = 0;i<userList.size();i++) {
+			UserService user = (UserService) userList.get(i);
+			if(user!=this) {
+				msg.setCode("102");
+				msg.setUserName("player1@@"+UserName);
+				user.WriteMessage(msg);
+				
+				msg.setUserName("player2@@"+user.UserName);
+				WriteMessage(msg);
 			}
-
-	// Windows 처럼 message 제외한 나머지 부분은 NULL 로 만들기 위한 함수
-	public byte[] MakePacket(String msg) {
-		byte[] packet = new byte[BUF_LEN];
-		byte[] bb = null;
-		int i;
-		for (i = 0; i < BUF_LEN; i++)
-			packet[i] = 0;
-		try {
-			bb = msg.getBytes("euc-kr");
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-		for (i = 0; i < bb.length; i++)
-			packet[i] = bb[i];
-		return packet;
 	}
-
-	// UserService Thread가 담당하는 Client 에게 1:1 전송
-	public void WriteOne(String msg, String code) {
+	
+	public void WriteMessage(UserMessage msg) {
 		try {
-			UserMessage userMsg = new UserMessage("SERVER", code, msg);
-			if(userMsg!=null) oos.writeObject(userMsg);
-		} catch (IOException e) {
-			gameServer.AppendText("dos.writeObject() error");
-			try {
-				ois.close();
-				oos.close();
-				clientSocket.close();
-				clientSocket = null;
-				ois = null;
-				oos = null;
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			oos.writeObject(msg.getCode());
+			oos.reset();
+			oos.writeObject(msg.getUserName());
+			switch(msg.getCode()) {
+			case "101":
+				oos.writeObject(msg.getUserList());
+				break;
+			case "102":
+				oos.writeObject(msg.getUserList());
+				break;
+			case "103":
+				oos.writeObject(msg.getUserID());
+				break;
+			case "202":
+				oos.writeObject(msg.getData());
+				break;
+			case "401":
+				oos.writeObject(msg.getBlockStatus());
+				oos.reset();
+		    	oos.writeObject(msg.getItemStatus());
+				break;
+			case "402":
+				oos.writeObject(msg.getAttackLines());
+				break;
+			case "403":
+				oos.writeObject(msg.getItem());
+				break;
+			case "404":
+				oos.writeObject(msg.getEmoji());
+				break;
+			case "600":
+				oos.writeObject(msg.getUserList());
+				break;
 			}
-			Logout(); // 에러가난 현재 객체를 벡터에서 지운다
-		}
-	}
-
-	// 귓속말 전송
-	public void WritePrivate(String msg) {
-		try {
-			UserMessage obcm = new UserMessage("귓속말", "200", msg);
-			oos.writeObject(obcm);
-		} catch (IOException e) {
-			gameServer.AppendText("dos.writeObject() error");
-			try {
-				oos.close();
-				clientSocket.close();
-				clientSocket = null;
-				ois = null;
-				oos = null;
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			Logout(); // 에러가난 현재 객체를 벡터에서 지운다
-		}
-	}
-	
-	
-	
-	public void WriteOneObject(Object ob) {
-		try {
-		    oos.writeObject(ob);
-		} 
-		catch (IOException e) {
+			oos.reset();
+		}catch(IOException e) {
 			gameServer.AppendText("oos.writeObject(ob) error");		
 			try {
 				ois.close();
@@ -168,84 +143,104 @@ public class UserService extends Thread {
 				ois = null;
 				oos = null;				
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			Logout();
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
+	public UserMessage ReadData() {
+		Object obj = null;
+		UserMessage msg= new UserMessage("","");
+		try {
+			obj = ois.readObject();
+			msg.setCode((String)obj);
+			obj = ois.readObject();
+			msg.setUserName((String)obj);
+			
+			switch(msg.getCode()) {
+			case "202":
+				obj = ois.readObject();
+				msg.setData((String)obj);
+				break;
+			case "401":
+				obj = ois.readObject();
+				msg.setBlockStatus((char[][])obj);
+				obj = ois.readObject();
+				msg.setItemStatus((boolean[])obj);
+				break;
+			case"402":
+				obj = ois.readObject();
+				msg.setAttackLines((int) obj);
+				break;
+			case"403":
+				obj = ois.readObject();
+				msg.setItem((int) obj);
+				break;
+			case"404":
+				obj = ois.readObject();
+				msg.setEmoji((int) obj);
+				break;
+			}
+		}catch (ClassNotFoundException e) {
+			Logout();
+			return null;
+		} catch (IOException e) {
+			Logout();
+			return null;
+		}
+		return msg;
+	}
+
 	public void run() {
-		while (true) { // 사용자 접속을 계속해서 받기 위해 while문
-			try {
-				Object obj = null;
-				String msg = null;
-				UserMessage userMsg = null;
-				if (gameServer.getServerSocket() == null)
-					break;
-				try {
-					obj = ois.readObject();
-				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					return;
+		while (true) { 
+			UserMessage msg = null; 
+			if (clientSocket == null)
+				break;
+			msg = ReadData();
+			if (msg==null)
+				break;
+			if (msg.getCode().length()==0)
+				break;
+			gameServer.AppendObject(msg);
+			switch(msg.getCode()) {
+			case "101":
+				UserName = msg.getUserName();
+				msg.getUserList().add(UserName);
+				for(int i = 0;i<userList.size();i++) {
+					UserService user = (UserService) userList.get(i);
+					if(user!=this) {
+						ArrayList<String> ul = msg.getUserList();
+						ul.add(user.UserName);
+						msg.setUserList(ul);
+					}
 				}
-				if (obj == null)
-					break;
-				if (obj instanceof UserMessage) {
-					userMsg = (UserMessage) obj;
-					gameServer.AppendObject(userMsg);
-				} else
-					continue;
-				if (userMsg.getCode().matches("101")) { // 방 만들기/방 참가
-					UserName = userMsg.getUserID();
-					UserStatus = "O"; // Online 상태
-					//1,2,3
-					if(userList.size()>=1)
-						WriteJoin();
-					Login();
-					
-				} else if (userMsg.getCode().matches("103")) { // 게임 시작
-					WriteOthers("start","103");
-				}else if (userMsg.getCode().matches("401")) { // player 움직임 keyPressed
-					WriteOthers(userMsg.getData(),"401"); 
-					WriteOne(userMsg.getData(),"401");
-				} else if (userMsg.getCode().matches("501")) { // currentBlock 정보
-					WriteOthers(userMsg.getData(),"501"); 
-					WriteOne(userMsg.getData(),"501");
-				} else if (userMsg.getCode().matches("502")) { // preBlock 정보
-					WriteOthers(userMsg.getData(),"502"); 
-					WriteOne(userMsg.getData(),"502");
-				} else if (userMsg.getCode().matches("601")) { // bubble 터짐 > item create
-					System.out.println("601");
-					
-					WriteOthers(userMsg.getData(),"601"); 
-					WriteOne(userMsg.getData(),"601");
-				} else if (userMsg.getCode().matches("602")) { // item 위치 조정
-					System.out.println("602");
-					
-					WriteOthers(userMsg.getData(),"602"); 
-					WriteOne(userMsg.getData(),"602");
-				}   else if (userMsg.getCode().matches("603")) { // item 점수 증가
-					System.out.println("603");
-					
-					WriteOthers(userMsg.getData(),"603"); 
-					WriteOne(userMsg.getData(),"603");
-				} 
-			} catch (IOException e) {
-				gameServer.AppendText("ois.readObject() error");
-				try {
-//					dos.close();
-//					dis.close();
-					ois.close();
-					oos.close();
-					clientSocket.close();
-					Logout(); // 에러가난 현재 객체를 벡터에서 지운다
-					break;
-				} catch (Exception ee) {
-					break;
-				} 
-			} 
-		} 
-	} 
+				msg.setUserID(userList.size());
+				WriteJoin(msg);
+				Login(msg);
+				break;
+
+			case "200":
+			case "201":
+			case "401":
+			case "402":
+			case "403":
+			case "404":
+			case "405":
+				WriteOthers(msg);
+				break;
+			case"202":
+			case"300":
+				WriteAll(msg);
+				break;
+			case "500":
+				WriteOthers(msg);
+			case "600":
+				Logout();
+				break;
+			}
+			
+		}
+	}
 }

@@ -85,7 +85,6 @@ public class GameServer extends JFrame{
 	public void AppendObject(UserMessage msg) {
 		textArea.append("code = " + msg.getCode() + "\n");
 		textArea.append("id = " + msg.getUserID() + "\n");
-		textArea.append("data = " + msg.getData() + "\n");
 		textArea.setCaretPosition(textArea.getText().length());
 	}
 	public ServerSocket getServerSocket() {

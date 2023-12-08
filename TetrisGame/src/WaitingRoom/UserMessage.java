@@ -1,16 +1,26 @@
 package WaitingRoom;
 
 import java.io.*;
+import java.util.ArrayList;
 public class UserMessage implements Serializable{
 	private static final long serialVersionID = 1L;
-	private String userID;
+	private int userID;
 	private String code; // 100: 로그인, 400: 로그아웃, 200: 채팅메시지
+	private String userName;
+	private int userNum;
 	private String data;
+	private boolean isDead;
 	
-	public UserMessage(String id, String code, String msg) {
-		this.userID= id;
+	private ArrayList<String> userList = new ArrayList<>();
+	private char[][] blockStatus = new char[10][20];
+	private boolean[] itemStatus = new boolean[2];
+	private int attackLines;
+	private int item;
+	private int emoji;
+	
+	public UserMessage(String userName, String code) {
+		this.userName= userName;
 		this.code =code;
-		this.data = msg;
 	}
 	public String getCode() {
 		return code;
@@ -24,15 +34,72 @@ public class UserMessage implements Serializable{
 		return data;
 	}
 
-	public String getUserID() {
+	public int getUserID() {
 		return userID;
 	}
 
-	public void setUserID(String id) {
+	public void setUserID(int id) {
 		this.userID = id;
 	}
 
 	public void setData(String data) {
 		this.data = data;
 	}
+	public int getUserNum() {
+		return userNum;
+	}
+	public void setUserNum(int userNum) {
+		this.userNum = userNum;
+	}
+	public boolean getIsDead() {
+		return isDead;
+	}
+	public void setIsDead(boolean isDead) {
+		this.isDead = isDead;
+	}
+	public ArrayList<String> getUserList(){
+		return userList;
+	}
+	public void setUserList(ArrayList<String> userList) {
+		this.userList = userList;
+	}
+	public char[][] getBlockStatus(){
+		return blockStatus;
+	}
+	public void setBlockStatus(char[][] blockStatus) {
+		this.blockStatus = blockStatus;
+	}
+	
+	public boolean[] getItemStatus(){
+		return itemStatus;
+	}
+	public void setItemStatus(boolean[] itemStatus) {
+		this.itemStatus = itemStatus;
+	}
+	public int getAttackLines() {
+		return attackLines;
+	}
+	public void setAttackLines(int attackLines) {
+		this.attackLines = attackLines;
+	}
+	
+	public int getItem() {
+		return item;
+	}
+	public void setItem(int item) {
+		this.item = item;
+	}
+	public int getEmoji() {
+		return attackLines;
+	}
+	public void setEmoji(int emoji) {
+		this.emoji = emoji;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	
 }

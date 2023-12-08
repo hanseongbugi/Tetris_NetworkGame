@@ -14,6 +14,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.JButton;
@@ -28,9 +29,10 @@ import javax.swing.UIManager;
 import TetrisGame.GamePanel;
 import TetrisGame.TetrisGame;
 import WaitingRoom.GameInitPanel.RoundJTextField;
+import utility.Settings;
 
 public class WaitingPanel extends JLayeredPane{
-	
+	TetrisGame tetris;
 	private Timer typingTimer;
     private int currentIndex;
     private String[] typingText = { "Waiting", "Waiting.", "Waiting..", "Waiting...", "Waiting...." };
@@ -48,19 +50,27 @@ public class WaitingPanel extends JLayeredPane{
 	private JLabel joinPlayer;
 	private JButton startBtn;
 	
-	private Socket socket; // 연결소켓
+	private static Socket socket; // 연결소켓
 	private InputStream is;
 	private OutputStream os;
 	private DataInputStream dis;
 	private DataOutputStream dos;
 	
-	private ObjectInputStream ois;
+	private static ObjectInputStream ois;
 	private static ObjectOutputStream oos;
 	
-	public WaitingPanel(String userName) {
+	public static String[] playerList = new String[2];
+	private String rival;
+	
+	private int readyPlayers = 0; //준비된 플레이어의 수
+	private int rank = 2;
+	private boolean isReady = false;
+	public JLabel [] labelStatus = new JLabel[2];
+	
+	public WaitingPanel(String userName, TetrisGame tetris) {
 		setLayout(null);
 		this.userName = userName;
-		
+		this.tetris = tetris;
 		currentIndex = 0;
         typingTimer = new Timer(500, new ActionListener() {
             @Override
@@ -116,6 +126,7 @@ public class WaitingPanel extends JLayeredPane{
 		p2NameLabel.setFont(new Font("Rockwell", Font.BOLD, 20));
 		p2NameLabel.setForeground(new Color(255, 105, 185));
 		p2NameLabel.setHorizontalAlignment(JTextField.CENTER);
+		add(p2NameLabel);
 		
 		font = new Font("HBIOS-SYS", Font.PLAIN, 40);
 		startBtn = new JButton("START");
@@ -142,12 +153,27 @@ public class WaitingPanel extends JLayeredPane{
 		startBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub\
-				UserMessage userMsg = new UserMessage(userName,"103","start");
-				SendObject(userMsg);
-				startGame();
+				System.out.println("Rank = "+rank+" Ready = "+readyPlayers);
+				if(isReady) {
+					labelStatus[0].setIcon(null);
+					isReady = false;
+					sendNotReady();
+				}
+				else {
+					labelStatus[0].setIcon(Settings.ready_icon);
+					isReady = true;
+					sendReady();
+				}
 			}
 		});
+		startBtn.setVisible(false);
+		add(startBtn);
+		
+		labelStatus[0] = new JLabel();
+		labelStatus[0].setBounds(135,300,50,50);
+		labelStatus[0].setBackground(Color.WHITE);
+		labelStatus[0].setOpaque(true);
+		add(labelStatus[0]);
 		
 		setOpaque(true);
 		
@@ -169,8 +195,8 @@ public class WaitingPanel extends JLayeredPane{
 			ois = new ObjectInputStream(socket.getInputStream());
 
 			// SendMessage("/login " + userName);
-			UserMessage userMsg = new UserMessage(userName, "101", "connect Room");
-			SendObject(userMsg);
+			UserMessage userMsg = new UserMessage(userName, "101");
+			SendMessage(userMsg);
 
 			ListenServer listen = new ListenServer();
 			listen.start();
@@ -179,17 +205,26 @@ public class WaitingPanel extends JLayeredPane{
 			e.printStackTrace();
 		}
 	}
+	public String getRival() {
+		return rival;
+	}
 	
 	public void setAllJoinPlayer(String info[]) {
 		typingTimer.stop();
 		joinPlayer.setText("Player Connected");
 		joinPlayer.setBounds(220, 290, 250, 100);
 		// player2 = Toolkit.getDefaultToolkit().createImage("src/image/player2-waiting.gif");
-		add(p2NameLabel);
+		//add(p2NameLabel);
+		
+		labelStatus[1] = new JLabel();
+		labelStatus[1].setBounds(525,300,50,50);
+		labelStatus[1].setBackground(Color.WHITE);
+		labelStatus[1].setOpaque(true);
+		add(labelStatus[1]);
+		startBtn.setVisible(true);
 		
 		if (info[0].trim().equals("player1")) {
 			p2NameLabel.setText(info[1]);
-			add(startBtn);
 			playerNum = 1;
 			
 			imageLabel2.setVisible(true);
@@ -197,16 +232,39 @@ public class WaitingPanel extends JLayeredPane{
 			p1NameLabel.setText(info[1]);
 			p2NameLabel.setText(userName);
 			playerNum = 2;
-			
 			imageLabel2.setVisible(true);  
 		}
 	}
 	
 	// Server에게 network으로 전송
-	public void SendMessage(String msg, String code) {
+	public static void SendMessage(UserMessage msg) {
 		try {
-			UserMessage userMsg = new UserMessage(userName, code, msg);
-			oos.writeObject(userMsg);
+			oos.writeObject(msg.getCode());
+			oos.reset();
+			oos.writeObject(msg.getUserName());
+			oos.reset();
+			
+			switch(msg.getCode()) {
+			case "202":
+				oos.writeObject(msg.getData());
+				break;
+			case "401":
+				oos.writeObject(msg.getBlockStatus());
+				oos.reset();
+				oos.writeObject(msg.getItemStatus());
+				break;
+			case "402":
+				oos.writeObject(msg.getAttackLines());
+				break;
+			case "403":
+				oos.writeObject(msg.getItem());
+				break;
+			case "404":
+				oos.writeObject(msg.getEmoji());
+				break;
+			}
+			oos.reset();
+			oos.flush();
 		} catch (IOException e) {
 			try {
 				ois.close();
@@ -220,98 +278,255 @@ public class WaitingPanel extends JLayeredPane{
 		}
 	}
 
-	static public void SendObject(Object obj) { // 서버로 메세지를 보내는 메소드
-		try {
-			oos.writeObject(obj);
-		} catch (IOException e) {
 
-		}
-	}
 	public void startGame() {
 		TetrisGame.isChange = true;
 		TetrisGame.isGame = true;
 		
 		setVisible(false);
 	}
+	public UserMessage ReadMessage() {
+		Object obj = null;
+		UserMessage data = new UserMessage("", "");
+		try {
+			obj = ois.readObject();
+			data.setCode((String) obj);
+			obj = ois.readObject();
+			data.setUserName((String) obj);
+			System.out.println("code = "+data.getCode());
+			switch(data.getCode()) {
+			// 101번 코드는 로그인에 성공 했다는 의미이며 상대방의 로그인 성공시에도 전달 - 유저리스트가 이 시점에서 업데이트
+			case "101":
+				obj = ois.readObject();
+				data.setUserList((ArrayList<String>) obj);
+				break;
+
+			case "102":
+				obj = ois.readObject();
+				data.setUserList((ArrayList<String>) obj);
+				break;
+				
+			
+			//채팅 메시지
+			case "202": 
+				obj = ois.readObject();
+				data.setData((String) obj);
+				break;
+			//상대방의 블록 상태와 아이템 상태가 전달됨
+			case "401":
+				obj = ois.readObject();
+				data.setBlockStatus((char[][]) obj);
+				obj = ois.readObject();
+				data.setItemStatus((boolean[]) obj);
+				break;
+			//상대방에게 공격받은 라인수
+			case "402":
+				obj = ois.readObject();
+				data.setAttackLines((int) obj);
+				break;
+			//받은 아이템 번호
+			case "403":
+				obj = ois.readObject();
+				data.setItem((int) obj);
+				break;
+			//받은 이모티콘 번호
+			case "404":
+				obj = ois.readObject();
+				data.setEmoji((int) obj);
+				break;
+			//누가 로그아웃시 전달 - 이 시점에서도 유저리스트 업데이트됨
+			case "600":
+				obj = ois.readObject();
+				data.setUserList((ArrayList<String>) obj);
+				break;
+			}
+			
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+			try {
+				oos.close();
+				socket.close();
+				ois.close();
+				socket = null;
+				return null;
+			} catch (IOException e1) {
+				e1.printStackTrace();
+				try {
+					oos.close();
+					socket.close();
+					ois.close();
+				} catch (IOException e2) {
+					e2.printStackTrace();
+				}
+				socket = null;
+				return null;
+			}
+		}
+		return data;
+	}
+	// 상대방 준비 상태를 set
+	public void setReady(int n) {
+		labelStatus[n].setIcon(Settings.ready_icon);
+	}
+	public void sendReady() {
+		readyPlayers ++;
+		if(readyPlayers == rank) SendMessage(new UserMessage(userName,"300"));
+		else SendMessage(new UserMessage(userName,"200"));
+	}
+	// 상대방 준비 상태를 끔
+	public void setNotReady(int n) {
+		labelStatus[n].setIcon(null);
+	}
+	public void sendNotReady() {
+		SendMessage(new UserMessage(userName,"201"));
+		readyPlayers --;
+	}
 	
 	// Server Message를 수신해서 화면에 표시
 		class ListenServer extends Thread {
 			public void run() {
 				while (true) {
-					try {
-						Object obj = null;
-						String msg = null;
-						UserMessage userMsg;
-						try {
-							obj = ois.readObject();
-							if (obj == null) break;
-						} catch (ClassNotFoundException e) {
-							e.printStackTrace();
+					synchronized(this) {
+						UserMessage data = ReadMessage();
+						if (data==null)
 							break;
-						}
-						if (obj == null)
+						if (socket == null)
 							break;
-						if (obj instanceof UserMessage) {
-							userMsg = (UserMessage) obj;
-							msg = String.format("[%s] %s", userMsg.getUserID(), userMsg.getData());
-						} else
-							continue;
-						switch (userMsg.getCode()) {
-						case "102": // 대기실 2명 입장
-							setAllJoinPlayer(userMsg.getData().split("@@"));
+						switch (data.getCode()) {
+						case "102":
+							// 대기실 2명 입장 시
+							ArrayList<String> userList = data.getUserList();
+							int count = 0;
+							for(int i=0; i<userList.size(); i++) {
+								if(userList.get(i)!=null && !userList.get(i).equals(userName)) {
+									playerList[count++] = userList.get(i);
+								}
+							}
+							setAllJoinPlayer(data.getUserName().split("@@"));
+							rank = count+1;
 							break;
-						case "103": // 게임 시작
+							
+						case "200":
+							//상태 아이콘을 준비상태로 바꿈
+							readyPlayers++;
+							for(int i=0; i<2; i++) {
+								if(playerList[i]!=null && playerList[i].equals(data.getUserName()))
+									setReady(i);
+							}
+							
+							break;
+						case "201":
+							//상태 아이콘 제거
+							readyPlayers--;
+							for(int i=0; i<2; i++) {
+								if(playerList[i]!=null && playerList[i].equals(data.getUserName()))
+									setNotReady(i);
+							}
+							
+							break;
+						case "202":
+							//채팅 출력
+							//waitingPanel.textAreaChat.append("[" + data.username + "] " + data.chatMsg + "\n");
+							//waitingPanel.textAreaChat.setCaretPosition(waitingPanel.textAreaChat.getText().length());
+							break;
+						case "300":
+							//게임 시작
 							startGame();
 							break;
-						case "104": // 상대방 방 나감
-							startGame();
+						case "401":
+							//상대방 상태 업데이트
+							if (!TetrisGame.gameStart) break;
+							rival = data.getUserName();
+							for(int i=0; i<10; i++) {
+								for(int j=0; j<20; j++) {
+									TetrisGame.rivalStatus[i][j] = data.getBlockStatus()[i][j];
+								}
+							}
+							tetris.updateRivalStatus(data.getItemStatus()[0], data.getItemStatus()[1]);
 							break;
-
-						case "401": // 게임 player 움직임
-							if (gamePanel != null) {
-								gamePanel.movePlayer(userMsg.getData().split("@@"));
+						case "402":
+							//아래 라인 추가
+							if (!TetrisGame.gameStart) break;
+							if(!data.getUserName().equals(userName))
+								tetris.countAttackFromRival += data.getAttackLines();
+							break;
+						case "403":
+							//상대방에게 아이템
+							if (!TetrisGame.gameStart) break;
+							if(data.getItem() == 1) tetris.countAttackFromRival += 2;
+							//new ItemFromRival(data.item).start();
+							tetris.attackCount++;
+							break;
+						case "404":
+							//상대 이모티콘 박스 변경
+							if (!TetrisGame.gameStart) break;
+							if(!data.getUserName().equals(userName)) {
+								for(int i=0; i<3; i++) 
+									if(playerList[i]!=null && playerList[i].equals(data.getUserName()))
+										tetris.showEmoticon(i, data.getEmoji());		
 							}
 							break;
-						
-						case "501": // currentBlock 메시지
-							if (gamePanel != null) {
-								//gamePanel.SocketMeetBubbleMonster(userMsg.getData().split(","));
-							}
+						case "405":
+							//상대방의 죽음 메시지 랭크가 상승
+							if (!TetrisGame.gameStart) break;
+							//if(!isDead) {
+							//	rank--;
+							//	for(int i = 0; i<3; i++) {
+							//		if(playerList[i]!=null && playerList[i].equals(data.username)) {
+							//			rivalDead(i);
+							//		}
+							//	}
+							//}
+							//if(rank == 1) {
+							//	isDead = true;
+							//	WriteData(new Data(userId, "500"));
+							//	gameEnd();
+							//}
 							break;
-						case "502": // preBlock 메시지
-							if (gamePanel != null) {
-								//gamePanel.SocketbubbleMove(userMsg.getData().split(","));
-							}
+						case "500":
+							//게임 종료 메시지
+							if (!TetrisGame.gameStart) break;
+							//gameEnd();
 							break;
-						case "601": // bubble 터짐 > item create
-							if (gamePanel != null) {
-								// gamePanel.SocketChangeItem(cm.getData().split(","));
-							}
-							break;
-						case "602": // item 위치 조정
-							if (gamePanel != null) {
-								// gamePanel.SocketItemLocation(cm.getData().split(","));
-							}
-							break;
-						case "603": // item 점수 증가
-							if (gamePanel != null) {
-								// gamePanel.SocketIncrementScore(cm.getData().split(","));
+						case "600":
+							//상대방의 로그아웃 메시지 유저리스트 업데이트함
+							if (TetrisGame.gameStart) {
+							//	for(int i=0; i<3; i++) {
+							//		if(playerList[i]!=null && playerList[i].equals(data.username))
+							//			gamePanel.networkStatusBox[i].setIcon(disconnectImgIcon);
+							//	}
+							//	rank--;
+							//	if(rank == 1) {
+							//		isDead = true;
+							//		WriteData(new Data(userId, "500"));
+							//		gameEnd();
+							//	}
+							//}
+							//else {
+							//	for(int i=0; i<playerList.length; i++) {
+							//		playerList[i] = null;
+							//	}
+							//	count = 0;
+							//	for(int i=0; i<data.userList.length; i++) {
+							//		if(data.userList[i]!=null && !data.userList[i].equals(userId)) {
+							//			playerList[count++] = data.userList[i];
+							//		}
+							//	}
+							//	readyPlayers = 0;
+							//	for(int i=0; i<4; i++) {
+							//		waitingPanel.labelStatus[i].setIcon(null);
+							//	}
+							//	waitingPanel.notReady();
+							//	rank = count + 1;
+							//	WriteData(new Data(userId, "103"));
+							//	userlist();	
 							}
 							break;
 						}
-					} catch (IOException e) {
-						try {
-							ois.close();
-							oos.close();
-							socket.close();
-
-							break;
-						} catch (Exception ee) {
-							break;
-						} // catch문 끝
-					} // 바깥 catch문끝
+					}
 				}
 			}
 		}
+		
 
 }
