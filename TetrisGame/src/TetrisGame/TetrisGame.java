@@ -505,7 +505,7 @@ public class TetrisGame extends JFrame{
 				if (isDead) return;
 				if(!gameStart) return;
 				
-				if (e.getKeyCode() == KeyEvent.VK_UP) {
+				if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 					if(keyReady) new MoveThread(UP).start();
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
@@ -517,7 +517,7 @@ public class TetrisGame extends JFrame{
 				else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 					if(keyReady) new MoveThread(RIGHT).start();
 				}
-				else if (e.getKeyCode() == KeyEvent.VK_SPACE && spinable==true) {
+				else if (e.getKeyCode() == KeyEvent.VK_UP && spinable==true) {
 					if(keyReady) new MoveThread(SPACE).start();
 				}
 			}
