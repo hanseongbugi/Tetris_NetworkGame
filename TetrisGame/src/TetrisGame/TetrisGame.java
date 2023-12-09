@@ -118,6 +118,8 @@ public class TetrisGame extends JFrame{
 			gamePanel.setFocusable(true);
 			gamePanel.requestFocus();
 			gamePanel.addKeyListener(new MyKeyListener());
+			gamePanel.networkStatusBox.setIcon(Settings.connectIcon);
+			gamePanel.nameBox.setText(WaitingPanel.playerList[0]);
 			add(gamePanel);
 			setVisible(true);
 			

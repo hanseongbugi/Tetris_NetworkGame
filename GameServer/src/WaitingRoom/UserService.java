@@ -5,7 +5,6 @@ import java.net.Socket;
 import java.util.*;
 
 //User 당 생성되는 Thread
-//Read One 에서 대기 -> Write All
 public class UserService extends Thread {
 	private InputStream is;
 	private OutputStream os;
@@ -25,7 +24,6 @@ public class UserService extends Thread {
 	private GameServer gameServer;
 
 	public UserService(Socket clientSocket, ArrayList userList, GameServer gameServer) {
-		// TODO Auto-generated constructor stub
 		// 매개변수로 넘어온 자료 저장
 		this.clientSocket = clientSocket;
 		this.userList = userList;
@@ -44,7 +42,6 @@ public class UserService extends Thread {
 
 	public void Login(UserMessage msg) {
 		gameServer.AppendText("새로운 참가자 " + UserName + " 입장.");
-
 	}
 
 	public void Logout() {

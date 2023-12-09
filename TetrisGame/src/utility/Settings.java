@@ -20,6 +20,8 @@ public class Settings
 	public static ImageIcon Item2ImgIcon;
 	public static ImageIcon Item3ImgIcon;
 	
+	public static ImageIcon connectIcon;
+	
 	public Settings()
 	{
 		
@@ -37,6 +39,8 @@ public class Settings
 		
 		Item1ImgIcon = new ImageIcon("images/item1.png");
 		Item2ImgIcon = new ImageIcon("images/item2.png");
-		Item3ImgIcon = new ImageIcon("image/item3.png");
+		Item3ImgIcon = new ImageIcon("images/item3.png");
+		
+		connectIcon = new ImageIcon("images/disconnect.png");
 	}
 }
