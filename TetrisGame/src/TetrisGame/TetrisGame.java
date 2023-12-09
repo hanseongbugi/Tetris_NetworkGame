@@ -184,14 +184,14 @@ public class TetrisGame extends JFrame{
 		if(num > -1) {
 			for(int i=0; i<10; i++) {
 				for(int j=0; j<20; j++) {
-					gamePanel.drawRivalBlock(num, i, j, rivalStatus[i][j], getColor(rivalStatus[i][j]));
+					gamePanel.drawRivalBlock(i, j, rivalStatus[i][j], getColor(rivalStatus[i][j]));
 				}
 			}
 		}
-		if(item2) gamePanel.rivalItemBox[num][0].setIcon(Settings.Item2ImgIcon);
-		else gamePanel.rivalItemBox[num][0].setIcon(null);
-		if(item3) gamePanel.rivalItemBox[num][1].setIcon(Settings.Item3ImgIcon);
-		else gamePanel.rivalItemBox[num][1].setIcon(null);
+		if(item2) gamePanel.rivalItemBox[0].setIcon(Settings.Item2ImgIcon);
+		else gamePanel.rivalItemBox[0].setIcon(null);
+		if(item3) gamePanel.rivalItemBox[1].setIcon(Settings.Item3ImgIcon);
+		else gamePanel.rivalItemBox[1].setIcon(null);
 		
 		gamePanel.repaint();
 	}
@@ -484,7 +484,7 @@ public class TetrisGame extends JFrame{
 				gamePanel.myEmoticon.setIcon(getEmoji(type));
 			}
 			else {
-				gamePanel.rivalEmoticon[player].setIcon(getEmoji(type));
+				gamePanel.rivalEmoticon.setIcon(getEmoji(type));
 			}
 			gamePanel.repaint();
 		}

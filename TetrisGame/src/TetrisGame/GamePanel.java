@@ -30,17 +30,17 @@ public class GamePanel extends JPanel {
 	private LineBorder border = new LineBorder(Color.WHITE);
 	private LineBorder border2 = new LineBorder(Color.LIGHT_GRAY, 1);
 	public Box [][] box = new Box[10][23]; //자신 플레이 판
-	public SmallBox [][][] rivalBox = new SmallBox[3][10][20]; //상대방 판
+	public SmallBox [][] rivalBox = new SmallBox[10][20]; //상대방 판
 	public SmallBox [][][] hintBox = new SmallBox[5][4][5]; //미리보기 박스
 	
 	public JLabel itemBox; //나의 아이템 박스
-	public JLabel [] networkStatusBox = new JLabel[3]; //상대방 연결상태 박스
-	public JLabel [] nameBox = new JLabel[3]; //상대방 이름 박스
-	public JLabel [][] rivalItemBox = new JLabel[3][2]; //상대방이 받은 아이템 박스
+	public JLabel networkStatusBox; //상대방 연결상태 박스
+	public JLabel nameBox; //상대방 이름 박스
+	public JLabel [] rivalItemBox = new JLabel[2]; //상대방이 받은 아이템 박스
 	public JLabel attackFromRival; //방해받은 아이템 박스
 	
 	public JLabel myEmoticon; //내 이모티콘
-	public JLabel [] rivalEmoticon = new JLabel[3]; //상대방 이모티콘
+	public JLabel rivalEmoticon; //상대방 이모티콘
 	
 	// 상자들의 기본 배경색
 	public Color defaultColor1 = new Color(250, 210, 250);
@@ -72,24 +72,17 @@ public class GamePanel extends JPanel {
 			}
 		}
 		
-		for(int i=0; i<3; i++) {
-			for(int j=0; j<10; j++) {
-				for(int k=0; k<20; k++) {
-					rivalBox[i][j][k] = new SmallBox();
-					rivalBox[i][j][k].labelbox.setBounds(200*i + 400 + 10*j, 260 - 10*k, 10, 10);
-					if(i == 0) {
-						rivalBox[i][j][k].labelbox.setBackground(defaultColor3);
-					}
-					else if(i == 1) {
-						rivalBox[i][j][k].labelbox.setBackground(defaultColor4);
-					}
-					else {
-						rivalBox[i][j][k].labelbox.setBackground(defaultColor5);
-					}
-					rivalBox[i][j][k].labelbox.setOpaque(true);
-					rivalBox[i][j][k].labelbox.setBorder(border);
-					this.add(rivalBox[i][j][k].labelbox);
-				}			
+		for(int i=0; i<10; i++) {
+			for(int j=0; j<20; j++) {
+				rivalBox[i][j] = new SmallBox();
+				rivalBox[i][j].labelbox.setBounds(400 + 10*i, 260 - 10 * j, 10, 10);
+				
+				rivalBox[i][j].labelbox.setBackground(defaultColor3);
+				
+				rivalBox[i][j].labelbox.setOpaque(true);
+				rivalBox[i][j].labelbox.setBorder(border);
+				this.add(rivalBox[i][j].labelbox);
+							
 			}
 		}
 			
@@ -152,77 +145,48 @@ public class GamePanel extends JPanel {
 		myEmoticon.setBorder(border);
 		this.add(myEmoticon);
 		
-		for(int i=0; i<3; i++) {
-			networkStatusBox[i] = new JLabel();
-			networkStatusBox[i].setBounds(390 + 200*i, 40, 20, 20);
-			if(i == 0) {
-				networkStatusBox[i].setBackground(defaultColor3);
-			}
-			else if(i == 1) {
-				networkStatusBox[i].setBackground(defaultColor4);
-			}
-			else {
-				networkStatusBox[i].setBackground(defaultColor5);
-			}
-			networkStatusBox[i].setOpaque(true);
-			networkStatusBox[i].setHorizontalAlignment(JLabel.CENTER);
-			networkStatusBox[i].setBorder(border);
-			this.add(networkStatusBox[i]);
+		networkStatusBox = new JLabel();
+		networkStatusBox.setBounds(390, 40, 20, 20);
+		networkStatusBox.setBackground(defaultColor3);
+	
+		networkStatusBox.setOpaque(true);
+		networkStatusBox.setHorizontalAlignment(JLabel.CENTER);
+		networkStatusBox.setBorder(border);
+		this.add(networkStatusBox);
+
+		
+		nameBox = new JLabel();
+		nameBox.setBounds(410, 40, 60, 20);
+		nameBox.setBackground(defaultColor3);
+			
+
+		nameBox.setOpaque(true);
+		nameBox.setHorizontalAlignment(JLabel.CENTER);
+		nameBox.setBorder(border);
+		this.add(nameBox);
+		
+		
+		for(int i=0; i<2; i++) {
+			rivalItemBox[i] = new JLabel();
+			rivalItemBox[i].setBounds(470 + 20*i, 40, 20, 20);
+			rivalItemBox[i].setBackground(defaultColor3);
+			
+
+			rivalItemBox[i].setOpaque(true);
+			rivalItemBox[i].setBorder(border);
+			this.add(rivalItemBox[i]);
 		}
 		
-		for(int i=0; i<3; i++) {
-			nameBox[i] = new JLabel();
-			nameBox[i].setBounds(410 + 200*i, 40, 60, 20);
-			if(i == 0) {
-				nameBox[i].setBackground(defaultColor3);
-			}
-			else if(i == 1) {
-				nameBox[i].setBackground(defaultColor4);
-			}
-			else {
-				nameBox[i].setBackground(defaultColor5);
-			}
-			nameBox[i].setOpaque(true);
-			nameBox[i].setHorizontalAlignment(JLabel.CENTER);
-			nameBox[i].setBorder(border);
-			this.add(nameBox[i]);
-		}
 		
-		for(int i=0; i<3; i++) {
-			for(int j=0; j<2; j++) {
-				rivalItemBox[i][j] = new JLabel();
-				rivalItemBox[i][j].setBounds(470 + 200*i + 20*j, 40, 20, 20);
-				if(i == 0) {
-					rivalItemBox[i][j].setBackground(defaultColor3);
-				}
-				else if(i == 1) {
-					rivalItemBox[i][j].setBackground(defaultColor4);
-				}
-				else {
-					rivalItemBox[i][j].setBackground(defaultColor5);
-				}
-				rivalItemBox[i][j].setOpaque(true);
-				rivalItemBox[i][j].setBorder(border);
-				this.add(rivalItemBox[i][j]);
-			}
-		}
+		rivalEmoticon = new JLabel();
+		rivalEmoticon.setBounds(460, 280, 40, 40);
+		rivalEmoticon.setBackground(defaultColor3);
 		
-		for(int i=0; i<3; i++) {
-			rivalEmoticon[i] = new JLabel();
-			rivalEmoticon[i].setBounds(460 + 200*i, 280, 40, 40);
-			if(i == 0) {
-				rivalEmoticon[i].setBackground(defaultColor3);
-			}
-			else if(i == 1) {
-				rivalEmoticon[i].setBackground(defaultColor4);
-			}
-			else {
-				rivalEmoticon[i].setBackground(defaultColor5);
-			}
-			rivalEmoticon[i].setOpaque(true);
-			rivalEmoticon[i].setBorder(border);
-			this.add(rivalEmoticon[i]);
-		}
+
+		rivalEmoticon.setOpaque(true);
+		rivalEmoticon.setBorder(border);
+		this.add(rivalEmoticon);
+		
 	}
 	
 	// 블록 한 칸을 변경하는 함수 color값으로 null이 넘어오면 빈 블록이 되며 배경색으로 변경한다
@@ -232,13 +196,11 @@ public class GamePanel extends JPanel {
 	}
 	
 	// 상대방의 블록을 그리는 함수 n-상대방 번호
-	public void drawRivalBlock(int n, int x, int y, char type, Color color) {
+	public void drawRivalBlock(int x, int y, char type, Color color) {
 		if(color == null) {
-			if(n == 0) color = defaultColor3;
-			else if(n == 1) color = defaultColor4;
-			else color = defaultColor5;
+			color = defaultColor3;
 		}
-		rivalBox[n][x][y].setBox(type, color);
+		rivalBox[x][y].setBox(type, color);
 	}
 	
 	// 블록을 회전 시킨 후 바뀐 회전축을 리턴하는 함수
