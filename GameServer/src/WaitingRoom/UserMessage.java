@@ -11,12 +11,14 @@ public class UserMessage implements Serializable{
 	private String data;
 	private boolean isDead;
 	
-	private ArrayList<String> userList = new ArrayList<>();
+	private String[] userList = new String[2];
 	private char[][] blockStatus = new char[10][20];
 	private boolean[] itemStatus = new boolean[2];
 	private int attackLines;
 	private int item;
 	private int emoji;
+	
+	private boolean isReady;
 	
 	public UserMessage(String userName, String code) {
 		this.userName= userName;
@@ -57,10 +59,10 @@ public class UserMessage implements Serializable{
 	public void setIsDead(boolean isDead) {
 		this.isDead = isDead;
 	}
-	public ArrayList<String> getUserList(){
+	public String[] getUserList(){
 		return userList;
 	}
-	public void setUserList(ArrayList<String> userList) {
+	public void setUserList(String[] userList) {
 		this.userList = userList;
 	}
 	public char[][] getBlockStatus(){
@@ -101,5 +103,10 @@ public class UserMessage implements Serializable{
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-	
+	public void setIsReady(boolean isReady) {
+		this.isReady = isReady;
+	}
+	public boolean getIsReady() {
+		return isReady;
+	}
 }

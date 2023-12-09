@@ -19,6 +19,7 @@ public class UserService extends Thread {
 	private ArrayList userList;
 	public String UserName = "";
 	public String UserStatus;
+	public static int readyPlayer = 0;
 	private static final int BUF_LEN = 128; // Windows 처럼 BUF_LEN 을 정의
 
 	private GameServer gameServer;
@@ -50,12 +51,16 @@ public class UserService extends Thread {
 		String msg = "[" + UserName + "]님이 퇴장 하였습니다.\n";
 		userList.remove(this); // Logout한 현재 객체를 배열에서 지운다
 		UserMessage userMsg = new UserMessage(UserName,"600");
+		String[] msgUserList = userMsg.getUserList();
+		int count = 0;
 		for (int i = 0; i < userList.size(); i++) {
 			UserService user = (UserService) userList.get(i);
 			if (user != this)
-				userMsg.getUserList().add(user.UserName);
+				msgUserList[count++] = user.UserName;
 		}
+		userMsg.setUserList(msgUserList);
 		WriteAll(userMsg); // 나를 제외한 다른 User들에게 전송
+		readyPlayer = 0;
 		gameServer.AppendText("사용자 " + "[" + UserName + "] 퇴장. 현재 참가자 수 " + userList.size());
 	}
 
@@ -111,7 +116,11 @@ public class UserService extends Thread {
 			case "103":
 				oos.writeObject(msg.getUserID());
 				break;
+			case "201":
 			case "202":
+				oos.writeObject(msg.getIsReady());
+				break;
+			case "203":
 				oos.writeObject(msg.getData());
 				break;
 			case "401":
@@ -160,7 +169,10 @@ public class UserService extends Thread {
 			msg.setUserName((String)obj);
 			
 			switch(msg.getCode()) {
-			case "202":
+			case "200":
+				obj = ois.readObject();
+				msg.setIsReady((boolean) obj);
+			case "203":
 				obj = ois.readObject();
 				msg.setData((String)obj);
 				break;
@@ -207,22 +219,34 @@ public class UserService extends Thread {
 			switch(msg.getCode()) {
 			case "101":
 				UserName = msg.getUserName();
-				msg.getUserList().add(UserName);
+				int count = 0;
+				String[] msgUserList = msg.getUserList();
+				msgUserList[count++] = UserName;
 				for(int i = 0;i<userList.size();i++) {
 					UserService user = (UserService) userList.get(i);
 					if(user!=this) {
-						ArrayList<String> ul = msg.getUserList();
-						ul.add(user.UserName);
-						msg.setUserList(ul);
+						msgUserList[count++] = user.UserName;
 					}
 				}
+				msg.setUserList(msgUserList);
 				msg.setUserID(userList.size());
 				WriteJoin(msg);
 				Login(msg);
 				break;
 
-			case "200":
-			case "201":
+			case "200": // 200 - 준비 요청, 준비 안되면 201, 준비 되어 있다면 202(준비 취소)
+				boolean isReady = msg.getIsReady();
+				if(isReady) {
+					readyPlayer++;
+					msg.setCode("201");
+				}else {
+					readyPlayer--;
+					msg.setCode("202");
+				}
+				if(readyPlayer >= 2) msg.setCode("300");
+				WriteAll(msg);
+				break;
+
 			case "401":
 			case "402":
 			case "403":
@@ -230,7 +254,7 @@ public class UserService extends Thread {
 			case "405":
 				WriteOthers(msg);
 				break;
-			case"202":
+			case"203":
 			case"300":
 				WriteAll(msg);
 				break;

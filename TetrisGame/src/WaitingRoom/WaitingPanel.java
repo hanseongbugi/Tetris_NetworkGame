@@ -62,8 +62,7 @@ public class WaitingPanel extends JLayeredPane{
 	public static String[] playerList = new String[2];
 	private String rival;
 	
-	private int readyPlayers = 0; //준비된 플레이어의 수
-	private int rank = 2;
+	//private int rank = 2;
 	private boolean isReady = false;
 	public JLabel [] labelStatus = new JLabel[2];
 	
@@ -153,17 +152,10 @@ public class WaitingPanel extends JLayeredPane{
 		startBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Rank = "+rank+" Ready = "+readyPlayers);
-				if(isReady) {
-					labelStatus[0].setIcon(null);
-					isReady = false;
-					sendNotReady();
-				}
-				else {
-					labelStatus[0].setIcon(Settings.ready_icon);
-					isReady = true;
-					sendReady();
-				}
+				UserMessage msg = new UserMessage(userName,"200");
+				msg.setIsReady(!isReady);
+				isReady = !isReady;
+				SendMessage(msg);
 			}
 		});
 		startBtn.setVisible(false);
@@ -245,7 +237,9 @@ public class WaitingPanel extends JLayeredPane{
 			oos.reset();
 			
 			switch(msg.getCode()) {
-			case "202":
+			case "200":
+				oos.writeObject(msg.getIsReady());
+			case "203":
 				oos.writeObject(msg.getData());
 				break;
 			case "401":
@@ -293,22 +287,26 @@ public class WaitingPanel extends JLayeredPane{
 			data.setCode((String) obj);
 			obj = ois.readObject();
 			data.setUserName((String) obj);
-			System.out.println("code = "+data.getCode());
+
 			switch(data.getCode()) {
 			// 101번 코드는 로그인에 성공 했다는 의미이며 상대방의 로그인 성공시에도 전달 - 유저리스트가 이 시점에서 업데이트
 			case "101":
 				obj = ois.readObject();
-				data.setUserList((ArrayList<String>) obj);
+				data.setUserList((String[]) obj);
 				break;
 
 			case "102":
 				obj = ois.readObject();
-				data.setUserList((ArrayList<String>) obj);
+				data.setUserList((String[]) obj);
 				break;
-				
 			
+			case "201":
+			case "202":
+				obj = ois.readObject();
+				data.setIsReady((boolean)obj);
+				break;
 			//채팅 메시지
-			case "202": 
+			case "203": 
 				obj = ois.readObject();
 				data.setData((String) obj);
 				break;
@@ -337,7 +335,7 @@ public class WaitingPanel extends JLayeredPane{
 			//누가 로그아웃시 전달 - 이 시점에서도 유저리스트 업데이트됨
 			case "600":
 				obj = ois.readObject();
-				data.setUserList((ArrayList<String>) obj);
+				data.setUserList((String[]) obj);
 				break;
 			}
 			
@@ -365,22 +363,25 @@ public class WaitingPanel extends JLayeredPane{
 		return data;
 	}
 	// 상대방 준비 상태를 set
-	public void setReady(int n) {
-		labelStatus[n].setIcon(Settings.ready_icon);
+	public void setReady(String name) {
+		if(p1NameLabel.getText().equals(name)) {
+			labelStatus[0].setIcon(Settings.ready_icon);
+		}
+		else {
+			labelStatus[1].setIcon(Settings.ready_icon);
+		}
 	}
-	public void sendReady() {
-		readyPlayers ++;
-		if(readyPlayers == rank) SendMessage(new UserMessage(userName,"300"));
-		else SendMessage(new UserMessage(userName,"200"));
-	}
+
 	// 상대방 준비 상태를 끔
-	public void setNotReady(int n) {
-		labelStatus[n].setIcon(null);
+	public void setNotReady(String name) {
+		if(p1NameLabel.getText().equals(name)) {
+			labelStatus[0].setIcon(null);
+		}
+		else {
+			labelStatus[1].setIcon(null);
+		}
 	}
-	public void sendNotReady() {
-		SendMessage(new UserMessage(userName,"201"));
-		readyPlayers --;
-	}
+
 	
 	// Server Message를 수신해서 화면에 표시
 		class ListenServer extends Thread {
@@ -395,42 +396,37 @@ public class WaitingPanel extends JLayeredPane{
 						switch (data.getCode()) {
 						case "102":
 							// 대기실 2명 입장 시
-							ArrayList<String> userList = data.getUserList();
+							String[] msgUserList = data.getUserList();
 							int count = 0;
-							for(int i=0; i<userList.size(); i++) {
-								if(userList.get(i)!=null && !userList.get(i).equals(userName)) {
-									playerList[count++] = userList.get(i);
+							for(int i=0; i<msgUserList.length; i++) {
+								if(msgUserList[i]!=null && !msgUserList[i].equals(userName)) {
+									playerList[count++] = msgUserList[i];
 								}
 							}
 							setAllJoinPlayer(data.getUserName().split("@@"));
-							rank = count+1;
 							break;
 							
-						case "200":
-							//상태 아이콘을 준비상태로 바꿈
-							readyPlayers++;
-							for(int i=0; i<2; i++) {
-								if(playerList[i]!=null && playerList[i].equals(data.getUserName()))
-									setReady(i);
-							}
-							
-							break;
 						case "201":
-							//상태 아이콘 제거
-							readyPlayers--;
-							for(int i=0; i<2; i++) {
-								if(playerList[i]!=null && playerList[i].equals(data.getUserName()))
-									setNotReady(i);
-							}
-							
+							//상태 아이콘을 준비상태로 바꿈
+							setReady(data.getUserName());
 							break;
 						case "202":
+							//상태 아이콘 제거
+							setNotReady(data.getUserName());
+							break;
+						case "203":
 							//채팅 출력
 							//waitingPanel.textAreaChat.append("[" + data.username + "] " + data.chatMsg + "\n");
 							//waitingPanel.textAreaChat.setCaretPosition(waitingPanel.textAreaChat.getText().length());
 							break;
 						case "300":
 							//게임 시작
+							setReady(data.getUserName());
+							try {
+								Thread.sleep(500);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
 							startGame();
 							break;
 						case "401":
@@ -461,7 +457,7 @@ public class WaitingPanel extends JLayeredPane{
 							//상대 이모티콘 박스 변경
 							if (!TetrisGame.gameStart) break;
 							if(!data.getUserName().equals(userName)) {
-								for(int i=0; i<3; i++) 
+								for(int i=0; i<2; i++) 
 									if(playerList[i]!=null && playerList[i].equals(data.getUserName()))
 										tetris.showEmoticon(i, data.getEmoji());		
 							}
