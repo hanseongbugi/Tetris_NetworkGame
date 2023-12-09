@@ -1,7 +1,7 @@
 package WaitingRoom;
 
 import java.io.*;
-import java.util.ArrayList;
+
 public class UserMessage implements Serializable{
 	private static final long serialVersionID = 1L;
 	private int userID;

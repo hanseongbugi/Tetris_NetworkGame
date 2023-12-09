@@ -1,23 +1,16 @@
 package TetrisGame;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.*;
-
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import WaitingRoom.GameInitPanel;
 import WaitingRoom.UserMessage;
 import WaitingRoom.WaitingPanel;
-import utility.PlayerKeySetting;
 import utility.Settings;
 
 public class TetrisGame extends JFrame{
@@ -36,7 +29,7 @@ public class TetrisGame extends JFrame{
 	private boolean isFirst = true; 
 	
 	private GameProcessThread gameThread;
-	//private CreateThread cthread;
+
 	public static boolean player1Dead = false;
 	public static boolean player2Dead = false;
 	
@@ -65,8 +58,7 @@ public class TetrisGame extends JFrame{
 	private int currentItem = 0; //현재 사용가능 아이템이 무엇인지 없으면 0
 	private boolean spinable = true; //false면 회전 불가
 	private int speed = 1000; //떨어지는 속도
-	private int rank = 4; //순위
-	private int readyPlayers = 0; //준비된 플레이어의 수
+
 	private char [] blockType = {'O', 'L', 'J', 'I', 'Z', 'S', 'T', 'V', '-'};
 	
 	public TetrisGame() {
@@ -87,7 +79,6 @@ public class TetrisGame extends JFrame{
 	// 변수 초기화
 	public void init() {
 		new Settings();
-		new PlayerKeySetting();
 		isMain = false;
 		isGame = false;
 		isChange = true;
@@ -117,7 +108,6 @@ public class TetrisGame extends JFrame{
 		else if(isGame) {
 			gamePanel = new GamePanel(this);
 			setGamePanel(gamePanel);
-			waitingPanel.setGamePanel(gamePanel);
 			this.rival = waitingPanel.getRival();
 			isGame = false;
 			gameStart = true;

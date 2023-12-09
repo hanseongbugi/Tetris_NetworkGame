@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -14,8 +12,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -28,7 +24,7 @@ import javax.swing.UIManager;
 
 import TetrisGame.GamePanel;
 import TetrisGame.TetrisGame;
-import WaitingRoom.GameInitPanel.RoundJTextField;
+
 import utility.Settings;
 
 public class WaitingPanel extends JLayeredPane{
@@ -37,7 +33,6 @@ public class WaitingPanel extends JLayeredPane{
     private int currentIndex;
     private String[] typingText = { "Waiting", "Waiting.", "Waiting..", "Waiting...", "Waiting...." };
 	
-	private GamePanel gamePanel;
 	public static String userName;
 	private static int playerNum;
 	
@@ -172,9 +167,6 @@ public class WaitingPanel extends JLayeredPane{
 		serverConnect();
 	}
 	
-	public void setGamePanel(GamePanel gamePanel) {
-		this.gamePanel = gamePanel;
-	}
 	public static int getPlayerNum() {
 		return playerNum;
 	}

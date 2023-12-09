@@ -1,25 +1,15 @@
 package TetrisGame;
 
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
-import javax.swing.border.AbstractBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import TetrisGame.GameObejct.Box;
 import TetrisGame.GameObejct.SmallBox;
-import utility.Settings;
-import WaitingRoom.UserMessage;
-import WaitingRoom.WaitingPanel;
-import utility.PlayerKeySetting;
 
 public class GamePanel extends JPanel {
 	private TetrisGame tetris;
