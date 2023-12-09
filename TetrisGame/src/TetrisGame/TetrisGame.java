@@ -469,7 +469,7 @@ public class TetrisGame extends JFrame{
 		}
 		
 		//자신 혹은 상대방의 이모티콘 업데이트
-		public void showEmoticon(int player, int type) {
+		public void showEmoji(int player, int type) {
 			if(player == -1) {
 				gamePanel.myEmoticon.setIcon(getEmoji(type));
 			}
@@ -480,11 +480,11 @@ public class TetrisGame extends JFrame{
 		}
 		// 이모티콘 보내기
 		public void sendEmoji(int n) {
-			UserMessage data = new UserMessage(WaitingPanel.userName, "404");
-			data.setEmoji(n);
-			WaitingPanel.SendMessage(data);
+			UserMessage msg = new UserMessage(WaitingPanel.userName, "404");
+			msg.setEmoji(n);
+			WaitingPanel.SendMessage(msg);
 			
-			showEmoticon(-1, n);
+			showEmoji(-1, n);
 		}
 		
 		//상하좌후키, 스페이스바 - 움직이기

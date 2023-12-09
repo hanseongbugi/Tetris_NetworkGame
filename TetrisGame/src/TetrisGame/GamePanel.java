@@ -171,8 +171,6 @@ public class GamePanel extends JPanel {
 		rivalEmoticon = new JLabel();
 		rivalEmoticon.setBounds(460, 280, 40, 40);
 		rivalEmoticon.setBackground(defaultColor3);
-		
-
 		rivalEmoticon.setOpaque(true);
 		rivalEmoticon.setBorder(border);
 		this.add(rivalEmoticon);

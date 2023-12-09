@@ -1,7 +1,7 @@
 package WaitingRoom;
 
 import java.io.*;
-import java.util.ArrayList;
+
 public class UserMessage implements Serializable{
 	private static final long serialVersionID = 1L;
 	private int userID;
@@ -92,7 +92,7 @@ public class UserMessage implements Serializable{
 		this.item = item;
 	}
 	public int getEmoji() {
-		return attackLines;
+		return emoji;
 	}
 	public void setEmoji(int emoji) {
 		this.emoji = emoji;

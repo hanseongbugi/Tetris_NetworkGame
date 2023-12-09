@@ -106,6 +106,7 @@ public class UserService extends Thread {
 			oos.writeObject(msg.getCode());
 			oos.reset();
 			oos.writeObject(msg.getUserName());
+			oos.reset();
 			switch(msg.getCode()) {
 			case "101":
 				oos.writeObject(msg.getUserList());
@@ -172,6 +173,7 @@ public class UserService extends Thread {
 			case "200":
 				obj = ois.readObject();
 				msg.setIsReady((boolean) obj);
+				break;
 			case "203":
 				obj = ois.readObject();
 				msg.setData((String)obj);

@@ -27,7 +27,7 @@ public class GameInitPanel extends JPanel {
     public GameInitPanel() {
         setLayout(null);
         setOpaque(true);
-        System.out.println("GameInit");
+
         backImg = Settings.intro_background_img.getImage();
 
         startBtn = new JLabel(Settings.btn_start);

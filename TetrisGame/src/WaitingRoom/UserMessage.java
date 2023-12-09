@@ -92,7 +92,7 @@ public class UserMessage implements Serializable{
 		this.item = item;
 	}
 	public int getEmoji() {
-		return attackLines;
+		return emoji;
 	}
 	public void setEmoji(int emoji) {
 		this.emoji = emoji;

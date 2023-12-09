@@ -231,6 +231,7 @@ public class WaitingPanel extends JLayeredPane{
 			switch(msg.getCode()) {
 			case "200":
 				oos.writeObject(msg.getIsReady());
+				break;
 			case "203":
 				oos.writeObject(msg.getData());
 				break;
@@ -449,9 +450,11 @@ public class WaitingPanel extends JLayeredPane{
 							//상대 이모티콘 박스 변경
 							if (!TetrisGame.gameStart) break;
 							if(!data.getUserName().equals(userName)) {
-								for(int i=0; i<2; i++) 
-									if(playerList[i]!=null && playerList[i].equals(data.getUserName()))
-										tetris.showEmoticon(i, data.getEmoji());		
+								for(int i = 0;i<2;i++) {
+									if(playerList[i]!=null && playerList[i].equals(data.getUserName())) {
+										tetris.showEmoji(i, data.getEmoji());	
+									}
+								}
 							}
 							break;
 						case "405":
