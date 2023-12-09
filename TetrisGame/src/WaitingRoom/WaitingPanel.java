@@ -29,6 +29,7 @@ import utility.Settings;
 
 public class WaitingPanel extends JLayeredPane{
 	TetrisGame tetris;
+	GamePanel gamePanel;
 	private Timer typingTimer;
     private int currentIndex;
     private String[] typingText = { "Waiting", "Waiting.", "Waiting..", "Waiting...", "Waiting...." };
@@ -169,6 +170,9 @@ public class WaitingPanel extends JLayeredPane{
 	
 	public static int getPlayerNum() {
 		return playerNum;
+	}
+	public void setGamePanel(GamePanel gamePanel) {
+		this.gamePanel = gamePanel;
 	}
 	
 	private void serverConnect() {
@@ -443,7 +447,7 @@ public class WaitingPanel extends JLayeredPane{
 							//상대방에게 아이템
 							if (!TetrisGame.gameStart) break;
 							if(data.getItem() == 1) tetris.countAttackFromRival += 2;
-							//new ItemFromRival(data.item).start();
+							new ItemFromRival(data.getItem()).start();
 							tetris.attackCount++;
 							break;
 						case "404":
@@ -518,6 +522,47 @@ public class WaitingPanel extends JLayeredPane{
 				}
 			}
 		}
-		
+
+		// 방해받은 아이템 지속 스레드
+		class ItemFromRival extends Thread {
+			int n;
+
+			public ItemFromRival(int n) {
+				this.n = n;
+			}
+
+			public void run() {
+				if (n == 1) {
+					gamePanel.attackFromRival.setIcon(Settings.Item1ImgIcon);
+				} else if (n == 2) {
+					//speed = 200;
+					gamePanel.attackFromRival.setIcon(Settings.Item2ImgIcon);
+				} else if (n == 3) {
+					//spinable = false;
+					gamePanel.attackFromRival.setIcon(Settings.Item3ImgIcon);
+				}
+
+				//if (isDead || !gameStart)
+				//	return;
+				try {
+					sleep(5000);
+				} catch (InterruptedException e) {
+					return;
+				}
+				/*if (isDead || !gameStart)
+					return;
+
+				attackCount--;
+				if (attackCount > 0)
+					return;
+
+				if (n == 2) {
+					speed = 1000;
+				} else if (n == 3) {
+					spinable = true;
+				}*/
+				gamePanel.attackFromRival.setIcon(null);
+			}
+		}
 
 }

@@ -108,6 +108,8 @@ public class TetrisGame extends JFrame{
 		else if(isGame) {
 			gamePanel = new GamePanel(this);
 			setGamePanel(gamePanel);
+			
+			waitingPanel.setGamePanel(gamePanel);
 			this.rival = waitingPanel.getRival();
 			isGame = false;
 			gameStart = true;
