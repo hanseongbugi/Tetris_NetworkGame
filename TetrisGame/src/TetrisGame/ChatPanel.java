@@ -3,6 +3,8 @@ package TetrisGame;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -32,13 +34,14 @@ public class ChatPanel extends JPanel{
 		scrollPane.setViewportView(chatTextArea);
 		
 		JLabel chatBtn = new JLabel("SEND");
-		chatBtn.setBounds(0, 205, 25, 25);
+		chatBtn.setBounds(160, 550, 35, 35);
 		chatBtn.setBackground(Color.WHITE);
 		chatBtn.setOpaque(true);
+		chatBtn.addMouseListener(new MouseChatAction());
 		add(chatBtn);
 		
 		textChat = new JTextField("");
-		textChat.setBounds(0,550,200,35);
+		textChat.setBounds(0,550,155,35);
 		add(textChat);
 		
 		textChat.addActionListener(new ChatAction());
@@ -50,12 +53,22 @@ public class ChatPanel extends JPanel{
 	
 	// TextField에 엔터키가 입력시 서버에게 내용 전달
 	class ChatAction implements ActionListener {
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			JTextField textField = (JTextField) e.getSource();
 			String text = textField.getText();
 			if (!text.equals(""))
 				waitingPanel.sendChat(text);
 			textField.setText("");
+		}
+	}
+	class MouseChatAction extends MouseAdapter{
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			String text = textChat.getText();
+			if (!text.equals(""))
+				waitingPanel.sendChat(text);
+			textChat.setText("");
 		}
 	}
 }
