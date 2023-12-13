@@ -239,33 +239,7 @@ public class WaitingPanel extends JLayeredPane{
 	// Server에게 network으로 전송
 	public static void SendMessage(UserMessage msg) {
 		try {
-			oos.writeObject(msg.getCode());
-			oos.reset();
-			oos.writeObject(msg.getUserName());
-			oos.reset();
-			
-			switch(msg.getCode()) {
-			case "200":
-				oos.writeObject(msg.getIsReady());
-				break;
-			case "203":
-				oos.writeObject(msg.getData());
-				break;
-			case "401":
-				oos.writeObject(msg.getBlockStatus());
-				oos.reset();
-				oos.writeObject(msg.getItemStatus());
-				break;
-			case "402":
-				oos.writeObject(msg.getAttackLines());
-				break;
-			case "403":
-				oos.writeObject(msg.getItem());
-				break;
-			case "404":
-				oos.writeObject(msg.getEmoji());
-				break;
-			}
+			oos.writeObject(msg);
 			oos.reset();
 			oos.flush();
 		} catch (IOException e) {
@@ -288,89 +262,7 @@ public class WaitingPanel extends JLayeredPane{
 		
 		setVisible(false);
 	}
-	public UserMessage ReadMessage() {
-		Object obj = null;
-		UserMessage data = new UserMessage("", "");
-		try {
-			obj = ois.readObject();
-			data.setCode((String) obj);
-			obj = ois.readObject();
-			data.setUserName((String) obj);
-
-			switch(data.getCode()) {
-			// 101번 코드는 로그인에 성공 했다는 의미이며 상대방의 로그인 성공시에도 전달 - 유저리스트가 이 시점에서 업데이트
-			case "101":
-				obj = ois.readObject();
-				data.setUserList((String[]) obj);
-				break;
-
-			case "102":
-				obj = ois.readObject();
-				data.setUserList((String[]) obj);
-				break;
-			
-			case "201":
-			case "202":
-				obj = ois.readObject();
-				data.setIsReady((boolean)obj);
-				break;
-			//채팅 메시지
-			case "203": 
-				obj = ois.readObject();
-				data.setData((String) obj);
-				break;
-			//상대방의 블록 상태와 아이템 상태가 전달됨
-			case "401":
-				obj = ois.readObject();
-				data.setBlockStatus((char[][]) obj);
-				obj = ois.readObject();
-				data.setItemStatus((boolean[]) obj);
-				break;
-			//상대방에게 공격받은 라인수
-			case "402":
-				obj = ois.readObject();
-				data.setAttackLines((int) obj);
-				break;
-			//받은 아이템 번호
-			case "403":
-				obj = ois.readObject();
-				data.setItem((int) obj);
-				break;
-			//받은 이모티콘 번호
-			case "404":
-				obj = ois.readObject();
-				data.setEmoji((int) obj);
-				break;
-			//누가 로그아웃시 전달 - 이 시점에서도 유저리스트 업데이트됨
-			case "600":
-				obj = ois.readObject();
-				data.setUserList((String[]) obj);
-				break;
-			}
-			
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
-			try {
-				oos.close();
-				socket.close();
-				ois.close();
-				socket = null;
-				return null;
-			} catch (IOException e1) {
-				e1.printStackTrace();
-				try {
-					oos.close();
-					socket.close();
-					ois.close();
-				} catch (IOException e2) {
-					e2.printStackTrace();
-				}
-				socket = null;
-				return null;
-			}
-		}
-		return data;
-	}
+	
 	// 상대방 준비 상태를 set
 	public void setReady(String name) {
 		if(p1NameLabel.getText().equals(name)) {
@@ -393,148 +285,182 @@ public class WaitingPanel extends JLayeredPane{
 
 	
 	// Server Message를 수신해서 화면에 표시
-		class ListenServer extends Thread {
-			public void run() {
-				while (true) {
-					synchronized(this) {
-						UserMessage data = ReadMessage();
-						if (data==null)
-							break;
-						if (socket == null)
-							break;
-						switch (data.getCode()) {
-						case "102":
-							// 대기실 2명 입장 시
-							String[] msgUserList = data.getUserList();
-							int count = 0;
-							for(int i=0; i<msgUserList.length; i++) {
-								if(msgUserList[i]!=null && !msgUserList[i].equals(userName)) {
-									playerList[count++] = msgUserList[i];
-								}
-							}
-							setAllJoinPlayer(data.getUserName().split("@@"));
-							break;
-							
-						case "201":
-							//상태 아이콘을 준비상태로 바꿈
-							setReady(data.getUserName());
-							break;
-						case "202":
-							//상태 아이콘 제거
-							setNotReady(data.getUserName());
-							break;
-						case "203":
-							//채팅 출력
-							chatPanel.setChatMessage(data.getUserName(), data.getData());
-							//.textAreaChat.append("[" + data.username + "] " + data.chatMsg + "\n");
-							//waitingPanel.textAreaChat.setCaretPosition(waitingPanel.textAreaChat.getText().length());
-							break;
-						case "300":
-							//게임 시작
-							setReady(data.getUserName());
-							try {
-								Thread.sleep(500);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-							startGame();
-							break;
-						case "401":
-							//상대방 상태 업데이트
-							if (!TetrisGame.gameStart) break;
-							rival = data.getUserName();
-							for(int i=0; i<10; i++) {
-								for(int j=0; j<20; j++) {
-									TetrisGame.rivalStatus[i][j] = data.getBlockStatus()[i][j];
-								}
-							}
-							tetris.updateRivalStatus(data.getItemStatus()[0], data.getItemStatus()[1]);
-							break;
-						case "402":
-							//아래 라인 추가
-							if (!TetrisGame.gameStart) break;
-							if(!data.getUserName().equals(userName))
-								tetris.countAttackFromRival += data.getAttackLines();
-							break;
-						case "403":
-							//상대방에게 아이템
-							if (!TetrisGame.gameStart) break;
-							if(data.getItem() == 1) tetris.countAttackFromRival += 2;
-							new ItemFromRival(data.getItem()).start();
-							tetris.attackCount++;
-							break;
-						case "404":
-							//상대 이모티콘 박스 변경
-							if (!TetrisGame.gameStart) break;
-							if(!data.getUserName().equals(userName)) {
-								for(int i = 0;i<2;i++) {
-									if(playerList[i]!=null && playerList[i].equals(data.getUserName())) {
-										tetris.showEmoji(i, data.getEmoji());	
-									}
-								}
-							}
-							break;
-						case "405":
-							//상대방의 죽음 메시지 랭크가 상승
-							if (!TetrisGame.gameStart) break;
-							//if(!isDead) {
-							//	rank--;
-							//	for(int i = 0; i<3; i++) {
-							//		if(playerList[i]!=null && playerList[i].equals(data.username)) {
-							//			rivalDead(i);
-							//		}
-							//	}
-							//}
-							//if(rank == 1) {
-							//	isDead = true;
-							//	WriteData(new Data(userId, "500"));
-							//	gameEnd();
-							//}
-							break;
-						case "500":
-							//게임 종료 메시지
-							if (!TetrisGame.gameStart) break;
-							//gameEnd();
-							break;
-						case "600":
-							//상대방의 로그아웃 메시지 유저리스트 업데이트함
-							if (TetrisGame.gameStart) {
-							//	for(int i=0; i<3; i++) {
-							//		if(playerList[i]!=null && playerList[i].equals(data.username))
-							//			gamePanel.networkStatusBox[i].setIcon(disconnectImgIcon);
-							//	}
-							//	rank--;
-							//	if(rank == 1) {
-							//		isDead = true;
-							//		WriteData(new Data(userId, "500"));
-							//		gameEnd();
-							//	}
-							//}
-							//else {
-							//	for(int i=0; i<playerList.length; i++) {
-							//		playerList[i] = null;
-							//	}
-							//	count = 0;
-							//	for(int i=0; i<data.userList.length; i++) {
-							//		if(data.userList[i]!=null && !data.userList[i].equals(userId)) {
-							//			playerList[count++] = data.userList[i];
-							//		}
-							//	}
-							//	readyPlayers = 0;
-							//	for(int i=0; i<4; i++) {
-							//		waitingPanel.labelStatus[i].setIcon(null);
-							//	}
-							//	waitingPanel.notReady();
-							//	rank = count + 1;
-							//	WriteData(new Data(userId, "103"));
-							//	userlist();	
-							}
-							break;
-						}
+	class ListenServer extends Thread {
+		public void run() {
+			while (true) {
+				// UserMessage data = ReadMessage();
+				try {
+					Object obj = null;
+					UserMessage msg = null;
+					try {
+						obj = ois.readObject();
+						if (obj == null) break;
+					}catch(ClassNotFoundException e) {
+						e.printStackTrace();
+						break;
 					}
-				}
+					if(obj == null) break;
+					if (socket == null) break;
+					
+					if(obj instanceof UserMessage) {
+						msg = (UserMessage) obj;
+					}
+					
+					switch (msg.getCode()) {
+					case "102":
+						// 대기실 2명 입장 시
+						// obj = ois.readObject();
+						// data.setUserList((String[]) obj);
+						String[] msgUserList = msg.getUserList();
+						int count = 0;
+						for (int i = 0; i < msgUserList.length; i++) {
+							if (msgUserList[i] != null && !msgUserList[i].equals(userName)) {
+								playerList[count++] = msgUserList[i];
+							}
+						}
+						setAllJoinPlayer(msg.getUserName().split("@@"));
+						break;
+
+					case "201":
+						// 상태 아이콘을 준비상태로 바꿈
+						setReady(msg.getUserName());
+						break;
+					case "202":
+						// 상태 아이콘 제거
+						setNotReady(msg.getUserName());
+						break;
+					case "203":
+						// 채팅 출력
+						chatPanel.setChatMessage(msg.getUserName(), msg.getData());
+						break;
+					case "300":
+						// 게임 시작
+						setReady(msg.getUserName());
+						try {
+							Thread.sleep(500);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						startGame();
+						break;
+					case "401":
+						// 상대방 상태 업데이트
+						if (!TetrisGame.gameStart)
+							break;
+						rival = msg.getUserName();
+						for (int i = 0; i < 10; i++) {
+							for (int j = 0; j < 20; j++) {
+								TetrisGame.rivalStatus[i][j] = msg.getBlockStatus()[i][j];
+							}
+						}
+						tetris.updateRivalStatus(msg.getItemStatus()[0], msg.getItemStatus()[1]);
+						break;
+					case "402":
+						// 아래 라인 추가
+						if (!TetrisGame.gameStart)
+							break;
+						if (!msg.getUserName().equals(userName))
+							tetris.countAttackFromRival += msg.getAttackLines();
+						break;
+					case "403":
+						// 상대방에게 아이템
+						if (!TetrisGame.gameStart)
+							break;
+						if (msg.getItem() == 1)
+							tetris.countAttackFromRival += 2;
+						new ItemFromRival(msg.getItem()).start();
+						tetris.attackCount++;
+						break;
+					case "404":
+						// 상대 이모티콘 박스 변경
+						// obj = ois.readObject();
+						// data.setEmoji((int) obj);
+						if (!TetrisGame.gameStart)
+							break;
+						if (!msg.getUserName().equals(userName)) {
+							for (int i = 0; i < 2; i++) {
+								if (playerList[i] != null && playerList[i].equals(msg.getUserName())) {
+									tetris.showEmoji(i, msg.getEmoji());
+								}
+							}
+						}
+						break;
+					case "405":
+						// 상대방의 죽음 메시지 랭크가 상승
+						if (!TetrisGame.gameStart)
+							break;
+						// if(!isDead) {
+						// rank--;
+						// for(int i = 0; i<3; i++) {
+						// if(playerList[i]!=null && playerList[i].equals(data.username)) {
+						// rivalDead(i);
+						// }
+						// }
+						// }
+						// if(rank == 1) {
+						// isDead = true;
+						// WriteData(new Data(userId, "500"));
+						// gameEnd();
+						// }
+						break;
+					case "500":
+						// 게임 종료 메시지
+						if (!TetrisGame.gameStart)
+							break;
+						// gameEnd();
+						break;
+					case "600":
+						// 상대방의 로그아웃 메시지 유저리스트 업데이트함
+						// obj = ois.readObject();
+						// data.setUserList((String[]) obj);
+						if (TetrisGame.gameStart) {
+							// for(int i=0; i<3; i++) {
+							// if(playerList[i]!=null && playerList[i].equals(data.username))
+							// gamePanel.networkStatusBox[i].setIcon(disconnectImgIcon);
+							// }
+							// rank--;
+							// if(rank == 1) {
+							// isDead = true;
+							// WriteData(new Data(userId, "500"));
+							// gameEnd();
+							// }
+							// }
+							// else {
+							// for(int i=0; i<playerList.length; i++) {
+							// playerList[i] = null;
+							// }
+							// count = 0;
+							// for(int i=0; i<data.userList.length; i++) {
+							// if(data.userList[i]!=null && !data.userList[i].equals(userId)) {
+							// playerList[count++] = data.userList[i];
+							// }
+							// }
+							// readyPlayers = 0;
+							// for(int i=0; i<4; i++) {
+							// waitingPanel.labelStatus[i].setIcon(null);
+							// }
+							// waitingPanel.notReady();
+							// rank = count + 1;
+							// WriteData(new Data(userId, "103"));
+							// userlist();
+						}
+						break;
+					}
+				} catch (IOException e) {
+					//AppendText("ois.readObject() error");
+					try {
+						ois.close();
+						oos.close();
+						socket.close();
+
+						break;
+					} catch (Exception ee) {
+						break;
+					} // catch문 끝
+				} // 바깥 catch문끝
 			}
 		}
+	}
 
 		// 방해받은 아이템 지속 스레드
 		class ItemFromRival extends Thread {

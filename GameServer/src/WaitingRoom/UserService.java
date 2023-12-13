@@ -100,46 +100,9 @@ public class UserService extends Thread {
 	
 	public void WriteMessage(UserMessage msg) {
 		try {
-			oos.writeObject(msg.getCode());
+			oos.writeObject(msg);
 			oos.reset();
-			oos.writeObject(msg.getUserName());
-			oos.reset();
-			switch(msg.getCode()) {
-			case "101":
-				oos.writeObject(msg.getUserList());
-				break;
-			case "102":
-				oos.writeObject(msg.getUserList());
-				break;
-			case "103":
-				oos.writeObject(msg.getUserID());
-				break;
-			case "201":
-			case "202":
-				oos.writeObject(msg.getIsReady());
-				break;
-			case "203":
-				oos.writeObject(msg.getData());
-				break;
-			case "401":
-				oos.writeObject(msg.getBlockStatus());
-				oos.reset();
-		    	oos.writeObject(msg.getItemStatus());
-				break;
-			case "402":
-				oos.writeObject(msg.getAttackLines());
-				break;
-			case "403":
-				oos.writeObject(msg.getItem());
-				break;
-			case "404":
-				oos.writeObject(msg.getEmoji());
-				break;
-			case "600":
-				oos.writeObject(msg.getUserList());
-				break;
-			}
-			oos.reset();
+			oos.flush();
 		}catch(IOException e) {
 			gameServer.AppendText("oos.writeObject(ob) error");		
 			try {
@@ -156,113 +119,95 @@ public class UserService extends Thread {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	public UserMessage ReadData() {
-		Object obj = null;
-		UserMessage msg= new UserMessage("","");
-		try {
-			obj = ois.readObject();
-			msg.setCode((String)obj);
-			obj = ois.readObject();
-			msg.setUserName((String)obj);
-			
-			switch(msg.getCode()) {
-			case "200":
-				obj = ois.readObject();
-				msg.setIsReady((boolean) obj);
-				break;
-			case "203": // 체팅
-				obj = ois.readObject();
-				msg.setData((String)obj);
-				break;
-			case "401":
-				obj = ois.readObject();
-				msg.setBlockStatus((char[][])obj);
-				obj = ois.readObject();
-				msg.setItemStatus((boolean[])obj);
-				break;
-			case"402":
-				obj = ois.readObject();
-				msg.setAttackLines((int) obj);
-				break;
-			case"403":
-				obj = ois.readObject();
-				msg.setItem((int) obj);
-				break;
-			case"404":
-				obj = ois.readObject();
-				msg.setEmoji((int) obj);
-				break;
-			}
-		}catch (ClassNotFoundException e) {
-			Logout();
-			return null;
-		} catch (IOException e) {
-			Logout();
-			return null;
-		}
-		return msg;
-	}
 
 	public void run() {
-		while (true) { 
-			UserMessage msg = null; 
-			if (clientSocket == null)
-				break;
-			msg = ReadData();
-			if (msg==null)
-				break;
-			if (msg.getCode().length()==0)
-				break;
-			gameServer.AppendObject(msg);
-			switch(msg.getCode()) {
-			case "101": // 로그인
-				UserName = msg.getUserName();
-				int count = 0;
-				String[] msgUserList = msg.getUserList();
-				msgUserList[count++] = UserName;
-				for(int i = 0;i<userList.size();i++) {
-					UserService user = (UserService) userList.get(i);
-					if(user!=this) {
-						msgUserList[count++] = user.UserName;
+		while (true) {
+			try {
+				Object obj = null;
+				UserMessage msg = null;
+				try {
+					obj = ois.readObject();
+					if (obj == null) break;
+				}catch(ClassNotFoundException e) {
+					e.printStackTrace();
+					break;
+				}
+				
+				if(obj == null) break;
+				if (clientSocket == null) break;
+				
+				if(obj instanceof UserMessage) {
+					msg = (UserMessage) obj;
+				}
+				if (msg == null)
+					break;
+				if (msg.getCode().length() == 0)
+					break;
+				
+				gameServer.AppendObject(msg);
+				switch (msg.getCode()) {
+				case "101": // 로그인
+					UserName = msg.getUserName();
+					int count = 0;
+					String[] msgUserList = msg.getUserList();
+					msgUserList[count++] = UserName;
+					for (int i = 0; i < userList.size(); i++) {
+						UserService user = (UserService) userList.get(i);
+						if (user != this) {
+							msgUserList[count++] = user.UserName;
+						}
 					}
-				}
-				msg.setUserList(msgUserList);
-				msg.setUserID(userList.size());
-				WriteJoin(msg);
-				Login(msg);
-				break;
+					msg.setUserList(msgUserList);
+					msg.setUserID(userList.size());
+					WriteJoin(msg);
+					Login(msg);
+					break;
 
-			case "200": // 200 - 준비 요청, 준비 안되면 201, 준비 되어 있다면 202(준비 취소)
-				boolean isReady = msg.getIsReady();
-				if(isReady) {
-					readyPlayer++;
-					msg.setCode("201");
-				}else {
-					readyPlayer--;
-					msg.setCode("202");
+				case "200": // 200 - 준비 요청, 준비 안되면 201, 준비 되어 있다면 202(준비 취소)
+					boolean isReady = msg.getIsReady();
+					if (isReady) {
+						readyPlayer++;
+						msg.setCode("201");
+					} else {
+						readyPlayer--;
+						msg.setCode("202");
+					}
+					if (readyPlayer >= 2)
+						msg.setCode("300");
+					WriteAll(msg);
+					break;
+				case "401":
+				case "402":
+				case "403":
+				case "404":
+				case "405":
+					WriteOthers(msg);
+					break;
+				case "203": // 체팅
+				case "300":
+					WriteAll(msg);
+					break;
+				case "500":
+					WriteOthers(msg);
+				case "600":
+					Logout();
+					break;
 				}
-				if(readyPlayer >= 2) msg.setCode("300");
-				WriteAll(msg);
-				break;	
-			case "401": 
-			case "402":
-			case "403":
-			case "404":
-			case "405":
-				WriteOthers(msg);
-				break;
-			case "203": // 체팅
-			case "300":
-				WriteAll(msg);
-				break;
-			case "500":
-				WriteOthers(msg);
-			case "600":
-				Logout();
-				break;
-			}
-			
+			} catch (IOException e) {
+				gameServer.AppendText("ois.readObject() error");
+				try {
+//					dos.close();
+//					dis.close();
+					ois.close();
+					oos.close();
+					clientSocket.close();
+
+					break;
+				} catch (Exception ee) {
+					break;
+				} // catch문 끝
+			} // 바깥 catch문끝
+
 		}
 	}
 }
