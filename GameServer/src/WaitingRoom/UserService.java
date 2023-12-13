@@ -171,7 +171,7 @@ public class UserService extends Thread {
 				obj = ois.readObject();
 				msg.setIsReady((boolean) obj);
 				break;
-			case "203":
+			case "203": // 체팅
 				obj = ois.readObject();
 				msg.setData((String)obj);
 				break;
@@ -216,7 +216,7 @@ public class UserService extends Thread {
 				break;
 			gameServer.AppendObject(msg);
 			switch(msg.getCode()) {
-			case "101":
+			case "101": // 로그인
 				UserName = msg.getUserName();
 				int count = 0;
 				String[] msgUserList = msg.getUserList();
@@ -244,17 +244,16 @@ public class UserService extends Thread {
 				}
 				if(readyPlayer >= 2) msg.setCode("300");
 				WriteAll(msg);
-				break;
-
-			case "401":
+				break;	
+			case "401": 
 			case "402":
 			case "403":
 			case "404":
 			case "405":
 				WriteOthers(msg);
 				break;
-			case"203":
-			case"300":
+			case "203": // 체팅
+			case "300":
 				WriteAll(msg);
 				break;
 			case "500":

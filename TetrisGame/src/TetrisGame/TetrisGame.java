@@ -106,10 +106,17 @@ public class TetrisGame extends JFrame{
 			isMain = false;
 		}
 		else if(isGame) {
+			setSize(920, 640);
+			JSplitPane splitPane = new JSplitPane();
+			splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
+			
 			gamePanel = new GamePanel(this);
 			setGamePanel(gamePanel);
 			
+			ChatPanel chatPanel = new ChatPanel(waitingPanel);
+			waitingPanel.setChatPanel(chatPanel);
 			waitingPanel.setGamePanel(gamePanel);
+			
 			this.rival = waitingPanel.getRival();
 			isGame = false;
 			gameStart = true;
@@ -122,7 +129,13 @@ public class TetrisGame extends JFrame{
 			gamePanel.addKeyListener(new MyKeyListener());
 			gamePanel.networkStatusBox.setIcon(Settings.connectIcon);
 			gamePanel.nameBox.setText(WaitingPanel.playerList[0]);
-			add(gamePanel);
+			
+			splitPane.setResizeWeight(0.78);
+			splitPane.setDividerSize(0);
+			splitPane.setLeftComponent(gamePanel);
+			splitPane.setRightComponent(chatPanel);
+			
+			add(splitPane);
 			setVisible(true);
 			
 		}else if(isInit) {

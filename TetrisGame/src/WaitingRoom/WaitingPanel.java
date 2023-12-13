@@ -22,14 +22,17 @@ import javax.swing.ImageIcon;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 
+import TetrisGame.ChatPanel;
 import TetrisGame.GamePanel;
 import TetrisGame.TetrisGame;
 
 import utility.Settings;
 
 public class WaitingPanel extends JLayeredPane{
-	TetrisGame tetris;
-	GamePanel gamePanel;
+	private TetrisGame tetris;
+	private GamePanel gamePanel;
+	private ChatPanel chatPanel;
+	
 	private Timer typingTimer;
     private int currentIndex;
     private String[] typingText = { "Waiting", "Waiting.", "Waiting..", "Waiting...", "Waiting...." };
@@ -174,6 +177,9 @@ public class WaitingPanel extends JLayeredPane{
 	public void setGamePanel(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
 	}
+	public void setChatPanel(ChatPanel chatPanel) {
+		this.chatPanel = chatPanel;
+	}
 	
 	private void serverConnect() {
 		try {
@@ -222,6 +228,12 @@ public class WaitingPanel extends JLayeredPane{
 			playerNum = 2;
 			imageLabel2.setVisible(true);  
 		}
+	}
+	//채팅 보내기
+	public void sendChat(String chatMsg) {
+		UserMessage msg = new UserMessage(userName, "203");
+		msg.setData(chatMsg);
+		SendMessage(msg);
 	}
 	
 	// Server에게 network으로 전송
@@ -413,7 +425,8 @@ public class WaitingPanel extends JLayeredPane{
 							break;
 						case "203":
 							//채팅 출력
-							//waitingPanel.textAreaChat.append("[" + data.username + "] " + data.chatMsg + "\n");
+							chatPanel.setChatMessage(data.getUserName(), data.getData());
+							//.textAreaChat.append("[" + data.username + "] " + data.chatMsg + "\n");
 							//waitingPanel.textAreaChat.setCaretPosition(waitingPanel.textAreaChat.getText().length());
 							break;
 						case "300":
