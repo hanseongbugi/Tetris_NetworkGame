@@ -2,12 +2,14 @@ package TetrisGame;
 
 import java.util.Random;
 
+import TetrisGame.GameObejct.GameManager;
 import utility.Settings;
 
 // 게임 중 사용하는 스레드를 관리하는 클래스 (스레드 생성 담당)
 public class GameThreadFactory {
 	private TetrisGame tetrisGame;
 	private GamePanel gamePanel;
+	private GameManager gameManager;
 	
 	private int fallBlockLength; // 떨어지는 블록의 크기 3칸짜리 또는 4칸짜리
 	private int centerX; // 회전중심 x축
@@ -16,9 +18,10 @@ public class GameThreadFactory {
 	private int[] alreadySet = { 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // 골고루 랜덤 번호가 나오도록 1이 나오면 2번째 요소가 1로 set
 	private char[] blockType = { 'O', 'L', 'J', 'I', 'Z', 'S', 'T', 'V', '-' };
 	
-	public GameThreadFactory(TetrisGame tetrisGame, GamePanel gamePanel){
+	public GameThreadFactory(TetrisGame tetrisGame, GamePanel gamePanel, GameManager gameManager){
 		this.tetrisGame = tetrisGame;
 		this.gamePanel = gamePanel;
+		this.gameManager = gameManager;
 		initGameStateArray();
 	}
 	
@@ -28,7 +31,7 @@ public class GameThreadFactory {
 		int [] randomNumberArray = tetrisGame.getRandomNumberArray();
 		for(int i = 0; i<randomNumberArray.length; i++) {
 			randomNumberArray[i] = random.nextInt(9);
-			gamePanel.drawhintBoard(i, blockType[randomNumberArray[i]], tetrisGame.getColor(blockType[randomNumberArray[i]]));
+			gameManager.drawhintBoard(i, blockType[randomNumberArray[i]], gameManager.getColor(blockType[randomNumberArray[i]]));
 		}
 		tetrisGame.setRandomNumberArray(randomNumberArray);
 	}
@@ -54,7 +57,7 @@ public class GameThreadFactory {
 				if (tetrisGame.isDead || !tetrisGame.gameStart)
 					return;
 
-				tetrisGame.sendStatusToRival();
+				gameManager.sendStatusToRival();
 
 				if (tetrisGame.isDead || !tetrisGame.gameStart)
 					return;
@@ -113,8 +116,8 @@ public class GameThreadFactory {
 				randomNumberArray[randomNumberArray.length - 1] = tmp;
 
 				for (int i = 0; i < randomNumberArray.length; i++) {
-					gamePanel.drawhintBoard(i, blockType[randomNumberArray[i]],
-							tetrisGame.getColor(blockType[randomNumberArray[i]]));
+					gameManager.drawhintBoard(i, blockType[randomNumberArray[i]],
+							gameManager.getColor(blockType[randomNumberArray[i]]));
 				}
 				tetrisGame.setRandomNumberArray(randomNumberArray);
 				
@@ -129,8 +132,8 @@ public class GameThreadFactory {
 			if (currentBlockNumber == 0 || currentBlockNumber == 7)
 				centerY = 19;
 
-			gamePanel.drawEntireBlock(centerX, centerY, blockType[currentBlockNumber],
-					tetrisGame.getColor(blockType[currentBlockNumber]), "CurrentFall");
+			gameManager.drawEntireBlock(centerX, centerY, blockType[currentBlockNumber],
+					gameManager.getColor(blockType[currentBlockNumber]), "CurrentFall");
 		}
 
 		public void fallBlock() {
@@ -139,7 +142,7 @@ public class GameThreadFactory {
 				return;
 			while (true) {
 				try {
-					sleep(tetrisGame.speed);
+					sleep(gameManager.speed);
 				} catch (InterruptedException e) {
 					return;
 				}
@@ -160,7 +163,7 @@ public class GameThreadFactory {
 					}
 					tetrisGame.setFallBlocks(fallBlocks);
 					if (fallBlockLength <= 0) {
-						tetrisGame.checkLine();
+						gameManager.checkLine();
 						break;
 					}
 					
@@ -182,16 +185,16 @@ public class GameThreadFactory {
 						}
 					}
 					if (flag == true) {
-						tetrisGame.checkLine();
+						gameManager.checkLine();
 						break;
 					}
 					fallBlocks = tetrisGame.getFallBlocks();
 					for (int k = 0; k < fallBlockLength; k++) {
-						gamePanel.drawBlock(fallBlocks[k][0], fallBlocks[k][1], ' ', null, "Empty");
+						gameManager.drawBlock(fallBlocks[k][0], fallBlocks[k][1], ' ', null, "Empty");
 					}
 					for (int k = 0; k < fallBlockLength; k++) {
-						gamePanel.drawBlock(fallBlocks[k][0], fallBlocks[k][1] - 1, blockType[currentBlockNumber],
-								tetrisGame.getColor(blockType[currentBlockNumber]), "CurrentFall");
+						gameManager.drawBlock(fallBlocks[k][0], fallBlocks[k][1] - 1, blockType[currentBlockNumber],
+								gameManager.getColor(blockType[currentBlockNumber]), "CurrentFall");
 					}
 					centerY--;
 
@@ -200,7 +203,7 @@ public class GameThreadFactory {
 				}
 			}
 			if (tetrisGame.countAttackFromRival > 0) {
-				tetrisGame.attackFromRival(tetrisGame.countAttackFromRival);
+				gameManager.attackFromRival(tetrisGame.countAttackFromRival);
 				tetrisGame.countAttackFromRival = 0;
 			}
 
@@ -255,7 +258,7 @@ public class GameThreadFactory {
 			fallBlocks = tetrisGame.getFallBlocks();
 			if (key == SPACE) {
 				for (int k = 0; k < fallBlockLength; k++) {
-					gamePanel.drawBlock(fallBlocks[k][0], fallBlocks[k][1], ' ', null, "Empty");
+					gameManager.drawBlock(fallBlocks[k][0], fallBlocks[k][1], ' ', null, "Empty");
 				}
 				while (true) {
 					boolean flag = false;
@@ -277,10 +280,10 @@ public class GameThreadFactory {
 					centerY--;
 				}
 				for (int k = 0; k < fallBlockLength; k++) {
-					gamePanel.drawBlock(fallBlocks[k][0], fallBlocks[k][1], blockType[currentBlockNumber],
-							tetrisGame.getColor(blockType[currentBlockNumber]), "CurrentFall");
+					gameManager.drawBlock(fallBlocks[k][0], fallBlocks[k][1], blockType[currentBlockNumber],
+							gameManager.getColor(blockType[currentBlockNumber]), "CurrentFall");
 				}
-				tetrisGame.checkLine();
+				gameManager.checkLine();
 			}
 
 			if (key == DOWN) {
@@ -299,11 +302,11 @@ public class GameThreadFactory {
 					}
 				}
 				for (int k = 0; k < fallBlockLength; k++) {
-					gamePanel.drawBlock(fallBlocks[k][0], fallBlocks[k][1], ' ', null, "Empty");
+					gameManager.drawBlock(fallBlocks[k][0], fallBlocks[k][1], ' ', null, "Empty");
 				}
 				for (int k = 0; k < fallBlockLength; k++) {
-					gamePanel.drawBlock(fallBlocks[k][0], fallBlocks[k][1] - 1, blockType[currentBlockNumber],
-							tetrisGame.getColor(blockType[currentBlockNumber]), "CurrentFall");
+					gameManager.drawBlock(fallBlocks[k][0], fallBlocks[k][1] - 1, blockType[currentBlockNumber],
+							gameManager.getColor(blockType[currentBlockNumber]), "CurrentFall");
 				}
 				centerY--;
 			}
@@ -316,11 +319,11 @@ public class GameThreadFactory {
 						return;
 				}
 				for (int k = 0; k < fallBlockLength; k++) {
-					gamePanel.drawBlock(fallBlocks[k][0], fallBlocks[k][1], ' ', null, "Empty");
+					gameManager.drawBlock(fallBlocks[k][0], fallBlocks[k][1], ' ', null, "Empty");
 				}
 				for (int k = 0; k < fallBlockLength; k++) {
-					gamePanel.drawBlock(fallBlocks[k][0] - 1, fallBlocks[k][1], blockType[currentBlockNumber],
-							tetrisGame.getColor(blockType[currentBlockNumber]), "CurrentFall");
+					gameManager.drawBlock(fallBlocks[k][0] - 1, fallBlocks[k][1], blockType[currentBlockNumber],
+							gameManager.getColor(blockType[currentBlockNumber]), "CurrentFall");
 				}
 				centerX--;
 			}
@@ -333,18 +336,18 @@ public class GameThreadFactory {
 						return;
 				}
 				for (int k = 0; k < fallBlockLength; k++) {
-					gamePanel.drawBlock(fallBlocks[k][0], fallBlocks[k][1], ' ', null, "Empty");
+					gameManager.drawBlock(fallBlocks[k][0], fallBlocks[k][1], ' ', null, "Empty");
 				}
 				for (int k = 0; k < fallBlockLength; k++) {
-					gamePanel.drawBlock(fallBlocks[k][0] + 1, fallBlocks[k][1], blockType[currentBlockNumber],
-							tetrisGame.getColor(blockType[currentBlockNumber]), "CurrentFall");
+					gameManager.drawBlock(fallBlocks[k][0] + 1, fallBlocks[k][1], blockType[currentBlockNumber],
+							gameManager.getColor(blockType[currentBlockNumber]), "CurrentFall");
 				}
 				centerX++;
 			}
 
 			else if (key == UP) {
-				int f = gamePanel.rotateBlock(centerX, centerY, blockType[currentBlockNumber],
-						tetrisGame.getColor(blockType[currentBlockNumber]));
+				int f = gameManager.rotateBlock(centerX, centerY, blockType[currentBlockNumber],
+						gameManager.getColor(blockType[currentBlockNumber]));
 				if (f == 0) {
 					centerX++;
 				} else if (f == 1) {
@@ -380,7 +383,7 @@ public class GameThreadFactory {
 			if (n == 1) {
 				gamePanel.attackFromRival.setIcon(Settings.Item1ImgIcon);
 			} else if (n == 2) {
-				tetrisGame.speed = 200;
+				gameManager.speed = 200;
 				gamePanel.attackFromRival.setIcon(Settings.Item2ImgIcon);
 			} else if (n == 3) {
 				tetrisGame.spinable = false;
@@ -399,7 +402,7 @@ public class GameThreadFactory {
 			 
 			 tetrisGame.attackCount--; if (tetrisGame.attackCount > 0) return;
 			  
-			 if (n == 2) { tetrisGame.speed = 1000; } else if (n == 3) { tetrisGame.spinable = true; }
+			 if (n == 2) { gameManager.speed = 1000; } else if (n == 3) { tetrisGame.spinable = true; }
 			 
 			gamePanel.attackFromRival.setIcon(null);
 		}

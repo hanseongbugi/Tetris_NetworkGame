@@ -25,13 +25,14 @@ import javax.swing.UIManager;
 import TetrisGame.ChatPanel;
 import TetrisGame.GamePanel;
 import TetrisGame.TetrisGame;
-
+import TetrisGame.GameObejct.GameManager;
 import utility.Settings;
 
 public class WaitingPanel extends JLayeredPane{
 	private TetrisGame tetris;
 	private GamePanel gamePanel;
 	private ChatPanel chatPanel;
+	private GameManager gameManager;
 	
 	private Timer typingTimer;
     private int currentIndex;
@@ -178,6 +179,9 @@ public class WaitingPanel extends JLayeredPane{
 	}
 	public void setChatPanel(ChatPanel chatPanel) {
 		this.chatPanel = chatPanel;
+	}
+	public void setGameManager(GameManager gameManager) {
+		this.gameManager = gameManager;
 	}
 	
 	private void serverConnect() {
@@ -358,7 +362,7 @@ public class WaitingPanel extends JLayeredPane{
 								TetrisGame.rivalStatus[i][j] = msg.getBlockStatus()[i][j];
 							}
 						}
-						tetris.updateRivalStatus(msg.getItemStatus()[0], msg.getItemStatus()[1]);
+						gameManager.updateRivalStatus(msg.getItemStatus()[0], msg.getItemStatus()[1]);
 						break;
 					case "402":
 						// 라인 추가 (공격)
@@ -383,7 +387,7 @@ public class WaitingPanel extends JLayeredPane{
 						if (!msg.getUserName().equals(userName)) {
 							for (int i = 0; i < 2; i++) {
 								if (playerList[i] != null && playerList[i].equals(msg.getUserName())) {
-									tetris.showEmoji(i, msg.getEmoji());
+									gameManager.showEmoji(i, msg.getEmoji());
 								}
 							}
 						}
