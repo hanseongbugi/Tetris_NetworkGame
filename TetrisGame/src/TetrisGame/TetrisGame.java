@@ -99,7 +99,7 @@ public class TetrisGame extends JFrame {
 			splitPane = new JSplitPane();
 			splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
 
-			gamePanel = new GamePanel(this);
+			gamePanel = new GamePanel();
 			ChatPanel chatPanel = new ChatPanel(waitingPanel);
 			waitingPanel.setChatPanel(chatPanel);
 			waitingPanel.setGamePanel(gamePanel);
@@ -110,6 +110,7 @@ public class TetrisGame extends JFrame {
 			isDead = false;
 
 			threadFactory = new GameThreadFactory(this, gamePanel);
+			threadFactory.initGameStateArray();
 			threadFactory.makeGameProcessThread();
 			threadFactory.makeSendStatusThread();
 
@@ -123,7 +124,8 @@ public class TetrisGame extends JFrame {
 			splitPane.setDividerSize(0);
 			splitPane.setLeftComponent(gamePanel);
 			splitPane.setRightComponent(chatPanel);
-
+			
+			
 			add(splitPane);
 			setVisible(true);
 
@@ -392,6 +394,7 @@ public class TetrisGame extends JFrame {
 
 		showEmoji(-1, n);
 	}
+	
 	// 상하좌후키, 스페이스바 - 움직이기
 	// ZXC키 - 이모티콘 보내기
 	// Shift키 - 아이템 사용

@@ -13,10 +13,6 @@ import TetrisGame.GameObejct.SmallBox;
 
 // 테트리스 게임을 그리는 패널
 public class GamePanel extends JPanel {
-	private TetrisGame tetris;
-
-	private String userName;
-	private int controlPlayerNum;
 	
 	private LineBorder border = new LineBorder(Color.WHITE);
 	private LineBorder border2 = new LineBorder(Color.LIGHT_GRAY, 1);
@@ -40,9 +36,8 @@ public class GamePanel extends JPanel {
 	public Color defaultColor4 = new Color(210, 250, 220);
 	public Color defaultColor5 = new Color(210, 210, 250);
 
-	public GamePanel(TetrisGame tetris) {
+	public GamePanel() {
 		setLayout(null);
-		this.tetris = tetris;
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		createBox();
 	}

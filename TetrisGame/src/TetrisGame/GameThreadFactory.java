@@ -19,6 +19,18 @@ public class GameThreadFactory {
 	public GameThreadFactory(TetrisGame tetrisGame, GamePanel gamePanel){
 		this.tetrisGame = tetrisGame;
 		this.gamePanel = gamePanel;
+		initGameStateArray();
+	}
+	
+	public void initGameStateArray() {
+		Random random = new Random();
+		random.nextInt(9);
+		int [] randomNumberArray = tetrisGame.getRandomNumberArray();
+		for(int i = 0; i<randomNumberArray.length; i++) {
+			randomNumberArray[i] = random.nextInt(9);
+			gamePanel.drawhintBox(i, blockType[randomNumberArray[i]], tetrisGame.getColor(blockType[randomNumberArray[i]]));
+		}
+		tetrisGame.setRandomNumberArray(randomNumberArray);
 	}
 	
 	public void makeSendStatusThread() {
