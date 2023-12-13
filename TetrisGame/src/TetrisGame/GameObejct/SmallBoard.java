@@ -3,16 +3,16 @@ package TetrisGame.GameObejct;
 import java.awt.Color;
 import javax.swing.JLabel;
 
-public class SmallBox {
+public class SmallBoard {
 	public char type;
 	public JLabel labelbox;
 	
-	public SmallBox() {
+	public SmallBoard() {
 		this.labelbox = new JLabel();
-		setBox(' ', null);
+		setBoard(' ', null);
 	}
 	
-	public void setBox(char type, Color color) {
+	public void setBoard(char type, Color color) {
 		this.type = type;
 		labelbox.setBackground(color);
 	}

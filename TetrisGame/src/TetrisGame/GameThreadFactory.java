@@ -28,7 +28,7 @@ public class GameThreadFactory {
 		int [] randomNumberArray = tetrisGame.getRandomNumberArray();
 		for(int i = 0; i<randomNumberArray.length; i++) {
 			randomNumberArray[i] = random.nextInt(9);
-			gamePanel.drawhintBox(i, blockType[randomNumberArray[i]], tetrisGame.getColor(blockType[randomNumberArray[i]]));
+			gamePanel.drawhintBoard(i, blockType[randomNumberArray[i]], tetrisGame.getColor(blockType[randomNumberArray[i]]));
 		}
 		tetrisGame.setRandomNumberArray(randomNumberArray);
 	}
@@ -113,7 +113,7 @@ public class GameThreadFactory {
 				randomNumberArray[randomNumberArray.length - 1] = tmp;
 
 				for (int i = 0; i < randomNumberArray.length; i++) {
-					gamePanel.drawhintBox(i, blockType[randomNumberArray[i]],
+					gamePanel.drawhintBoard(i, blockType[randomNumberArray[i]],
 							tetrisGame.getColor(blockType[randomNumberArray[i]]));
 				}
 				tetrisGame.setRandomNumberArray(randomNumberArray);
@@ -168,14 +168,14 @@ public class GameThreadFactory {
 					for (int i = 0; i < fallBlockLength; i++) {
 						if (fallBlocks[i][1] == 0) {
 							for (int k = 0; k < fallBlockLength; k++) {
-								gamePanel.box[fallBlocks[k][0]][fallBlocks[k][1]].setStatus("AlreadySet");
+								gamePanel.board[fallBlocks[k][0]][fallBlocks[k][1]].setStatus("AlreadySet");
 							}
 							flag = true;
 							break;
 						} else if (gamePanel.getBlockStatus(fallBlocks[i][0], fallBlocks[i][1] - 1)
 								.equals("AlreadySet")) {
 							for (int k = 0; k < fallBlockLength; k++) {
-								gamePanel.box[fallBlocks[k][0]][fallBlocks[k][1]].setStatus("AlreadySet");
+								gamePanel.board[fallBlocks[k][0]][fallBlocks[k][1]].setStatus("AlreadySet");
 							}
 							flag = true;
 							break;
@@ -287,13 +287,13 @@ public class GameThreadFactory {
 				for (int i = 0; i < fallBlockLength; i++) {
 					if (fallBlocks[i][1] == 0) {
 						for (int k = 0; k < fallBlockLength; k++) {
-							gamePanel.box[fallBlocks[k][0]][fallBlocks[k][1]].setStatus("AlreadySet");
+							gamePanel.board[fallBlocks[k][0]][fallBlocks[k][1]].setStatus("AlreadySet");
 						}
 						return;
 					}
 					if (gamePanel.getBlockStatus(fallBlocks[i][0], fallBlocks[i][1] - 1).equals("AlreadySet")) {
 						for (int k = 0; k < fallBlockLength; k++) {
-							gamePanel.box[fallBlocks[k][0]][fallBlocks[k][1]].setStatus("AlreadySet");
+							gamePanel.board[fallBlocks[k][0]][fallBlocks[k][1]].setStatus("AlreadySet");
 						}
 						return;
 					}

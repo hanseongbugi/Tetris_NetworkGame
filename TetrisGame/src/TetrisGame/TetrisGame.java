@@ -231,12 +231,12 @@ public class TetrisGame extends JFrame {
 	// 제거 라인 체크하는 함수 라인 제거 시 상대방에게 공격이 가능하고 일정 라인 제거시 아이템을 쓸 수 있게된다
 	public void checkLine() {
 		for (int i = 0; i < 10; i++) {
-			if (gamePanel.box[i][19].getStatus().equals("AlreadySet")) {
+			if (gamePanel.board[i][19].getStatus().equals("AlreadySet")) {
 				isDead = true;
 				WaitingPanel.SendMessage(new UserMessage(WaitingPanel.userName, "405"));
 				for (int j = 0; j < 10; j++) {
 					for (int k = 0; k < 23; k++) {
-						if (gamePanel.box[j][k].getStatus().equals("AlreadySet")) {
+						if (gamePanel.board[j][k].getStatus().equals("AlreadySet")) {
 							gamePanel.drawBlock(j, k, '.', getColor('.'), "AlreadySet");
 						}
 					}
@@ -247,7 +247,7 @@ public class TetrisGame extends JFrame {
 
 		for (int i = 0; i < 20; i++) {
 			for (int j = 0; j < 10; j++) {
-				if (!gamePanel.box[j][i].getStatus().equals("AlreadySet"))
+				if (!gamePanel.board[j][i].getStatus().equals("AlreadySet"))
 					break;
 				if (j == 9) {
 					clearLine(i--);
@@ -276,8 +276,8 @@ public class TetrisGame extends JFrame {
 	public void clearLine(int line) {
 		for (int i = line; i < 19; i++) {
 			for (int j = 0; j < 10; j++) {
-				gamePanel.drawBlock(j, i, gamePanel.box[j][i + 1].getType(),
-						getColor(gamePanel.box[j][i + 1].getType()), gamePanel.box[j][i + 1].getStatus());
+				gamePanel.drawBlock(j, i, gamePanel.board[j][i + 1].getType(),
+						getColor(gamePanel.board[j][i + 1].getType()), gamePanel.board[j][i + 1].getStatus());
 			}
 		}
 		for (int i = 0; i < 10; i++) {
@@ -320,7 +320,7 @@ public class TetrisGame extends JFrame {
 		char[][] blockStatus = data.getBlockStatus();
 		for (int i = 0; i < 10; i++) {
 			for (int j = 0; j < 20; j++) {
-				blockStatus[i][j] = gamePanel.box[i][j].getType();
+				blockStatus[i][j] = gamePanel.board[i][j].getType();
 			}
 		}
 		if (speed == 1000)
@@ -339,10 +339,10 @@ public class TetrisGame extends JFrame {
 	public void attackFromRival(int lines) {
 		for (int i = 19; i >= lines; i--) {
 			for (int j = 0; j < 10; j++) {
-				if (!gamePanel.box[j][i - lines].getStatus().equals("CurrentFall")
-						|| !gamePanel.box[j][i].getStatus().equals("CurrentFall"))
-					gamePanel.drawBlock(j, i, gamePanel.box[j][i - lines].getType(),
-							getColor(gamePanel.box[j][i - lines].getType()), gamePanel.box[j][i - lines].getStatus());
+				if (!gamePanel.board[j][i - lines].getStatus().equals("CurrentFall")
+						|| !gamePanel.board[j][i].getStatus().equals("CurrentFall"))
+					gamePanel.drawBlock(j, i, gamePanel.board[j][i - lines].getType(),
+							getColor(gamePanel.board[j][i - lines].getType()), gamePanel.board[j][i - lines].getStatus());
 			}
 		}
 

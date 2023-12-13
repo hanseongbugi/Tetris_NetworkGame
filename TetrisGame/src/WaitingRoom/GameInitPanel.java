@@ -86,7 +86,7 @@ public class GameInitPanel extends JPanel {
                 int answer = JOptionPane.showConfirmDialog(getParent(), "종료하시겠습니까?", "confirm",
                         JOptionPane.YES_NO_OPTION);
                 if (answer == JOptionPane.YES_OPTION) { // 사용자가 yes를 눌렀을 경우
-                    System.exit(1);
+                    System.exit(0);
                 } else { // 사용자가 Yes 이외의 값을 눌렀을 경우
                     System.out.println("종료를 취소합니다.");
                 }

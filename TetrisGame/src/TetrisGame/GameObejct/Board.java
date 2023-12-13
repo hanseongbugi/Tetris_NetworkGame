@@ -3,18 +3,18 @@ package TetrisGame.GameObejct;
 import java.awt.Color;
 
 import javax.swing.JLabel;
-public class Box {
+public class Board {
 	
 	private String status; //Empty CurrentFall AlreadySet
 	private char type; //'O' 'L' 'J' 'I' 'Z' 'S' 'T' 'V' '-' '.' ' '
 	public JLabel labelbox;
 	
-	public Box() {
+	public Board() {
 		this.labelbox = new JLabel();
-		setBox(' ', null, "Empty");
+		setBoard(' ', null, "Empty");
 	}
 	
-	public void setBox(char type, Color color, String status) {
+	public void setBoard(char type, Color color, String status) {
 		this.type = type;
 		labelbox.setBackground(color);
 		setStatus(status);
