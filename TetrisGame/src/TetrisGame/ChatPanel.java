@@ -11,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 
 import WaitingRoom.WaitingPanel;
 
+// 체팅을 담당하는 패널
 public class ChatPanel extends JPanel{
 	
 	public JTextArea chatTextArea;

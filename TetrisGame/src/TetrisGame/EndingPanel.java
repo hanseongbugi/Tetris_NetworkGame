@@ -7,6 +7,7 @@ import javax.swing.*;
 
 import WaitingRoom.WaitingPanel;
 
+// 종료 화면
 public class EndingPanel extends JPanel{
 	private String loser;
 	private JLabel state;

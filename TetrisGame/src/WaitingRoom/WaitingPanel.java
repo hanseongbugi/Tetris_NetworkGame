@@ -361,7 +361,7 @@ public class WaitingPanel extends JLayeredPane{
 						tetris.updateRivalStatus(msg.getItemStatus()[0], msg.getItemStatus()[1]);
 						break;
 					case "402":
-						// 아래 라인 추가
+						// 라인 추가 (공격)
 						if (!TetrisGame.gameStart)
 							break;
 						if (!msg.getUserName().equals(userName))
@@ -373,7 +373,7 @@ public class WaitingPanel extends JLayeredPane{
 							break;
 						if (msg.getItem() == 1)
 							tetris.countAttackFromRival += 2;
-						new ItemFromRival(msg.getItem()).start();
+						tetris.updateItemState(msg.getItem());
 						tetris.attackCount++;
 						break;
 					case "404":
@@ -432,46 +432,5 @@ public class WaitingPanel extends JLayeredPane{
 		}
 	}
 
-	// 방해받은 아이템 지속 스레드
-	class ItemFromRival extends Thread {
-		int n;
-
-		public ItemFromRival(int n) {
-			this.n = n;
-		}
-
-		public void run() {
-			if (n == 1) {
-				gamePanel.attackFromRival.setIcon(Settings.Item1ImgIcon);
-			} else if (n == 2) {
-				// speed = 200;
-				gamePanel.attackFromRival.setIcon(Settings.Item2ImgIcon);
-			} else if (n == 3) {
-				// spinable = false;
-				gamePanel.attackFromRival.setIcon(Settings.Item3ImgIcon);
-			}
-
-			if (tetris.isDead || !tetris.gameStart)
-				return;
-			try {
-				sleep(5000);
-			} catch (InterruptedException e) {
-				return;
-			}
-			/*if (tetris.isDead || !tetris.gameStart)
-				return;
-
-			attackCount--;
-			if (attackCount > 0)
-				return;
-
-			if (n == 2) {
-				speed = 1000;
-			} else if (n == 3) {
-				tetris.spinable = true;
-			}*/
-			gamePanel.attackFromRival.setIcon(null);
-		}
-	}
 
 }

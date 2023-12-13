@@ -16,6 +16,7 @@ import WaitingRoom.UserMessage;
 import WaitingRoom.WaitingPanel;
 import utility.Settings;
 
+// 테트리스 게임의 프레임 (패널을 교체하며 화면 전환)
 public class TetrisGame extends JFrame {
 
 	private GamePanel gamePanel;
@@ -36,19 +37,18 @@ public class TetrisGame extends JFrame {
 	public static boolean player1Dead = false;
 	public static boolean player2Dead = false;
 	
-	private int[] randomNumberArray = new int[5];
-	private volatile int[][] fallBlocks = new int[4][2]; // 현재 떨어지고 있는 블럭들의 위치 저장
+	private int[] randomNumberArray;
+	private volatile int[][] fallBlocks; // 현재 떨어지고 있는 블럭들의 위치 저장
 
-	// private String [] playerList = new String [4]; //플레이어들의 이름들을 저장
 	private String rival; // 방해받은 상태에 사용
-	public static char[][] rivalStatus = new char[10][20]; // 상대방 블록 상태를 저장
+	public static char[][] rivalStatus; // 상대방 블록 상태를 저장
 	public int countAttackLine = 0; // 공격할 라인 수
 	public int countAttackFromRival = 0; // 공격 받은 라인 수
-	public int attackCount = 0; //
+	public int attackCount = 0; 
 	public int removeLine = 0; // 제거한 줄 수 - 일정줄 제거시 공격/아이템생성
 	private int currentItem = 0; // 현재 사용가능 아이템이 무엇인지 없으면 0
-	private boolean spinable = true; // false면 회전 불가
-	private int speed = 1000; // 떨어지는 속도
+	public boolean spinable = true; // false면 회전 불가
+	public int speed = 1000; // 떨어지는 속도
 	private String loser;
 
 	public TetrisGame() {
@@ -107,6 +107,7 @@ public class TetrisGame extends JFrame {
 			this.rival = waitingPanel.getRival();
 			isGame = false;
 			gameStart = true;
+			isDead = false;
 
 			threadFactory = new GameThreadFactory(this, gamePanel);
 			threadFactory.makeGameProcessThread();
@@ -128,6 +129,9 @@ public class TetrisGame extends JFrame {
 
 		} else if (isInit) {
 			this.isInit = false;
+			fallBlocks = new int[4][2];
+			rivalStatus = new char[10][20];
+			randomNumberArray = new int[5];
 			initPanel = new GameInitPanel();
 
 			add(initPanel);
@@ -141,7 +145,7 @@ public class TetrisGame extends JFrame {
 		else if(isDead) {
 			setSize(720, 640);
 			splitPane.setVisible(false);
-			if(loser==null) loser = WaitingPanel.userName;
+			if(loser==null) loser = WaitingPanel.userName; // 서버에서 loser 정보를 받지 못한자가 패자
 			endingPanel = new EndingPanel(this, loser);
 			add(endingPanel);
 			setVisible(true);
@@ -288,9 +292,9 @@ public class TetrisGame extends JFrame {
 		currentItem = r.nextInt(3) + 1;
 		gamePanel.itemBox.setIcon(getItemIcon(currentItem));
 	}
+	
+	// 패자를 저장하는 함수
 	public void setLoser(String loser) {
-		//endingPanel.setWinner(winner);
-		System.out.println("loser = "+loser);
 		this.loser = loser;
 	}
 	
@@ -306,7 +310,7 @@ public class TetrisGame extends JFrame {
 	public void setFallBlocks(int[][] fallBlocks) {
 		this.fallBlocks = fallBlocks;
 	}
-	
+
 
 	// 자신의 블록 상태 보내기
 	public void sendStatusToRival() {
@@ -364,6 +368,10 @@ public class TetrisGame extends JFrame {
 		default:
 			return null;
 		}
+	}
+	
+	public void updateItemState(int n) {
+		threadFactory.makeItemFromRival(n);
 	}
 
 	// 자신 혹은 상대방의 이모티콘 업데이트

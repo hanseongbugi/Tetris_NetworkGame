@@ -11,6 +11,7 @@ import javax.swing.border.LineBorder;
 import TetrisGame.GameObejct.Box;
 import TetrisGame.GameObejct.SmallBox;
 
+// 테트리스 게임을 그리는 패널
 public class GamePanel extends JPanel {
 	private TetrisGame tetris;
 

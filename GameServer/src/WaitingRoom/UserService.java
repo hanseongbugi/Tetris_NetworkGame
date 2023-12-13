@@ -61,13 +61,14 @@ public class UserService extends Thread {
 		gameServer.AppendText("사용자 " + "[" + UserName + "] 퇴장. 현재 참가자 수 " + userList.size());
 	}
 
-	// 모든 User들에게 방송. 각각의 UserService Thread의 WriteONe() 을 호출한다.
+	// 모든 User들에게 방송. 
 	public void WriteAll(UserMessage msg) {
 		for (int i = 0; i < userList.size(); i++) {
 			UserService user = (UserService) userList.get(i);
 			user.WriteMessage(msg);
 		}
 	}
+	// 나에게만 방송.
 	public void WriteMe(UserMessage msg) {
 		for(int i = 0;i<userList.size();i++) {
 			UserService user = (UserService) userList.get(i);
@@ -76,7 +77,7 @@ public class UserService extends Thread {
 		}
 	}
 
-	// 나를 제외한 User들에게 방송. 각각의 UserService Thread의 WriteONe() 을 호출한다.
+	// 나를 제외한 User들에게 방송. 
 	public void WriteOthers(UserMessage msg) {
 		for (int i = 0; i < userList.size(); i++) {
 			UserService user = (UserService) userList.get(i);
@@ -84,6 +85,8 @@ public class UserService extends Thread {
 				user.WriteMessage(msg);
 		}
 	}
+	
+	// 2명의 사용자 섭속 시 호출
 	public void WriteJoin(UserMessage msg) {
 		for(int i = 0;i<userList.size();i++) {
 			UserService user = (UserService) userList.get(i);
@@ -98,6 +101,7 @@ public class UserService extends Thread {
 		}
 	}
 	
+	// UserMessage 객체를 버퍼에 작성하는 함수
 	public void WriteMessage(UserMessage msg) {
 		try {
 			oos.writeObject(msg);
@@ -176,23 +180,23 @@ public class UserService extends Thread {
 						msg.setCode("300");
 					WriteAll(msg);
 					break;
-				case "401":
-				case "402":
-				case "403":
-				case "404":
+				case "401": // 상대방 상태 업데이트
+				case "402": // 라인 추가 (공격)
+				case "403": // 상대방에게 아이템
+				case "404": // 상대 이모티콘 박스 변경
 					WriteOthers(msg);
 					break;
-				case "405":
+				case "405": // 상대방의 죽음 게임 종료 (이긴 대상은 승리 표시)
 					WriteOthers(msg);
 					break;
-				case "203": // 쳇팅
+				case "203": // 채팅
 				case "300":
 					WriteAll(msg);
 					break;
-				case "500":
+				case "500": // 게임 종료
 					WriteOthers(msg);
 					break;
-				case "600":
+				case "600": // 로그아웃 (서버가 관리하는 객체에서 제거)
 					Logout();
 					break;
 				}

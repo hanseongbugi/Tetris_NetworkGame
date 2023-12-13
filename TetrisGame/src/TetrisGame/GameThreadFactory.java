@@ -2,6 +2,9 @@ package TetrisGame;
 
 import java.util.Random;
 
+import utility.Settings;
+
+// 게임 중 사용하는 스레드를 관리하는 클래스 (스레드 생성 담당)
 public class GameThreadFactory {
 	private TetrisGame tetrisGame;
 	private GamePanel gamePanel;
@@ -124,7 +127,7 @@ public class GameThreadFactory {
 				return;
 			while (true) {
 				try {
-					sleep(1000);
+					sleep(tetrisGame.speed);
 				} catch (InterruptedException e) {
 					return;
 				}
@@ -347,6 +350,46 @@ public class GameThreadFactory {
 				}
 			}
 			gamePanel.repaint();
+		}
+	}
+
+	public void makeItemFromRival(int n) {
+		ItemFromRival ifr = new ItemFromRival(n);
+		ifr.start();
+	}
+	// 방해받은 아이템 지속 스레드
+	class ItemFromRival extends Thread {
+		int n;
+		public ItemFromRival(int n) {
+			this.n = n;
+		}
+
+		public void run() {
+			if (n == 1) {
+				gamePanel.attackFromRival.setIcon(Settings.Item1ImgIcon);
+			} else if (n == 2) {
+				tetrisGame.speed = 200;
+				gamePanel.attackFromRival.setIcon(Settings.Item2ImgIcon);
+			} else if (n == 3) {
+				tetrisGame.spinable = false;
+				gamePanel.attackFromRival.setIcon(Settings.Item3ImgIcon);
+			}
+
+			if (tetrisGame.isDead || !tetrisGame.gameStart)
+				return;
+			try {
+				sleep(5000);
+			} catch (InterruptedException e) {
+				return;
+			}
+			
+			if (tetrisGame.isDead || !tetrisGame.gameStart) return;
+			 
+			 tetrisGame.attackCount--; if (tetrisGame.attackCount > 0) return;
+			  
+			 if (n == 2) { tetrisGame.speed = 1000; } else if (n == 3) { tetrisGame.spinable = true; }
+			 
+			gamePanel.attackFromRival.setIcon(null);
 		}
 	}
 }
