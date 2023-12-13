@@ -1,6 +1,8 @@
 package TetrisGame.GameObejct;
 
 import java.awt.Color;
+
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 public class SmallBoard {
@@ -12,8 +14,16 @@ public class SmallBoard {
 		setBoard(' ', null);
 	}
 	
-	public void setBoard(char type, Color color) {
+	public void setBoard(char type, Object color) {
 		this.type = type;
-		labelbox.setBackground(color);
+		if(color == null || color instanceof Color) {
+			labelbox.setBackground((Color)color);
+			labelbox.setIcon(null);
+		}
+		else {
+			labelbox.setBackground(null);
+			labelbox.setIcon((ImageIcon)color);
+		}
 	}
+
 }

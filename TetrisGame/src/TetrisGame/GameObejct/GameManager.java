@@ -48,45 +48,45 @@ public class GameManager {
 			return null;
 		}
 	}
-	
-	public Color getColor(char type) {
+	public ImageIcon getImage(char type) {
 		switch (type) {
 		case 'O':
-			return new Color(255, 255, 0);
+			return Settings.blockYellow;
 		case 'L':
-			return new Color(255, 116, 0);
+			return Settings.blockGreen;
 		case 'J':
-			return new Color(0, 0, 255);
+			return Settings.blockRed;
 		case 'I':
-			return new Color(0, 255, 255);
+			return Settings.blockCyan;
 		case 'Z':
-			return new Color(255, 0, 0);
+			return Settings.blockPuple;
 		case 'S':
-			return new Color(0, 255, 0);
+			return Settings.blockRed;
 		case 'T':
-			return new Color(255, 0, 255);
+			return Settings.blockLime;
 		case 'V':
-			return new Color(176, 0, 255);
+			return Settings.blockGray;
 		case '-':
-			return new Color(58, 146, 98);
+			return Settings.blockCyan;
 		case '.':
-			return new Color(128, 128, 128);
+			return Settings.blockGray;
 		default:
 			return null;
 		}
 	}
+	
 	public void setGamePanel(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
 	}
 	// 블록 한 칸을 변경하는 함수 color값으로 null이 넘어오면 빈 블록이 되며 배경색으로 변경한다
-	public void drawBlock(int x, int y, char type, Color color, String status) {
+	public void drawBlock(int x, int y, char type, Object color, String status) {
 		if (color == null)
 			color = defaultColor1;
 		gamePanel.board[x][y].setBoard(type, color, status);
 	}
 
 	// 상대방의 블록을 그리는 함수 n-상대방 번호
-	public void drawRivalBlock(int x, int y, char type, Color color) {
+	public void drawRivalBlock(int x, int y, char type, Object color) {
 		if (color == null) {
 			color = defaultColor3;
 		}
@@ -124,7 +124,7 @@ public class GameManager {
 		if (num > -1) {
 			for (int i = 0; i < 10; i++) {
 				for (int j = 0; j < 20; j++) {
-					drawRivalBlock(i, j, tetrisGame.rivalStatus[i][j], getColor(tetrisGame.rivalStatus[i][j]));
+					drawRivalBlock(i, j, tetrisGame.rivalStatus[i][j], getImage(tetrisGame.rivalStatus[i][j]));
 				}
 			}
 		}
@@ -149,7 +149,7 @@ public class GameManager {
 				for (int j = 0; j < 10; j++) {
 					for (int k = 0; k < 23; k++) {
 						if (gamePanel.board[j][k].getStatus().equals("AlreadySet")) {
-							drawBlock(j, k, '.', getColor('.'), "AlreadySet");
+							drawBlock(j, k, '.', getImage('.'), "AlreadySet");
 						}
 					}
 				}
@@ -189,7 +189,7 @@ public class GameManager {
 		for (int i = line; i < 19; i++) {
 			for (int j = 0; j < 10; j++) {
 				drawBlock(j, i, gamePanel.board[j][i + 1].getType(),
-						getColor(gamePanel.board[j][i + 1].getType()), gamePanel.board[j][i + 1].getStatus());
+						getImage(gamePanel.board[j][i + 1].getType()), gamePanel.board[j][i + 1].getStatus());
 			}
 		}
 		for (int i = 0; i < 10; i++) {
@@ -234,7 +234,7 @@ public class GameManager {
 				if (!gamePanel.board[j][i - lines].getStatus().equals("CurrentFall")
 						|| !gamePanel.board[j][i].getStatus().equals("CurrentFall"))
 					drawBlock(j, i, gamePanel.board[j][i - lines].getType(),
-							getColor(gamePanel.board[j][i - lines].getType()),
+							getImage(gamePanel.board[j][i - lines].getType()),
 							gamePanel.board[j][i - lines].getStatus());
 			}
 		}
@@ -244,7 +244,7 @@ public class GameManager {
 			int n = r.nextInt(10);
 			for (int j = 0; j < 10; j++) {
 				if (n != j)
-					drawBlock(j, i, '.', getColor('.'), "AlreadySet");
+					drawBlock(j, i, '.', getImage('.'), "AlreadySet");
 				else
 					drawBlock(j, i, ' ', null, "Empty");
 			}
@@ -288,7 +288,7 @@ public class GameManager {
 
 	// Game Panel 관리
 	// 블록을 회전 시킨 후 바뀐 회전축을 리턴하는 함수
-	public int rotateBlock(int x, int y, char type, Color color) {
+	public int rotateBlock(int x, int y, char type, Object color) {
 
 		int flag = -1;
 		if (type == 'O') {
@@ -561,7 +561,7 @@ public class GameManager {
 	}
 
 	// 블록 생성시 그리는 함수 - 여러칸을 그린다는 뜻
-	public void drawEntireBlock(int x, int y, char type, Color color, String status) {
+	public void drawEntireBlock(int x, int y, char type, Object color, String status) {
 		if (type == 'O') {
 			gamePanel.board[x + 1][y + 1].setBoard(type, color, status);
 			gamePanel.board[x][y + 1].setBoard(type, color, status);
@@ -610,7 +610,7 @@ public class GameManager {
 	}
 
 	// 미리보기 블록 그리는 함수
-	public void drawhintBoard(int n, char type, Color color) {
+	public void drawhintBoard(int n, char type, Object color) {
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
 				gamePanel.hintBoard[n][i][j].setBoard(' ', defaultColor2);

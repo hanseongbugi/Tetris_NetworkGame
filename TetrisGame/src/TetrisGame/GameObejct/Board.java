@@ -2,6 +2,7 @@ package TetrisGame.GameObejct;
 
 import java.awt.Color;
 
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 public class Board {
 	
@@ -14,11 +15,19 @@ public class Board {
 		setBoard(' ', null, "Empty");
 	}
 	
-	public void setBoard(char type, Color color, String status) {
+	public void setBoard(char type, Object color, String status) {
 		this.type = type;
-		labelbox.setBackground(color);
+		if(color == null || color instanceof Color) {
+			labelbox.setBackground((Color)color);
+			labelbox.setIcon(null);
+		}
+		else {
+			labelbox.setBackground(null);
+			labelbox.setIcon((ImageIcon)color);
+		}
 		setStatus(status);
 	}
+
 	
 	public void setStatus(String status) {
 		this.status = status;

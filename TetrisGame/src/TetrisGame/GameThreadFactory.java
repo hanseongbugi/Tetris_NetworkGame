@@ -31,7 +31,7 @@ public class GameThreadFactory {
 		int [] randomNumberArray = tetrisGame.getRandomNumberArray();
 		for(int i = 0; i<randomNumberArray.length; i++) {
 			randomNumberArray[i] = random.nextInt(9);
-			gameManager.drawhintBoard(i, blockType[randomNumberArray[i]], gameManager.getColor(blockType[randomNumberArray[i]]));
+			gameManager.drawhintBoard(i, blockType[randomNumberArray[i]], gameManager.getImage(blockType[randomNumberArray[i]]));
 		}
 		tetrisGame.setRandomNumberArray(randomNumberArray);
 	}
@@ -117,7 +117,7 @@ public class GameThreadFactory {
 
 				for (int i = 0; i < randomNumberArray.length; i++) {
 					gameManager.drawhintBoard(i, blockType[randomNumberArray[i]],
-							gameManager.getColor(blockType[randomNumberArray[i]]));
+							gameManager.getImage(blockType[randomNumberArray[i]]));
 				}
 				tetrisGame.setRandomNumberArray(randomNumberArray);
 				
@@ -133,7 +133,7 @@ public class GameThreadFactory {
 				centerY = 19;
 
 			gameManager.drawEntireBlock(centerX, centerY, blockType[currentBlockNumber],
-					gameManager.getColor(blockType[currentBlockNumber]), "CurrentFall");
+					gameManager.getImage(blockType[currentBlockNumber]), "CurrentFall");
 		}
 
 		public void fallBlock() {
@@ -194,7 +194,7 @@ public class GameThreadFactory {
 					}
 					for (int k = 0; k < fallBlockLength; k++) {
 						gameManager.drawBlock(fallBlocks[k][0], fallBlocks[k][1] - 1, blockType[currentBlockNumber],
-								gameManager.getColor(blockType[currentBlockNumber]), "CurrentFall");
+								gameManager.getImage(blockType[currentBlockNumber]), "CurrentFall");
 					}
 					centerY--;
 
@@ -281,7 +281,7 @@ public class GameThreadFactory {
 				}
 				for (int k = 0; k < fallBlockLength; k++) {
 					gameManager.drawBlock(fallBlocks[k][0], fallBlocks[k][1], blockType[currentBlockNumber],
-							gameManager.getColor(blockType[currentBlockNumber]), "CurrentFall");
+							gameManager.getImage(blockType[currentBlockNumber]), "CurrentFall");
 				}
 				gameManager.checkLine();
 			}
@@ -306,7 +306,7 @@ public class GameThreadFactory {
 				}
 				for (int k = 0; k < fallBlockLength; k++) {
 					gameManager.drawBlock(fallBlocks[k][0], fallBlocks[k][1] - 1, blockType[currentBlockNumber],
-							gameManager.getColor(blockType[currentBlockNumber]), "CurrentFall");
+							gameManager.getImage(blockType[currentBlockNumber]), "CurrentFall");
 				}
 				centerY--;
 			}
@@ -323,7 +323,7 @@ public class GameThreadFactory {
 				}
 				for (int k = 0; k < fallBlockLength; k++) {
 					gameManager.drawBlock(fallBlocks[k][0] - 1, fallBlocks[k][1], blockType[currentBlockNumber],
-							gameManager.getColor(blockType[currentBlockNumber]), "CurrentFall");
+							gameManager.getImage(blockType[currentBlockNumber]), "CurrentFall");
 				}
 				centerX--;
 			}
@@ -340,14 +340,14 @@ public class GameThreadFactory {
 				}
 				for (int k = 0; k < fallBlockLength; k++) {
 					gameManager.drawBlock(fallBlocks[k][0] + 1, fallBlocks[k][1], blockType[currentBlockNumber],
-							gameManager.getColor(blockType[currentBlockNumber]), "CurrentFall");
+							gameManager.getImage(blockType[currentBlockNumber]), "CurrentFall");
 				}
 				centerX++;
 			}
 
 			else if (key == UP) {
 				int f = gameManager.rotateBlock(centerX, centerY, blockType[currentBlockNumber],
-						gameManager.getColor(blockType[currentBlockNumber]));
+						gameManager.getImage(blockType[currentBlockNumber]));
 				if (f == 0) {
 					centerX++;
 				} else if (f == 1) {

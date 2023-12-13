@@ -22,6 +22,16 @@ public class Settings
 	
 	public static ImageIcon connectIcon;
 	
+	public static ImageIcon blockBlue;
+	public static ImageIcon blockCyan;
+	public static ImageIcon blockGray;
+	public static ImageIcon blockGreen;
+	public static ImageIcon blockLime;
+	public static ImageIcon blockOrange;
+	public static ImageIcon blockPuple;
+	public static ImageIcon blockRed;
+	public static ImageIcon blockYellow;
+	
 	public Settings()
 	{
 		
@@ -42,5 +52,15 @@ public class Settings
 		Item3ImgIcon = new ImageIcon("images/item3.png");
 		
 		connectIcon = new ImageIcon("images/disconnect.png");
+		
+		blockBlue = new ImageIcon("images/block/blue.png");
+		blockCyan = new ImageIcon("images/block/cyan.png");
+		blockGray = new ImageIcon("images/block/gray.png");
+		blockGreen = new ImageIcon("images/block/green.png");
+		blockLime = new ImageIcon("images/block/lime.png");
+		blockOrange = new ImageIcon("images/block/orange.png");
+		blockPuple = new ImageIcon("images/block/puple.png");
+		blockRed = new ImageIcon("images/block/red.png");
+		blockYellow = new ImageIcon("images/block/yellow.png");
 	}
 }
