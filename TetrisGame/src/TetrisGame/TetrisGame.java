@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.*;
 import java.util.Random;
@@ -20,6 +22,8 @@ public class TetrisGame extends JFrame {
 	private GameInitPanel initPanel;
 	private WaitingPanel waitingPanel;
 	private GameThreadFactory threadFactory;
+	private JSplitPane splitPane;
+	private EndingPanel endingPanel;
 
 	public static boolean isMain;
 	public static boolean isGame;
@@ -45,7 +49,7 @@ public class TetrisGame extends JFrame {
 	private int currentItem = 0; // 현재 사용가능 아이템이 무엇인지 없으면 0
 	private boolean spinable = true; // false면 회전 불가
 	private int speed = 1000; // 떨어지는 속도
-
+	private String loser;
 
 	public TetrisGame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -60,6 +64,17 @@ public class TetrisGame extends JFrame {
 		setResizable(false);
 		setVisible(true);
 		setLocationRelativeTo(null);
+		
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				if(waitingPanel!=null) {
+					isDead = true;
+					WaitingPanel.SendMessage(new UserMessage(WaitingPanel.userName, "405"));
+				}
+			}
+			
+		});
 	}
 
 	// 변수 초기화
@@ -81,7 +96,7 @@ public class TetrisGame extends JFrame {
 			isMain = false;
 		} else if (isGame) {
 			setSize(920, 640);
-			JSplitPane splitPane = new JSplitPane();
+			splitPane = new JSplitPane();
 			splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
 
 			gamePanel = new GamePanel(this);
@@ -121,7 +136,15 @@ public class TetrisGame extends JFrame {
 			this.isWaitingRoom = false;
 			waitingPanel = new WaitingPanel(initPanel.getUserName(), this);
 			add(waitingPanel);
-			this.setVisible(true);
+			setVisible(true);
+		}
+		else if(isDead) {
+			setSize(720, 640);
+			splitPane.setVisible(false);
+			if(loser==null) loser = WaitingPanel.userName;
+			endingPanel = new EndingPanel(this, loser);
+			add(endingPanel);
+			setVisible(true);
 		}
 	}
 
@@ -199,7 +222,6 @@ public class TetrisGame extends JFrame {
 		gamePanel.repaint();
 	}
 
-	
 	// 제거 라인 체크하는 함수 라인 제거 시 상대방에게 공격이 가능하고 일정 라인 제거시 아이템을 쓸 수 있게된다
 	public void checkLine() {
 		for (int i = 0; i < 10; i++) {
@@ -257,6 +279,7 @@ public class TetrisGame extends JFrame {
 		}
 
 	}
+	
 
 	// 아이템을 얻는 함수
 	public void setItem() {
@@ -264,6 +287,11 @@ public class TetrisGame extends JFrame {
 		r.nextInt(3);
 		currentItem = r.nextInt(3) + 1;
 		gamePanel.itemBox.setIcon(getItemIcon(currentItem));
+	}
+	public void setLoser(String loser) {
+		//endingPanel.setWinner(winner);
+		System.out.println("loser = "+loser);
+		this.loser = loser;
 	}
 	
 	public int[] getRandomNumberArray() {

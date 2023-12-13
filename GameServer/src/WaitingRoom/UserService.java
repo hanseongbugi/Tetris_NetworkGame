@@ -47,7 +47,7 @@ public class UserService extends Thread {
 	public void Logout() {
 		String msg = "[" + UserName + "]님이 퇴장 하였습니다.\n";
 		userList.remove(this); // Logout한 현재 객체를 배열에서 지운다
-		UserMessage userMsg = new UserMessage(UserName,"600");
+		UserMessage userMsg = new UserMessage(UserName,"500");
 		String[] msgUserList = userMsg.getUserList();
 		int count = 0;
 		for (int i = 0; i < userList.size(); i++) {
@@ -180,15 +180,18 @@ public class UserService extends Thread {
 				case "402":
 				case "403":
 				case "404":
+					WriteOthers(msg);
+					break;
 				case "405":
 					WriteOthers(msg);
 					break;
-				case "203": // 체팅
+				case "203": // 쳇팅
 				case "300":
 					WriteAll(msg);
 					break;
 				case "500":
 					WriteOthers(msg);
+					break;
 				case "600":
 					Logout();
 					break;
@@ -196,8 +199,6 @@ public class UserService extends Thread {
 			} catch (IOException e) {
 				gameServer.AppendText("ois.readObject() error");
 				try {
-//					dos.close();
-//					dis.close();
 					ois.close();
 					oos.close();
 					clientSocket.close();

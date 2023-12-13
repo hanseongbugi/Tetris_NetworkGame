@@ -103,7 +103,6 @@ public class WaitingPanel extends JLayeredPane{
 		p1NameLabel = new JLabel(userName);
 		p1NameLabel.setBounds(60, 250, 200, 40);
 		p1NameLabel.setFont(new Font("Rockwell", Font.BOLD, 20));
-		//p1NameLabel.setForeground(new Color(0, 255, 0));
 		p1NameLabel.setForeground(Color.BLACK);
 		p1NameLabel.setHorizontalAlignment(JTextField.CENTER);
 		p1NameLabel.setBorder(BorderFactory.createCompoundBorder(null, null));
@@ -262,7 +261,13 @@ public class WaitingPanel extends JLayeredPane{
 		
 		setVisible(false);
 	}
-	
+	public void exitGame() {
+		tetris.isChange = true;
+		tetris.isDead = true;
+		tetris.gameStart = false;
+		UserMessage msg = new UserMessage(userName,"600");
+		SendMessage(msg);
+	}
 	// 상대방 준비 상태를 set
 	public void setReady(String name) {
 		if(p1NameLabel.getText().equals(name)) {
@@ -373,8 +378,6 @@ public class WaitingPanel extends JLayeredPane{
 						break;
 					case "404":
 						// 상대 이모티콘 박스 변경
-						// obj = ois.readObject();
-						// data.setEmoji((int) obj);
 						if (!TetrisGame.gameStart)
 							break;
 						if (!msg.getUserName().equals(userName)) {
@@ -386,63 +389,30 @@ public class WaitingPanel extends JLayeredPane{
 						}
 						break;
 					case "405":
-						// 상대방의 죽음 메시지 랭크가 상승
-						if (!TetrisGame.gameStart)
-							break;
-						// if(!isDead) {
-						// rank--;
-						// for(int i = 0; i<3; i++) {
-						// if(playerList[i]!=null && playerList[i].equals(data.username)) {
-						// rivalDead(i);
-						// }
-						// }
-						// }
-						// if(rank == 1) {
-						// isDead = true;
-						// WriteData(new Data(userId, "500"));
-						// gameEnd();
-						// }
+						// 상대방의 죽음 게임 종료 (이긴 대상은 승리 표시)
+						if (!TetrisGame.gameStart) break;
+						if(!TetrisGame.isDead) {
+							for(int i = 0;i<2;i++) {
+								if(playerList[i] !=null && playerList[i].equals(msg.getUserName())) {
+									tetris.setLoser(msg.getUserName());
+								}
+							}
+						}
+						exitGame();
 						break;
 					case "500":
-						// 게임 종료 메시지
+						// 게임 종료 
 						if (!TetrisGame.gameStart)
 							break;
-						// gameEnd();
+						exitGame();
 						break;
 					case "600":
-						// 상대방의 로그아웃 메시지 유저리스트 업데이트함
-						// obj = ois.readObject();
-						// data.setUserList((String[]) obj);
+						// 로그아웃
 						if (TetrisGame.gameStart) {
-							// for(int i=0; i<3; i++) {
-							// if(playerList[i]!=null && playerList[i].equals(data.username))
-							// gamePanel.networkStatusBox[i].setIcon(disconnectImgIcon);
-							// }
-							// rank--;
-							// if(rank == 1) {
-							// isDead = true;
-							// WriteData(new Data(userId, "500"));
-							// gameEnd();
-							// }
-							// }
-							// else {
-							// for(int i=0; i<playerList.length; i++) {
-							// playerList[i] = null;
-							// }
-							// count = 0;
-							// for(int i=0; i<data.userList.length; i++) {
-							// if(data.userList[i]!=null && !data.userList[i].equals(userId)) {
-							// playerList[count++] = data.userList[i];
-							// }
-							// }
-							// readyPlayers = 0;
-							// for(int i=0; i<4; i++) {
-							// waitingPanel.labelStatus[i].setIcon(null);
-							// }
-							// waitingPanel.notReady();
-							// rank = count + 1;
-							// WriteData(new Data(userId, "103"));
-							// userlist();
+							UserMessage sendMsg = new UserMessage(userName, "500");
+							sendMsg.setData(userName);
+							SendMessage(sendMsg);
+							exitGame();
 						}
 						break;
 					}
@@ -462,46 +432,46 @@ public class WaitingPanel extends JLayeredPane{
 		}
 	}
 
-		// 방해받은 아이템 지속 스레드
-		class ItemFromRival extends Thread {
-			int n;
+	// 방해받은 아이템 지속 스레드
+	class ItemFromRival extends Thread {
+		int n;
 
-			public ItemFromRival(int n) {
-				this.n = n;
-			}
-
-			public void run() {
-				if (n == 1) {
-					gamePanel.attackFromRival.setIcon(Settings.Item1ImgIcon);
-				} else if (n == 2) {
-					//speed = 200;
-					gamePanel.attackFromRival.setIcon(Settings.Item2ImgIcon);
-				} else if (n == 3) {
-					//spinable = false;
-					gamePanel.attackFromRival.setIcon(Settings.Item3ImgIcon);
-				}
-
-				//if (isDead || !gameStart)
-				//	return;
-				try {
-					sleep(5000);
-				} catch (InterruptedException e) {
-					return;
-				}
-				/*if (isDead || !gameStart)
-					return;
-
-				attackCount--;
-				if (attackCount > 0)
-					return;
-
-				if (n == 2) {
-					speed = 1000;
-				} else if (n == 3) {
-					spinable = true;
-				}*/
-				gamePanel.attackFromRival.setIcon(null);
-			}
+		public ItemFromRival(int n) {
+			this.n = n;
 		}
+
+		public void run() {
+			if (n == 1) {
+				gamePanel.attackFromRival.setIcon(Settings.Item1ImgIcon);
+			} else if (n == 2) {
+				// speed = 200;
+				gamePanel.attackFromRival.setIcon(Settings.Item2ImgIcon);
+			} else if (n == 3) {
+				// spinable = false;
+				gamePanel.attackFromRival.setIcon(Settings.Item3ImgIcon);
+			}
+
+			if (tetris.isDead || !tetris.gameStart)
+				return;
+			try {
+				sleep(5000);
+			} catch (InterruptedException e) {
+				return;
+			}
+			/*if (tetris.isDead || !tetris.gameStart)
+				return;
+
+			attackCount--;
+			if (attackCount > 0)
+				return;
+
+			if (n == 2) {
+				speed = 1000;
+			} else if (n == 3) {
+				tetris.spinable = true;
+			}*/
+			gamePanel.attackFromRival.setIcon(null);
+		}
+	}
 
 }
