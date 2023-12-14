@@ -18,7 +18,7 @@ public class GameThreadFactory {
 	private int[] randomNumberHelper = { 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // 골고루 랜덤 번호가 나오도록 1이 나오면 2번째 요소가 1로 set
 	private char[] blockType = { 'O', 'L', 'J', 'I', 'Z', 'S', 'T', 'V', '-' }; // 블록 형태 저장
 	private int [] blockNumberArray; // 블록 5개를 저장할 배열
-	
+	private int sendItemNumber = 0;
 	
 	public GameThreadFactory(TetrisGame tetrisGame, GamePanel gamePanel, GameManager gameManager){
 		this.tetrisGame = tetrisGame;
@@ -63,7 +63,7 @@ public class GameThreadFactory {
 				if (tetrisGame.isDead || !tetrisGame.gameStart)
 					return;
 
-				gameManager.sendStatusToRival();
+				gameManager.sendStatusToRival(sendItemNumber);
 
 				if (tetrisGame.isDead || !tetrisGame.gameStart)
 					return;
@@ -421,10 +421,11 @@ public class GameThreadFactory {
 		int n;
 		public ItemFromRival(int n) {
 			this.n = n; // 생성 시 전달되는 인자가 아이템의 타입
+			sendItemNumber = n;
 		}
 
 		public void run() {
-			if (n == 1) { // 
+			if (n == 1) { 
 				gamePanel.attackFromRival.setIcon(Settings.Item1ImgIcon);
 			} else if (n == 2) { // 떨어지는 속도를 증가 시킨다
 				gameManager.speed = 200;
@@ -450,6 +451,7 @@ public class GameThreadFactory {
 			 if (n == 2) { gameManager.speed = 1000; } else if (n == 3) { tetrisGame.spinable = true; }
 			 
 			gamePanel.attackFromRival.setIcon(null);
+			sendItemNumber = 0;
 		}
 	}
 }

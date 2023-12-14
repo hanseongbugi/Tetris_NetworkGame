@@ -114,7 +114,7 @@ public class GameManager {
 	}
 
 	// 상대방의 아이템 상태 업데이트 하기
-	public void updateRivalStatus() {
+	public void updateRivalStatus(boolean item1, boolean item2, boolean item3) {
 		int num = -1;
 		tetrisGame.setRival(waitingPanel.getRival());
 		for (int i = 0; i < 2; i++) {
@@ -128,7 +128,19 @@ public class GameManager {
 				}
 			}
 		}
-
+		if(!item1&&!item2&&!item3)
+			gamePanel.rivalItemBox.setIcon(null);
+		else {
+			if (item1)
+				gamePanel.rivalItemBox.setIcon(Settings.Item1ImgIcon);
+			
+			if (item2)
+				gamePanel.rivalItemBox.setIcon(Settings.Item2ImgIcon);
+			
+			if (item3)
+				gamePanel.rivalItemBox.setIcon(Settings.Item2ImgIcon);
+		}
+		
 		gamePanel.repaint();
 	}
 
@@ -202,7 +214,7 @@ public class GameManager {
 	}
 
 	// 자신의 블록 상태 보내기
-	public void sendStatusToRival() {
+	public void sendStatusToRival(int sendItemNumber) {
 		UserMessage msg = new UserMessage(WaitingPanel.userName, "401");
 		char[][] blockStatus = msg.getBlockStatus();
 		for (int i = 0; i < 10; i++) {
@@ -210,7 +222,15 @@ public class GameManager {
 				blockStatus[i][j] = gamePanel.board[i][j].getType();
 			}
 		}
+		boolean[] itemStatus = msg.getItemStatus();
+	
+		for(int i = 0;i<itemStatus.length;i++) {
+			itemStatus[i] = false;
+		}
+		if(sendItemNumber!=0)
+			itemStatus[sendItemNumber-1] = true;
 
+		msg.setItemStatus(itemStatus);
 		WaitingPanel.SendMessage(msg);
 	}
 
@@ -257,9 +277,9 @@ public class GameManager {
 	// 자신 혹은 상대방의 이모티콘 업데이트
 	public void showEmoji(int player, int type) {
 		if (player == -1) {
-			gamePanel.myEmoticon.setIcon(getEmoji(type));
+			gamePanel.myEmoji.setIcon(getEmoji(type));
 		} else {
-			gamePanel.rivalEmoticon.setIcon(getEmoji(type));
+			gamePanel.rivalEmoji.setIcon(getEmoji(type));
 		}
 		gamePanel.repaint();
 	}

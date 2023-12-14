@@ -362,7 +362,8 @@ public class WaitingPanel extends JLayeredPane{
 								tetris.rivalStatus[i][j] = msg.getBlockStatus()[i][j];
 							}
 						}
-						gameManager.updateRivalStatus();
+						boolean[] itemStatus = msg.getItemStatus();
+						gameManager.updateRivalStatus(itemStatus[0],itemStatus[1], itemStatus[2]);
 						break;
 					case "402":
 						// 라인 추가 (공격)

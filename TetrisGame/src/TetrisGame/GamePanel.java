@@ -27,9 +27,10 @@ public class GamePanel extends JPanel {
 	public JLabel networkStatusBox; //상대방 연결상태 박스
 	public JLabel nameBox; //상대방 이름 박스
 	public JLabel attackFromRival; //방해받은 아이템 박스
+	public JLabel rivalItemBox;
 	
-	public JLabel myEmoticon; //내 이모티콘
-	public JLabel rivalEmoticon; //상대방 이모티콘
+	public JLabel myEmoji; //내 이모티콘
+	public JLabel rivalEmoji; //상대방 이모티콘
 
 	// GamePanel 생성자 
 	public GamePanel(GameManager gameManager) {
@@ -132,12 +133,12 @@ public class GamePanel extends JPanel {
 		textLabel1.setFont(font);
 		add(textLabel1);
 		
-		myEmoticon = new JLabel();
-		myEmoticon.setBounds(270, 400, 40, 40);
-		myEmoticon.setBackground(gameManager.getDefaultColor(2));
-		myEmoticon.setOpaque(true);
-		myEmoticon.setBorder(border);
-		add(myEmoticon);
+		myEmoji = new JLabel();
+		myEmoji.setBounds(270, 400, 40, 40);
+		myEmoji.setBackground(gameManager.getDefaultColor(2));
+		myEmoji.setOpaque(true);
+		myEmoji.setBorder(border);
+		add(myEmoji);
 		
 		networkStatusBox = new JLabel();
 		networkStatusBox.setBounds(390, 40, 20, 20);
@@ -152,21 +153,24 @@ public class GamePanel extends JPanel {
 		nameBox = new JLabel();
 		nameBox.setBounds(410, 40, 60, 20);
 		nameBox.setBackground(gameManager.getDefaultColor(3));
-			
-
 		nameBox.setOpaque(true);
 		nameBox.setHorizontalAlignment(JLabel.CENTER);
 		nameBox.setBorder(border);
 		add(nameBox);
 		
+		rivalItemBox = new JLabel();
+		rivalItemBox.setBounds(350, 70, 40, 40);
+		rivalItemBox.setBackground(gameManager.getDefaultColor(2));
+		rivalItemBox.setOpaque(true);
+		rivalItemBox.setBorder(border);
+		add(rivalItemBox);
 		
-		
-		rivalEmoticon = new JLabel();
-		rivalEmoticon.setBounds(460, 280, 40, 40);
-		rivalEmoticon.setBackground(gameManager.getDefaultColor(3));
-		rivalEmoticon.setOpaque(true);
-		rivalEmoticon.setBorder(border);
-		add(rivalEmoticon);
+		rivalEmoji = new JLabel();
+		rivalEmoji.setBounds(460, 280, 40, 40);
+		rivalEmoji.setBackground(gameManager.getDefaultColor(3));
+		rivalEmoji.setOpaque(true);
+		rivalEmoji.setBorder(border);
+		add(rivalEmoji);
 		
 	}
 	
