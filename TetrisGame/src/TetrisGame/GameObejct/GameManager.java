@@ -11,6 +11,7 @@ import WaitingRoom.UserMessage;
 import WaitingRoom.WaitingPanel;
 import utility.Settings;
 
+// 게임을 관리하는 클래스 (나의 보드 관리, 블록 움직임 관리, 라이벌 보드 관리)
 public class GameManager {
 	private TetrisGame tetrisGame;
 	private GamePanel gamePanel;
@@ -20,18 +21,17 @@ public class GameManager {
 	public int removeLine = 0; // 제거한 줄 수 - 일정줄 제거시 공격/아이템생성
 	public int speed = 1000; // 떨어지는 속도
 	
-	// 상자들의 기본 배경색
+	// 보드들의 기본 배경색
 	public Color defaultColor1 = new Color(250, 210, 250);
 	public Color defaultColor2 = new Color(250, 205, 185);
 	public Color defaultColor3 = new Color(250, 250, 210);
-	public Color defaultColor4 = new Color(210, 250, 220);
-	public Color defaultColor5 = new Color(210, 210, 250);
 
 	public GameManager(TetrisGame tetrisGame, WaitingPanel waitingPanel) {
 		this.tetrisGame = tetrisGame;
 		this.waitingPanel = waitingPanel;
 	}
 	
+	// 기본 배경 색을 반환
 	public Color getDefaultColor(int type) {
 		switch (type) {
 		case 1:
@@ -40,14 +40,12 @@ public class GameManager {
 			return defaultColor2;
 		case 3:
 			return defaultColor3;
-		case 4:
-			return defaultColor4;
-		case 5:
-			return defaultColor5;
 		default:
 			return null;
 		}
 	}
+	
+	// 블록 이미지를 반환
 	public ImageIcon getImage(char type) {
 		switch (type) {
 		case 'O':
@@ -78,21 +76,23 @@ public class GameManager {
 	public void setGamePanel(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
 	}
-	// 블록 한 칸을 변경하는 함수 color값으로 null이 넘어오면 빈 블록이 되며 배경색으로 변경
-	public void drawBlock(int x, int y, char type, Object color, String status) {
-		if (color == null)
-			color = defaultColor1;
-		gamePanel.board[x][y].setBoard(type, color, status);
+	
+	// 블록 한 칸을 변경하는 함수 null이 넘어오면 빈 블록이 되며 배경색으로 변경
+	public void drawBlock(int x, int y, char type, Object obj, String status) {
+		if (obj == null)
+			obj = defaultColor1;
+		gamePanel.board[x][y].setBoard(type, obj, status);
 	}
 
 	// 상대방의 블록을 그리는 함수
-	public void drawRivalBlock(int x, int y, char type, Object color) {
-		if (color == null) {
-			color = defaultColor3;
+	public void drawRivalBlock(int x, int y, char type, Object obj) {
+		if (obj == null) {
+			obj = defaultColor3;
 		}
-		gamePanel.rivalBoard[x][y].setBoard(type, color);
+		gamePanel.rivalBoard[x][y].setBoard(type, obj);
 	}
-
+	
+	// Item의 이미지를 반환하는 함수
 	public ImageIcon getItemIcon(int type) {
 		switch (type) {
 		case 1:
@@ -106,7 +106,7 @@ public class GameManager {
 		}
 	}
 
-	// 아이템 보내기
+	// 아이템을 라이벌에게 보내는 함수
 	public void sendItem(int n) {
 		UserMessage msg = new UserMessage(WaitingPanel.userName, "403");
 		msg.setItem(n);
@@ -114,7 +114,7 @@ public class GameManager {
 	}
 
 	// 상대방의 아이템 상태 업데이트 하기
-	public void updateRivalStatus(boolean item2, boolean item3) {
+	public void updateRivalStatus() {
 		int num = -1;
 		tetrisGame.setRival(waitingPanel.getRival());
 		for (int i = 0; i < 2; i++) {
@@ -128,25 +128,18 @@ public class GameManager {
 				}
 			}
 		}
-		if (item2)
-			gamePanel.rivalItemBox[0].setIcon(Settings.Item2ImgIcon);
-		else
-			gamePanel.rivalItemBox[0].setIcon(null);
-		if (item3)
-			gamePanel.rivalItemBox[1].setIcon(Settings.Item3ImgIcon);
-		else
-			gamePanel.rivalItemBox[1].setIcon(null);
 
 		gamePanel.repaint();
 	}
 
-	// 제거 라인 체크하는 함수 라인 제거 시 상대방에게 공격이 가능하고 일정 라인 제거시 아이템을 쓸 수 있게된다
+	// 제거 라인을 체크하는 함수
 	public void checkLine() {
+		// 멈춰있는 블록이 보드의 가장 위까지 존재한다면 서버에 게임이 종료되었다고 알린다
 		for (int i = 0; i < 10; i++) {
 			if (gamePanel.board[i][19].getStatus().equals("StopBlock")) {
 				tetrisGame.isDead = true;
 				WaitingPanel.SendMessage(new UserMessage(WaitingPanel.userName, "405"));
-				for (int j = 0; j < 10; j++) {
+				for (int j = 0; j < 10; j++) { // 서버에 알린 후 보드에 존재하는 블록을 죽은 블록으로 바꿈
 					for (int k = 0; k < 23; k++) {
 						if (gamePanel.board[j][k].getStatus().equals("StopBlock")) {
 							drawBlock(j, k, '.', getImage('.'), "StopBlock");
@@ -156,25 +149,27 @@ public class GameManager {
 				return;
 			}
 		}
-
+		
+		// 멈춰있는 블록이 x 방향으로 9개 존재한다면 라인을 지운다
 		for (int i = 0; i < 20; i++) {
 			for (int j = 0; j < 10; j++) {
 				if (!gamePanel.board[j][i].getStatus().equals("StopBlock"))
 					break;
 				if (j == 9) {
-					clearLine(i--);
+					clearLine(i--); 
 					countAttackLine++;
 					removeLine++;
 				}
 			}
 		}
 
-		if (removeLine >= 2) {
+		if (removeLine >= 2) { // 2줄 이상 지웠다면 아이템을 얻는다
 			if (tetrisGame.getCurrentItem() == 0)
 				setItem();
 			removeLine -= 2;
 		}
-
+		
+		// 라이벌에게 라인 공격을 보낸다.
 		if (countAttackLine >= 2) {
 			UserMessage msg = new UserMessage(WaitingPanel.userName, "402");
 			msg.setAttackLines(countAttackLine - 1);
@@ -215,15 +210,7 @@ public class GameManager {
 				blockStatus[i][j] = gamePanel.board[i][j].getType();
 			}
 		}
-		if (speed == 1000)
-			msg.getItemStatus()[0] = false;
-		else
-			msg.getItemStatus()[0] = true;
 
-		if (tetrisGame.spinable)
-			msg.getItemStatus()[1] = false;
-		else
-			msg.getItemStatus()[1] = true;
 		WaitingPanel.SendMessage(msg);
 	}
 

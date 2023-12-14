@@ -13,7 +13,6 @@ public class UserMessage implements Serializable{
 	
 	private String[] userList = new String[2];
 	private char[][] blockStatus = new char[10][20];
-	private boolean[] itemStatus = new boolean[2];
 	private int attackLines;
 	private int item;
 	private int emoji;
@@ -72,12 +71,6 @@ public class UserMessage implements Serializable{
 		this.blockStatus = blockStatus;
 	}
 	
-	public boolean[] getItemStatus(){
-		return itemStatus;
-	}
-	public void setItemStatus(boolean[] itemStatus) {
-		this.itemStatus = itemStatus;
-	}
 	public int getAttackLines() {
 		return attackLines;
 	}

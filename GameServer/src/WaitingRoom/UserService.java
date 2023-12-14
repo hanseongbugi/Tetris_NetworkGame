@@ -180,7 +180,7 @@ public class UserService extends Thread {
 						msg.setCode("300");
 					WriteAll(msg);
 					break;
-				case "401": // 상대방 상태 업데이트
+				case "401": // 상태 업데이트
 				case "402": // 라인 추가 (공격)
 				case "403": // 상대방에게 아이템
 				case "404": // 상대 이모티콘 박스 변경

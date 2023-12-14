@@ -20,15 +20,15 @@ public class Board {
 	// 하나의 보드를 채우는 함수
 	// Color 인 경우는 블록이 없는 경우 (빈 보드 상태를 나타냄)
 	// ImageIcon 인 경우 보드에 블록이 있어 블록을 그려야 하는 경우
-	public void setBoard(char type, Object color, String status) {
+	public void setBoard(char type, Object obj, String status) {
 		this.type = type;
-		if(color == null || color instanceof Color) {
-			labelbox.setBackground((Color)color);
+		if(obj == null || obj instanceof Color) {
+			labelbox.setBackground((Color)obj);
 			labelbox.setIcon(null);
 		}
 		else {
 			labelbox.setBackground(null);
-			labelbox.setIcon((ImageIcon)color);
+			labelbox.setIcon((ImageIcon)obj);
 		}
 		setStatus(status);
 	}

@@ -362,7 +362,7 @@ public class WaitingPanel extends JLayeredPane{
 								tetris.rivalStatus[i][j] = msg.getBlockStatus()[i][j];
 							}
 						}
-						gameManager.updateRivalStatus(msg.getItemStatus()[0], msg.getItemStatus()[1]);
+						gameManager.updateRivalStatus();
 						break;
 					case "402":
 						// 라인 추가 (공격)
@@ -372,10 +372,10 @@ public class WaitingPanel extends JLayeredPane{
 							tetris.countAttackFromRival += msg.getAttackLines();
 						break;
 					case "403":
-						// 상대방에게 아이템
+						// 상대방에게 아이템을 받은 경우
 						if (!TetrisGame.gameStart)
 							break;
-						if (msg.getItem() == 1) // 1번 공격을 받은 경우 라인을 2칸 올리는 공격 진행
+						if (msg.getItem() == 1) // 1번 공격을 받은 경우 라인을 올리는 공격 진행
 							tetris.countAttackFromRival += 2;
 						tetris.updateItemState(msg.getItem());
 						tetris.attackCount++;
