@@ -297,7 +297,6 @@ public class WaitingPanel extends JLayeredPane{
 	class ListenServer extends Thread {
 		public void run() {
 			while (true) {
-				// UserMessage data = ReadMessage();
 				try {
 					Object obj = null;
 					UserMessage msg = null;
@@ -318,8 +317,6 @@ public class WaitingPanel extends JLayeredPane{
 					switch (msg.getCode()) {
 					case "102":
 						// 대기실 2명 입장 시
-						// obj = ois.readObject();
-						// data.setUserList((String[]) obj);
 						String[] msgUserList = msg.getUserList();
 						int count = 0;
 						for (int i = 0; i < msgUserList.length; i++) {

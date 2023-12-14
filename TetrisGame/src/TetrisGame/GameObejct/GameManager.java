@@ -78,14 +78,14 @@ public class GameManager {
 	public void setGamePanel(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
 	}
-	// 블록 한 칸을 변경하는 함수 color값으로 null이 넘어오면 빈 블록이 되며 배경색으로 변경한다
+	// 블록 한 칸을 변경하는 함수 color값으로 null이 넘어오면 빈 블록이 되며 배경색으로 변경
 	public void drawBlock(int x, int y, char type, Object color, String status) {
 		if (color == null)
 			color = defaultColor1;
 		gamePanel.board[x][y].setBoard(type, color, status);
 	}
 
-	// 상대방의 블록을 그리는 함수 n-상대방 번호
+	// 상대방의 블록을 그리는 함수
 	public void drawRivalBlock(int x, int y, char type, Object color) {
 		if (color == null) {
 			color = defaultColor3;
@@ -108,9 +108,9 @@ public class GameManager {
 
 	// 아이템 보내기
 	public void sendItem(int n) {
-		UserMessage data = new UserMessage(WaitingPanel.userName, "403");
-		data.setItem(n);
-		WaitingPanel.SendMessage(data);
+		UserMessage msg = new UserMessage(WaitingPanel.userName, "403");
+		msg.setItem(n);
+		WaitingPanel.SendMessage(msg);
 	}
 
 	// 상대방의 아이템 상태 업데이트 하기
@@ -176,10 +176,10 @@ public class GameManager {
 		}
 
 		if (countAttackLine >= 2) {
-			UserMessage data = new UserMessage(WaitingPanel.userName, "402");
-			data.setAttackLines(countAttackLine - 1);
+			UserMessage msg = new UserMessage(WaitingPanel.userName, "402");
+			msg.setAttackLines(countAttackLine - 1);
 			countAttackLine = 0;
-			WaitingPanel.SendMessage(data);
+			WaitingPanel.SendMessage(msg);
 		}
 		gamePanel.repaint();
 	}
@@ -208,23 +208,23 @@ public class GameManager {
 
 	// 자신의 블록 상태 보내기
 	public void sendStatusToRival() {
-		UserMessage data = new UserMessage(WaitingPanel.userName, "401");
-		char[][] blockStatus = data.getBlockStatus();
+		UserMessage msg = new UserMessage(WaitingPanel.userName, "401");
+		char[][] blockStatus = msg.getBlockStatus();
 		for (int i = 0; i < 10; i++) {
 			for (int j = 0; j < 20; j++) {
 				blockStatus[i][j] = gamePanel.board[i][j].getType();
 			}
 		}
 		if (speed == 1000)
-			data.getItemStatus()[0] = false;
+			msg.getItemStatus()[0] = false;
 		else
-			data.getItemStatus()[0] = true;
+			msg.getItemStatus()[0] = true;
 
 		if (tetrisGame.spinable)
-			data.getItemStatus()[1] = false;
+			msg.getItemStatus()[1] = false;
 		else
-			data.getItemStatus()[1] = true;
-		WaitingPanel.SendMessage(data);
+			msg.getItemStatus()[1] = true;
+		WaitingPanel.SendMessage(msg);
 	}
 
 	// 상대방에게 공격 받는 함수 공격 받은 만큼 블럭들이 위로 올라간다
