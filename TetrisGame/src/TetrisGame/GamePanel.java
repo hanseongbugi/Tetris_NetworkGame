@@ -43,13 +43,16 @@ public class GamePanel extends JPanel {
 		for(int i=0; i<10; i++) {
 			for(int j=0; j<23; j++) {
 				board[i][j] = new Board();
-				if(j>19) board[i][j].labelbox.setBounds(60 + 20*i, 478 - 20*j, 20, 20);
-				else board[i][j].labelbox.setBounds(60 + 20*i, 480 - 20*j, 20, 20);
-				board[i][j].labelbox.setBackground(gameManager.getDefaultColor(1));
-				board[i][j].labelbox.setOpaque(true);
-				if(j>19) board[i][j].labelbox.setBorder(border2);	
-				else board[i][j].labelbox.setBorder(border);
-				this.add(board[i][j].labelbox);
+				//if(j>19) board[i][j].labelbox.setBounds(60 + 20*i, 478 - 20*j, 20, 20);
+				//if(j>19) board[i][j].labelbox.setBorder(border2);	
+				if(j<20) {
+					board[i][j].labelbox.setBounds(60 + 20*i, 430 - 20*j, 20, 20);
+					board[i][j].labelbox.setBackground(gameManager.getDefaultColor(1));
+					board[i][j].labelbox.setOpaque(true);
+					board[i][j].labelbox.setBorder(border);
+					this.add(board[i][j].labelbox);
+				}
+				
 			}
 		}
 		
@@ -71,7 +74,7 @@ public class GamePanel extends JPanel {
 			for(int j=0; j<4; j++) {
 				for(int k=0; k<5; k++) {
 					hintBoard[i][j][k] = new SmallBoard();
-					hintBoard[i][j][k].labelbox.setBounds(270 + 10*j, 140 - 10*k + i*50, 10, 10);
+					hintBoard[i][j][k].labelbox.setBounds(270 + 10*j, 90 - 10*k + i*50, 10, 10);
 					hintBoard[i][j][k].labelbox.setBackground(gameManager.getDefaultColor(2));
 					hintBoard[i][j][k].labelbox.setOpaque(true);
 					hintBoard[i][j][k].labelbox.setBorder(border);
@@ -81,50 +84,50 @@ public class GamePanel extends JPanel {
 		}
 		
 		JTextArea explainBox = new JTextArea();
-		explainBox.setBounds(400, 390, 300, 110);
+		explainBox.setBounds(360, 380, 180, 100);
 		explainBox.setBackground(gameManager.getDefaultColor(2));
 		explainBox.setOpaque(true);
 		explainBox.setBorder(border);
-		explainBox.setText(" ← → : 좌우 이동\n ↑ : 하드드랍\n ↓ : 소프트드랍\n SPACE : 회전\n SHIFT : 아이템 사용\n Z X C : 이모티콘");
+		explainBox.setText(" ← → : 좌우 이동\n ↑ : 회전\n ↓ : 소프트드랍\n SPACE : 하드드랍\n SHIFT : 아이템 사용\n Z X C : 이모티콘");
 		explainBox.setEditable(false);
 		explainBox.setFocusable(false);
-		this.add(explainBox);
+		add(explainBox);
 		
 		JLabel textLabel3 = new JLabel("내 아이템");
-		textLabel3.setBounds(0, 20, 60, 20);
+		textLabel3.setBounds(0, 30, 60, 20);
 		textLabel3.setHorizontalAlignment(JLabel.CENTER);
-		this.add(textLabel3);
+		add(textLabel3);
 		
 		itemBox = new JLabel();
-		itemBox.setBounds(10, 40, 40, 40);
+		itemBox.setBounds(10, 50, 40, 40);
 		itemBox.setBackground(gameManager.getDefaultColor(1));
 		itemBox.setOpaque(true);
 		itemBox.setBorder(border);
-		this.add(itemBox);
+		add(itemBox);
 		
 		JLabel textLabel2 = new JLabel("받은 공격");
-		textLabel2.setBounds(260, 380, 60, 20);
+		textLabel2.setBounds(260, 310, 60, 20);
 		textLabel2.setHorizontalAlignment(JLabel.CENTER);
-		this.add(textLabel2);
+		add(textLabel2);
 		
 		attackFromRival = new JLabel();
-		attackFromRival.setBounds(270, 400, 40, 40);
+		attackFromRival.setBounds(270, 330, 40, 40);
 		attackFromRival.setBackground(gameManager.getDefaultColor(2));
 		attackFromRival.setOpaque(true);
 		attackFromRival.setBorder(border);
-		this.add(attackFromRival);
+		add(attackFromRival);
 		
 		JLabel textLabel1 = new JLabel("이모티콘");
-		textLabel1.setBounds(260, 440, 60, 20);
+		textLabel1.setBounds(260, 380, 60, 20);
 		textLabel1.setHorizontalAlignment(JLabel.CENTER);
-		this.add(textLabel1);
+		add(textLabel1);
 		
 		myEmoticon = new JLabel();
-		myEmoticon.setBounds(270, 460, 40, 40);
+		myEmoticon.setBounds(270, 400, 40, 40);
 		myEmoticon.setBackground(gameManager.getDefaultColor(2));
 		myEmoticon.setOpaque(true);
 		myEmoticon.setBorder(border);
-		this.add(myEmoticon);
+		add(myEmoticon);
 		
 		networkStatusBox = new JLabel();
 		networkStatusBox.setBounds(390, 40, 20, 20);
@@ -133,7 +136,7 @@ public class GamePanel extends JPanel {
 		networkStatusBox.setOpaque(true);
 		networkStatusBox.setHorizontalAlignment(JLabel.CENTER);
 		networkStatusBox.setBorder(border);
-		this.add(networkStatusBox);
+		add(networkStatusBox);
 
 		
 		nameBox = new JLabel();
@@ -144,7 +147,7 @@ public class GamePanel extends JPanel {
 		nameBox.setOpaque(true);
 		nameBox.setHorizontalAlignment(JLabel.CENTER);
 		nameBox.setBorder(border);
-		this.add(nameBox);
+		add(nameBox);
 		
 		
 		for(int i=0; i<2; i++) {
@@ -155,7 +158,7 @@ public class GamePanel extends JPanel {
 
 			rivalItemBox[i].setOpaque(true);
 			rivalItemBox[i].setBorder(border);
-			this.add(rivalItemBox[i]);
+			add(rivalItemBox[i]);
 		}
 		
 		
@@ -164,7 +167,7 @@ public class GamePanel extends JPanel {
 		rivalEmoticon.setBackground(gameManager.getDefaultColor(3));
 		rivalEmoticon.setOpaque(true);
 		rivalEmoticon.setBorder(border);
-		this.add(rivalEmoticon);
+		add(rivalEmoticon);
 		
 	}
 	

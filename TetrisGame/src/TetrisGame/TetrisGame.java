@@ -101,7 +101,7 @@ public class TetrisGame extends JFrame {
 		if (isMain) {
 			isMain = false;
 		} else if (isGame) {
-			setSize(920, 640);
+			setSize(800, 640);
 			splitPane = new JSplitPane();
 			splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
 
@@ -130,7 +130,7 @@ public class TetrisGame extends JFrame {
 			gamePanel.nameBox.setText(WaitingPanel.playerList[0]);
 			gamePanel.addMouseListener(new GameFocusListener());
 
-			splitPane.setResizeWeight(0.78);
+			splitPane.setResizeWeight(0.7);
 			splitPane.setDividerSize(0);
 			splitPane.setLeftComponent(gamePanel);
 			splitPane.setRightComponent(chatPanel);

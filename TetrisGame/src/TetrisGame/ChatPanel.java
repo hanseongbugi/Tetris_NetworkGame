@@ -29,7 +29,7 @@ public class ChatPanel extends JPanel{
 		setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 10, 200, 540);
+		scrollPane.setBounds(0, 10, 230, 540);
 		add(scrollPane);
 		
 		chatTextArea = new JTextArea();
@@ -38,14 +38,13 @@ public class ChatPanel extends JPanel{
 		
 		chatBtn = new JLabel();
 		chatBtn.setIcon(Settings.btn_send);
-		chatBtn.setBounds(160, 550, 35, 35);
-		chatBtn.setBackground(Color.WHITE);
+		chatBtn.setBounds(180, 550, 35, 35);
 		chatBtn.setOpaque(true);
 		chatBtn.addMouseListener(new MouseChatAction());
 		add(chatBtn);
 		
 		textChat = new JTextField("");
-		textChat.setBounds(0,550,155,35);
+		textChat.setBounds(0,550,175,35);
 		add(textChat);
 		
 		textChat.addActionListener(new ChatAction());
