@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import WaitingRoom.WaitingPanel;
+import utility.Settings;
 
 // 체팅을 담당하는 패널
 public class ChatPanel extends JPanel{
@@ -35,7 +36,8 @@ public class ChatPanel extends JPanel{
 		chatTextArea.setEditable(false);
 		scrollPane.setViewportView(chatTextArea);
 		
-		chatBtn = new JLabel("SEND");
+		chatBtn = new JLabel();
+		chatBtn.setIcon(Settings.btn_send);
 		chatBtn.setBounds(160, 550, 35, 35);
 		chatBtn.setBackground(Color.WHITE);
 		chatBtn.setOpaque(true);

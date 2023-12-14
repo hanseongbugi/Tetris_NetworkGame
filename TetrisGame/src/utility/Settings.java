@@ -32,6 +32,8 @@ public class Settings
 	public static ImageIcon blockRed;
 	public static ImageIcon blockYellow;
 	
+	public static ImageIcon btn_send;
+	
 	public Settings()
 	{
 		
@@ -62,5 +64,7 @@ public class Settings
 		blockPuple = new ImageIcon("images/block/puple.png");
 		blockRed = new ImageIcon("images/block/red.png");
 		blockYellow = new ImageIcon("images/block/yellow.png");
+		
+		btn_send =  new ImageIcon("Images/send.png");
 	}
 }
