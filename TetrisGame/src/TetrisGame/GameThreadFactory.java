@@ -147,7 +147,7 @@ public class GameThreadFactory {
 					gameManager.getImage(blockType[currentBlockNumber]), "FallingBlock");
 		}
 
-		// 정해진 speed에 따라ㅏ 블록을 떨어뜨린다. 
+		// 정해진 speed에 따라 블록을 떨어뜨린다. 
 		public void fallBlock() {
 			boolean flag = false;
 			if (tetrisGame.isDead || !tetrisGame.gameStart)

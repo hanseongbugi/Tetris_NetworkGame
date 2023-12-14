@@ -6,6 +6,7 @@ import java.util.Objects;
 public class Settings
 {		
 	public static ImageIcon intro_background_img;
+	public static ImageIcon ending_background_img;
 	public static ImageIcon btn_start;
 	public static ImageIcon btn_exit;
 	public static ImageIcon btn_back;
