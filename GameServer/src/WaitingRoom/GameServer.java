@@ -15,7 +15,6 @@ public class GameServer extends JFrame{
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	JTextArea textArea;
-	// private JTextField txtPortNumber;
 
 	private ServerSocket socket; // 서버소켓
 	private ArrayList userList = new ArrayList(); // 연결된 사용자를 저장할 배열

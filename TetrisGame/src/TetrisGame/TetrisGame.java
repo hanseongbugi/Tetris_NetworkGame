@@ -142,7 +142,7 @@ public class TetrisGame extends JFrame {
 			rivalStatus = new char[10][20];
 			randomNumberArray = new int[5];
 			initPanel = new GameInitPanel();
-
+			loser = null;
 			add(initPanel);
 			setVisible(true);
 		} else if (isWaitingRoom) {
@@ -153,9 +153,11 @@ public class TetrisGame extends JFrame {
 		}
 		else if(isDead) {
 			setSize(720, 640);
+			gameStart = false;
 			splitPane.setVisible(false);
 			if(loser==null) loser = WaitingPanel.userName; // 서버에서 loser 정보를 받지 못한자가 패자
 			endingPanel = new EndingPanel(this, loser);
+			waitingPanel = null;
 			add(endingPanel);
 			setVisible(true);
 		}
