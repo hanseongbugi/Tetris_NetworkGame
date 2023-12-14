@@ -36,6 +36,8 @@ public class Settings
 	
 	public static ImageIcon btn_send;
 	
+	public static ImageIcon gameBackground;
+	
 	public Settings()
 	{
 		
@@ -69,6 +71,8 @@ public class Settings
 		blockRed = new ImageIcon("images/block/red.png");
 		blockYellow = new ImageIcon("images/block/yellow.png");
 		
-		btn_send =  new ImageIcon("Images/send.png");
+		btn_send =  new ImageIcon("images/send.png");
+		
+		gameBackground = new ImageIcon("images/bg_ground.png");
 	}
 }

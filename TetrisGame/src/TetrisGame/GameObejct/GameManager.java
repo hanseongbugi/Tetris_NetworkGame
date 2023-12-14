@@ -55,7 +55,7 @@ public class GameManager {
 		case 'L':
 			return Settings.blockGreen;
 		case 'J':
-			return Settings.blockRed;
+			return Settings.blockOrange;
 		case 'I':
 			return Settings.blockCyan;
 		case 'Z':

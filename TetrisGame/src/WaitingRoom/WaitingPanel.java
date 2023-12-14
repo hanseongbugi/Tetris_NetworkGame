@@ -16,6 +16,7 @@ import java.net.Socket;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -199,7 +200,13 @@ public class WaitingPanel extends JLayeredPane{
 			listen.start();
 
 		} catch (NumberFormatException | IOException e) {
-			e.printStackTrace();
+			int answer = JOptionPane.showConfirmDialog(getParent(), "서버와 연결할 수 없습니다", "confirm",
+                    JOptionPane.YES_NO_OPTION);
+            if (answer == JOptionPane.YES_OPTION) { // 사용자가 yes를 눌렀을 경우
+                System.exit(0);
+            } else { // 사용자가 Yes 이외의 값을 눌렀을 경우
+                System.out.println("종료를 취소합니다.");
+            }
 		}
 	}
 	public String getRival() {

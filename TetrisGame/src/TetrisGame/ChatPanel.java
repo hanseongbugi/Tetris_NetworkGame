@@ -27,6 +27,7 @@ public class ChatPanel extends JPanel{
 		
 		setBorder(new EmptyBorder(5,5,5,5));
 		setLayout(null);
+		setBackground(new Color(173, 216, 250)); //배경색 하늘색 지정
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(0, 10, 230, 540);
@@ -48,7 +49,12 @@ public class ChatPanel extends JPanel{
 		add(textChat);
 		
 		textChat.addActionListener(new ChatAction());
-		textChat.addMouseListener(new ChatFocusListener());;
+		textChat.addMouseListener(new ChatFocusListener());
+		
+		JLabel gameGround = new JLabel();
+		gameGround.setIcon(Settings.gameBackground);
+		gameGround.setBounds(0, 480, 250, 190);
+		add(gameGround);;
 	}
 	public void setChatMessage(String username, String chatMessage) {
 		chatTextArea.append("[" + username + "] " + chatMessage + "\n");

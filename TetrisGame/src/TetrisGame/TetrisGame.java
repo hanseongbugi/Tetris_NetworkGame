@@ -135,7 +135,6 @@ public class TetrisGame extends JFrame {
 			splitPane.setLeftComponent(gamePanel);
 			splitPane.setRightComponent(chatPanel);
 			
-			
 			add(splitPane);
 			setVisible(true);
 

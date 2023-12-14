@@ -1,6 +1,7 @@
 package TetrisGame;
 
 import java.awt.Color;
+import java.awt.Font;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -11,6 +12,7 @@ import javax.swing.border.LineBorder;
 import TetrisGame.GameObejct.Board;
 import TetrisGame.GameObejct.GameManager;
 import TetrisGame.GameObejct.SmallBoard;
+import utility.Settings;
 
 // 테트리스 게임을 그리는 패널
 public class GamePanel extends JPanel {
@@ -36,10 +38,18 @@ public class GamePanel extends JPanel {
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		createBoard();
 		setBackground(new Color(173, 216, 250)); //배경색 하늘색 지정
+		
+		JLabel gameGround = new JLabel();
+		gameGround.setIcon(Settings.gameBackground);
+		gameGround.setBounds(0, 480, 630, 190);
+		add(gameGround);
 	}
 	
 	// 기본 틀을 그리는 함수
 	// 자신의 게임판, 힌트판, 아이템상자, 이모티콘 상자, 상대방의 게임판, 상대방의 상태판, 상대방의 이모티콘 등
+	/**
+	 * 
+	 */
 	public void createBoard() {
 		for(int i=0; i<10; i++) {
 			for(int j=0; j<23; j++) {
@@ -83,20 +93,22 @@ public class GamePanel extends JPanel {
 				}
 			}
 		}
-		
+		Font font = new Font("맑은 고딕", Font.BOLD, 11);
 		JTextArea explainBox = new JTextArea();
-		explainBox.setBounds(360, 380, 180, 100);
+		explainBox.setBounds(360, 380, 180, 95);
 		explainBox.setBackground(gameManager.getDefaultColor(2));
 		explainBox.setOpaque(true);
 		explainBox.setBorder(border);
 		explainBox.setText(" ← → : 좌우 이동\n ↑ : 회전\n ↓ : 소프트드랍\n SPACE : 하드드랍\n SHIFT : 아이템 사용\n Z X C : 이모티콘");
 		explainBox.setEditable(false);
 		explainBox.setFocusable(false);
+		explainBox.setFont(font);
 		add(explainBox);
 		
 		JLabel textLabel3 = new JLabel("내 아이템");
 		textLabel3.setBounds(0, 30, 60, 20);
 		textLabel3.setHorizontalAlignment(JLabel.CENTER);
+		textLabel3.setFont(font);
 		add(textLabel3);
 		
 		itemBox = new JLabel();
@@ -109,6 +121,7 @@ public class GamePanel extends JPanel {
 		JLabel textLabel2 = new JLabel("받은 공격");
 		textLabel2.setBounds(260, 310, 60, 20);
 		textLabel2.setHorizontalAlignment(JLabel.CENTER);
+		textLabel2.setFont(font);
 		add(textLabel2);
 		
 		attackFromRival = new JLabel();
@@ -121,6 +134,7 @@ public class GamePanel extends JPanel {
 		JLabel textLabel1 = new JLabel("이모티콘");
 		textLabel1.setBounds(260, 380, 60, 20);
 		textLabel1.setHorizontalAlignment(JLabel.CENTER);
+		textLabel1.setFont(font);
 		add(textLabel1);
 		
 		myEmoticon = new JLabel();
