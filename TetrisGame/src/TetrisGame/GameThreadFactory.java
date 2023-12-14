@@ -16,7 +16,7 @@ public class GameThreadFactory {
 	private int centerY; // 회전중심 y축
 	private int currentBlockNumber; // 현재 블록 종류 - 랜덤에서 나온값
 	private int[] randomNumberHelper = { 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // 골고루 랜덤 번호가 나오도록 1이 나오면 2번째 요소가 1로 set
-	private char[] blockType = { 'O', 'L', 'J', 'I', 'Z', 'S', 'T', 'V', '-' }; // 블록 형태 저장
+	private char[] blockType = { 'O', 'L', 'J', 'I', 'Z', 'S', 'T' }; // 블록 형태 저장
 	private int [] blockNumberArray; // 블록 5개를 저장할 배열
 	private int sendItemNumber = 0;
 	
@@ -33,7 +33,7 @@ public class GameThreadFactory {
 		random.nextInt(9);
 		blockNumberArray = new int[5]; 
 		for(int i = 0; i<blockNumberArray.length; i++) {
-			blockNumberArray[i] = random.nextInt(9);
+			blockNumberArray[i] = random.nextInt(7);
 			gameManager.drawhintBoard(i, blockType[blockNumberArray[i]], gameManager.getImage(blockType[blockNumberArray[i]]));
 		}
 	}
@@ -108,7 +108,7 @@ public class GameThreadFactory {
 					count = 0;
 				}
 				while (true) {
-					tmp = random.nextInt(9); // 랜덤 수 생성
+					tmp = random.nextInt(7); // 랜덤 수 생성 (0, 1, 2, 3, 4, 5, 6)
 					if (randomNumberHelper[tmp] == 0) { // 생성하지 않았던 블록이면
 						randomNumberHelper[tmp] = 1; // 생성 표시
 						count++; // 블록 생성 횟수 증가

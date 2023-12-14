@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 public class Board {
 	
 	private String status; //Empty (빈 상태) FallingBlock (떨어지고 있는 블록) StopBlock (블록이 닿아 멈춘 상태)
-	private char type; //'O' 'L' 'J' 'I' 'Z' 'S' 'T' 'V' '-' '.' ' '
+	private char type; //'O' 'L' 'J' 'I' 'Z' 'S' 'T' '.' ' '
 	public JLabel labelbox; // 이미지(블록)나 색(블록이 아닌 경우)을 담을 때 사용
 	
 	public Board() {

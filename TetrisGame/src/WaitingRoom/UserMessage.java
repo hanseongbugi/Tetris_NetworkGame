@@ -10,14 +10,12 @@ public class UserMessage implements Serializable{
 	private String userName; // 사용자 이름
 	private int userNum; // 사용자 번호
 	private String data; // 메시지에 포함된 데이터
-	
-	private String[] userList = new String[2];
-	private char[][] blockStatus = new char[10][20];
-	private boolean[] itemStatus = new boolean[3];
-	private int attackLines;
-	private int item;
-	private int emoji;
-	
+	private String[] userList = new String[2]; // 서버 접속 명단
+	private char[][] blockStatus = new char[10][20]; // 테트리스 블록 상태
+	private boolean[] itemStatus = new boolean[3]; // 라이벌이 받는 공격 종류
+	private int attackLines; // 라인 공격 횟수
+	private int item; // 아이템 번호
+	private int emoji; // 이모티콘 번호
 	private boolean isReady;//플레이어가 게임 준비가 되어있는 지 알 수 있는 상태
 	
 	// 생성자

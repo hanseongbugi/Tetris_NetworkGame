@@ -62,10 +62,6 @@ public class GameManager {
 			return Settings.blockRed;
 		case 'T':
 			return Settings.blockLime;
-		case 'V':
-			return Settings.blockGray;
-		case '-':
-			return Settings.blockCyan;
 		case '.':
 			return Settings.blockGray;
 		default:
@@ -138,7 +134,7 @@ public class GameManager {
 				gamePanel.rivalItemBox.setIcon(Settings.Item2ImgIcon);
 			
 			if (item3)
-				gamePanel.rivalItemBox.setIcon(Settings.Item2ImgIcon);
+				gamePanel.rivalItemBox.setIcon(Settings.Item3ImgIcon);
 		}
 		
 		gamePanel.repaint();
@@ -605,15 +601,7 @@ public class GameManager {
 			gamePanel.board[x][y].setBoard(type, color, status);
 			gamePanel.board[x][y + 1].setBoard(type, color, status);
 			gamePanel.board[x + 1][y].setBoard(type, color, status);
-		} else if (type == 'V') {
-			gamePanel.board[x][y + 1].setBoard(type, color, status);
-			gamePanel.board[x][y].setBoard(type, color, status);
-			gamePanel.board[x + 1][y].setBoard(type, color, status);
-		} else if (type == '-') {
-			gamePanel.board[x][y - 1].setBoard(type, color, status);
-			gamePanel.board[x][y].setBoard(type, color, status);
-			gamePanel.board[x][y + 1].setBoard(type, color, status);
-		}
+		} 
 	}
 
 	// 미리보기 블록 그리는 함수
@@ -658,15 +646,7 @@ public class GameManager {
 			gamePanel.hintBoard[n][1][2].setBoard(type, color);
 			gamePanel.hintBoard[n][2][2].setBoard(type, color);
 			gamePanel.hintBoard[n][1][1].setBoard(type, color);
-		} else if (type == 'V') {
-			gamePanel.hintBoard[n][1][2].setBoard(type, color);
-			gamePanel.hintBoard[n][2][1].setBoard(type, color);
-			gamePanel.hintBoard[n][1][1].setBoard(type, color);
-		} else if (type == '-') {
-			gamePanel.hintBoard[n][1][3].setBoard(type, color);
-			gamePanel.hintBoard[n][1][2].setBoard(type, color);
-			gamePanel.hintBoard[n][1][1].setBoard(type, color);
-		}
+		} 
 		gamePanel.repaint();
 	}
 }
