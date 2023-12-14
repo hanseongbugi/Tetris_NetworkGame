@@ -13,13 +13,16 @@ import WaitingRoom.WaitingPanel;
 
 // 체팅을 담당하는 패널
 public class ChatPanel extends JPanel{
+	private GamePanel gamePanel;
+	
 	public JTextArea chatTextArea;
 	private JTextField textChat;
 	private JLabel chatBtn;
 	private WaitingPanel waitingPanel;
 	
-	public ChatPanel(WaitingPanel waitingPanel) {
+	public ChatPanel(WaitingPanel waitingPanel, GamePanel gamePanel) {
 		this.waitingPanel = waitingPanel;
+		this.gamePanel = gamePanel;
 		
 		setBorder(new EmptyBorder(5,5,5,5));
 		setLayout(null);
@@ -44,10 +47,15 @@ public class ChatPanel extends JPanel{
 		add(textChat);
 		
 		textChat.addActionListener(new ChatAction());
+		textChat.addMouseListener(new ChatFocusListener());;
 	}
 	public void setChatMessage(String username, String chatMessage) {
 		chatTextArea.append("[" + username + "] " + chatMessage + "\n");
 		chatTextArea.setCaretPosition(chatTextArea.getText().length());
+	}
+	public void setConnectedFocus(boolean flag) {
+		textChat.setFocusable(flag);
+		if(flag) textChat.requestFocus();
 	}
 	
 	// TextField에 엔터키가 입력시 서버에게 내용 전달
@@ -68,6 +76,14 @@ public class ChatPanel extends JPanel{
 			if (!text.equals(""))
 				waitingPanel.sendChat(text);
 			textChat.setText("");
+		}
+	}
+	class ChatFocusListener extends MouseAdapter{
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			setConnectedFocus(true);
+			gamePanel.setFocusable(false);
+			
 		}
 	}
 }

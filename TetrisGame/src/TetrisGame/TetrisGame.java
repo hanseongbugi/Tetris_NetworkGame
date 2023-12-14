@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -29,6 +31,7 @@ public class TetrisGame extends JFrame {
 	private JSplitPane splitPane;
 	private EndingPanel endingPanel;
 	private GameManager gameManager;
+	private ChatPanel chatPanel;
 
 	public static boolean isMain;
 	public static boolean isGame;
@@ -103,9 +106,9 @@ public class TetrisGame extends JFrame {
 			splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
 
 			gameManager = new GameManager(this,waitingPanel);
-			
 			gamePanel = new GamePanel(gameManager);
-			ChatPanel chatPanel = new ChatPanel(waitingPanel);
+			chatPanel = new ChatPanel(waitingPanel, gamePanel);
+			
 			waitingPanel.setChatPanel(chatPanel);
 			waitingPanel.setGamePanel(gamePanel);
 			waitingPanel.setGameManager(gameManager);
@@ -121,11 +124,11 @@ public class TetrisGame extends JFrame {
 			threadFactory.makeGameProcessThread();
 			threadFactory.makeSendStatusThread();
 
-			gamePanel.setFocusable(true);
 			gamePanel.requestFocus();
 			gamePanel.addKeyListener(new MyKeyListener());
 			gamePanel.networkStatusBox.setIcon(Settings.connectIcon);
 			gamePanel.nameBox.setText(WaitingPanel.playerList[0]);
+			gamePanel.addMouseListener(new GameFocusListener());
 
 			splitPane.setResizeWeight(0.78);
 			splitPane.setDividerSize(0);
@@ -262,6 +265,17 @@ public class TetrisGame extends JFrame {
 				} catch (InterruptedException e) {
 					return;
 				}
+			}
+		}
+	}
+	
+	class GameFocusListener extends MouseAdapter{
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			if(gameStart) {
+				chatPanel.setConnectedFocus(false);
+				gamePanel.setFocusable(true);
+				gamePanel.requestFocus();
 			}
 		}
 	}
