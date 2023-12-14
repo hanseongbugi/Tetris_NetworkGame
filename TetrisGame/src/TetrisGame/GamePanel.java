@@ -26,7 +26,6 @@ public class GamePanel extends JPanel {
 	public JLabel itemBox; //나의 아이템 박스
 	public JLabel networkStatusBox; //상대방 연결상태 박스
 	public JLabel nameBox; //상대방 이름 박스
-	public JLabel [] rivalItemBox = new JLabel[2]; //상대방이 받은 아이템 박스
 	public JLabel attackFromRival; //방해받은 아이템 박스
 	
 	public JLabel myEmoticon; //내 이모티콘
@@ -160,17 +159,6 @@ public class GamePanel extends JPanel {
 		nameBox.setBorder(border);
 		add(nameBox);
 		
-		
-		for(int i=0; i<2; i++) {
-			rivalItemBox[i] = new JLabel();
-			rivalItemBox[i].setBounds(470 + 20*i, 40, 20, 20);
-			rivalItemBox[i].setBackground(gameManager.getDefaultColor(3));
-			
-
-			rivalItemBox[i].setOpaque(true);
-			rivalItemBox[i].setBorder(border);
-			add(rivalItemBox[i]);
-		}
 		
 		
 		rivalEmoticon = new JLabel();

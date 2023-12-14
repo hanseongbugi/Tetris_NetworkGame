@@ -420,16 +420,16 @@ public class GameThreadFactory {
 	class ItemFromRival extends Thread {
 		int n;
 		public ItemFromRival(int n) {
-			this.n = n;
+			this.n = n; // 생성 시 전달되는 인자가 아이템의 타입
 		}
 
 		public void run() {
-			if (n == 1) {
+			if (n == 1) { // 
 				gamePanel.attackFromRival.setIcon(Settings.Item1ImgIcon);
-			} else if (n == 2) {
+			} else if (n == 2) { // 떨어지는 속도를 증가 시킨다
 				gameManager.speed = 200;
 				gamePanel.attackFromRival.setIcon(Settings.Item2ImgIcon);
-			} else if (n == 3) {
+			} else if (n == 3) { // 블록을 회전하지 못하게 함
 				tetrisGame.spinable = false;
 				gamePanel.attackFromRival.setIcon(Settings.Item3ImgIcon);
 			}
@@ -437,7 +437,7 @@ public class GameThreadFactory {
 			if (tetrisGame.isDead || !tetrisGame.gameStart)
 				return;
 			try {
-				sleep(5000);
+				sleep(5000); // 5초간 효과 지속
 			} catch (InterruptedException e) {
 				return;
 			}
@@ -446,6 +446,7 @@ public class GameThreadFactory {
 			 
 			 tetrisGame.attackCount--; if (tetrisGame.attackCount > 0) return;
 			  
+			 // 변경시킨 상태 값을 원래대로 변경
 			 if (n == 2) { gameManager.speed = 1000; } else if (n == 3) { tetrisGame.spinable = true; }
 			 
 			gamePanel.attackFromRival.setIcon(null);

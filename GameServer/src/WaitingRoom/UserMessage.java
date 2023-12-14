@@ -12,12 +12,12 @@ public class UserMessage implements Serializable{
 	private String data; // 메시지에 포함된 데이터
 	private boolean isDead; // 사용자의 승리 또는 패배와 같은 상태
 	
-	private String[] userList = new String[2]; // 게임 중인 사용자 목록
-	private char[][] blockStatus = new char[10][20]; //블록 상태 배열
-	private boolean[] itemStatus = new boolean[2]; //아이템 사용 여부 배열
-	private int attackLines; //공격받은 라인 수
-	private int item;// 현재 아이템 종류
-	private int emoji;//플레이어가 선택한 이모티콘
+
+	private String[] userList = new String[2];
+	private char[][] blockStatus = new char[10][20];
+	private int attackLines;
+	private int item;
+	private int emoji;
 	
 	private boolean isReady;//플레이어가 게임 준비가 되어있는 지 알 수 있는 상태
 	
@@ -83,12 +83,6 @@ public class UserMessage implements Serializable{
 		this.blockStatus = blockStatus;
 	}
 	
-	public boolean[] getItemStatus(){
-		return itemStatus;
-	}
-	public void setItemStatus(boolean[] itemStatus) {
-		this.itemStatus = itemStatus;
-	}
 	public int getAttackLines() {
 		return attackLines;
 	}
