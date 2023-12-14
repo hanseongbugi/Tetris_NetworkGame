@@ -10,7 +10,6 @@ public class UserMessage implements Serializable{
 	private String userName; // 사용자 이름
 	private int userNum; // 사용자 번호
 	private String data; // 메시지에 포함된 데이터
-	private boolean isDead; // 사용자의 승리 또는 패배와 같은 상태
 	
 
 	private String[] userList = new String[2];
@@ -63,12 +62,6 @@ public class UserMessage implements Serializable{
 	}
 	public void setUserNum(int userNum) {
 		this.userNum = userNum;
-	}
-	public boolean getIsDead() {
-		return isDead;
-	}
-	public void setIsDead(boolean isDead) {
-		this.isDead = isDead;
 	}
 	public String[] getUserList(){
 		return userList;
