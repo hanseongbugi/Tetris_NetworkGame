@@ -16,9 +16,9 @@ import utility.Settings;
 
 // 테트리스 게임을 그리는 패널
 public class GamePanel extends JPanel {
-	private GameManager gameManager;
+	private GameManager gameManager; 
 	private LineBorder border = new LineBorder(Color.WHITE);
-	private LineBorder border2 = new LineBorder(Color.LIGHT_GRAY, 1);
+	
 	public Board [][] board = new Board[10][23]; //자신 플레이 판
 	public SmallBoard [][] rivalBoard = new SmallBoard[10][20]; //상대방 판
 	public SmallBoard [][][] hintBoard = new SmallBoard[5][4][5]; //미리보기
@@ -32,6 +32,7 @@ public class GamePanel extends JPanel {
 	public JLabel myEmoticon; //내 이모티콘
 	public JLabel rivalEmoticon; //상대방 이모티콘
 
+	// GamePanel 생성자 
 	public GamePanel(GameManager gameManager) {
 		this.gameManager = gameManager;
 		setLayout(null);
@@ -46,16 +47,11 @@ public class GamePanel extends JPanel {
 	}
 	
 	// 기본 틀을 그리는 함수
-	// 자신의 게임판, 힌트판, 아이템상자, 이모티콘 상자, 상대방의 게임판, 상대방의 상태판, 상대방의 이모티콘 등
-	/**
-	 * 
-	 */
+	// 자신의 게임판과 힌트판, 아이템상자, 이모티콘 상자, 상대방의 게임판, 상대방의 상태판, 상대방의 이모티콘 상자를 생성
 	public void createBoard() {
 		for(int i=0; i<10; i++) {
 			for(int j=0; j<23; j++) {
 				board[i][j] = new Board();
-				//if(j>19) board[i][j].labelbox.setBounds(60 + 20*i, 478 - 20*j, 20, 20);
-				//if(j>19) board[i][j].labelbox.setBorder(border2);	
 				if(j<20) {
 					board[i][j].labelbox.setBounds(60 + 20*i, 430 - 20*j, 20, 20);
 					board[i][j].labelbox.setBackground(gameManager.getDefaultColor(1));

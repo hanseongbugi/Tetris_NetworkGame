@@ -200,13 +200,11 @@ public class WaitingPanel extends JLayeredPane{
 			listen.start();
 
 		} catch (NumberFormatException | IOException e) {
-			int answer = JOptionPane.showConfirmDialog(getParent(), "서버와 연결할 수 없습니다", "confirm",
-                    JOptionPane.YES_NO_OPTION);
-            if (answer == JOptionPane.YES_OPTION) { // 사용자가 yes를 눌렀을 경우
-                System.exit(0);
-            } else { // 사용자가 Yes 이외의 값을 눌렀을 경우
-                System.out.println("종료를 취소합니다.");
-            }
+			JOptionPane.showMessageDialog(getParent(), "서버와 연결할 수 없습니다", "WARNING",
+                    JOptionPane.WARNING_MESSAGE);
+            tetris.isChange = true;
+            tetris.isInit = true;
+            this.setVisible(false);
 		}
 	}
 	public String getRival() {
@@ -217,8 +215,6 @@ public class WaitingPanel extends JLayeredPane{
 		typingTimer.stop();
 		joinPlayer.setText("Player Connected");
 		joinPlayer.setBounds(220, 290, 250, 100);
-		// player2 = Toolkit.getDefaultToolkit().createImage("src/image/player2-waiting.gif");
-		//add(p2NameLabel);
 		
 		labelStatus[1] = new JLabel();
 		labelStatus[1].setBounds(525,300,50,50);
@@ -363,7 +359,7 @@ public class WaitingPanel extends JLayeredPane{
 						rival = msg.getUserName();
 						for (int i = 0; i < 10; i++) {
 							for (int j = 0; j < 20; j++) {
-								TetrisGame.rivalStatus[i][j] = msg.getBlockStatus()[i][j];
+								tetris.rivalStatus[i][j] = msg.getBlockStatus()[i][j];
 							}
 						}
 						gameManager.updateRivalStatus(msg.getItemStatus()[0], msg.getItemStatus()[1]);
@@ -379,7 +375,7 @@ public class WaitingPanel extends JLayeredPane{
 						// 상대방에게 아이템
 						if (!TetrisGame.gameStart)
 							break;
-						if (msg.getItem() == 1)
+						if (msg.getItem() == 1) // 1번 공격을 받은 경우 라인을 2칸 올리는 공격 진행
 							tetris.countAttackFromRival += 2;
 						tetris.updateItemState(msg.getItem());
 						tetris.attackCount++;

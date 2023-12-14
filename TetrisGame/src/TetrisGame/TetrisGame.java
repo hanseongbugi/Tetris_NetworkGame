@@ -33,7 +33,7 @@ public class TetrisGame extends JFrame {
 	private GameManager gameManager;
 	private ChatPanel chatPanel;
 
-	public static boolean isMain;
+	// 게임 진행 중 사용하는 상태 값
 	public static boolean isGame;
 	public static boolean isChange;
 	public static boolean isInit;
@@ -41,14 +41,11 @@ public class TetrisGame extends JFrame {
 	public static boolean isDead;
 	public static boolean gameStart;
 	public static boolean isFirst = true;
-	public static boolean player1Dead = false;
-	public static boolean player2Dead = false;
 	
-	private int[] randomNumberArray;
 	private volatile int[][] fallBlocks; // 현재 떨어지고 있는 블럭들의 위치 저장
 
 	private String rival; // 방해받은 상태에 사용
-	public static char[][] rivalStatus; // 상대방 블록 상태를 저장
+	public char[][] rivalStatus; // 상대방 블록 상태를 저장
 	
 	public int countAttackFromRival = 0; // 공격 받은 라인 수
 	public int attackCount = 0; 
@@ -56,6 +53,7 @@ public class TetrisGame extends JFrame {
 	private int currentItem = 0; // 현재 사용가능 아이템이 무엇인지 없으면 0
 	public boolean spinable = true; // false면 회전 불가
 	private String loser;
+	public boolean keySleep = false; // 움직임 처리가 끝나기 전에 키 입력이 발생하지 않도록 true면 입력 불가
 
 	public TetrisGame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -71,10 +69,11 @@ public class TetrisGame extends JFrame {
 		setVisible(true);
 		setLocationRelativeTo(null);
 		
+		// 프레임이 종료된 경우
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				if(waitingPanel!=null) {
+				if(waitingPanel!=null) { // 대기방 패널이 생성되었다면 게임에 패배하였다고 서버에 전달
 					isDead = true;
 					WaitingPanel.SendMessage(new UserMessage(WaitingPanel.userName, "405"));
 				}
@@ -83,10 +82,9 @@ public class TetrisGame extends JFrame {
 		});
 	}
 
-	// 변수 초기화
+	// 변수 초기화 (패널을 변경시킬 때 사용하는 변수 및 이미지 세팅 객체 초기화)
 	public void init() {
 		new Settings();
-		isMain = false;
 		isGame = false;
 		isChange = true;
 		isInit = true;
@@ -95,12 +93,11 @@ public class TetrisGame extends JFrame {
 		gameStart = false;
 		
 	}
-
+	
+	// 변경된 패널 변수에 의해 정해진 패널을 생성하고 추가하는 함수
 	public void gameModeChanged() {
 		this.isChange = false;
-		if (isMain) {
-			isMain = false;
-		} else if (isGame) {
+		if (isGame) { // 게임 상태인 경우
 			setSize(800, 640);
 			splitPane = new JSplitPane();
 			splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
@@ -138,22 +135,24 @@ public class TetrisGame extends JFrame {
 			add(splitPane);
 			setVisible(true);
 
-		} else if (isInit) {
+		} else if (isInit) { // 초기 화면을 보여줘야하는 경우
 			this.isInit = false;
+			isFirst = true;
 			fallBlocks = new int[4][2];
 			rivalStatus = new char[10][20];
-			randomNumberArray = new int[5];
+			
 			initPanel = new GameInitPanel();
 			loser = null;
+			waitingPanel = null;
 			add(initPanel);
 			setVisible(true);
-		} else if (isWaitingRoom) {
+		} else if (isWaitingRoom) { // 대기방을 보여줘야하는 경우
 			this.isWaitingRoom = false;
 			waitingPanel = new WaitingPanel(initPanel.getUserName(), this);
 			add(waitingPanel);
 			setVisible(true);
 		}
-		else if(isDead) {
+		else if(isDead) { // 누군가 게임이 종료된 경우
 			setSize(720, 640);
 			gameStart = false;
 			splitPane.setVisible(false);
@@ -172,12 +171,6 @@ public class TetrisGame extends JFrame {
 		this.loser = loser;
 	}
 	
-	public int[] getRandomNumberArray() {
-		return randomNumberArray;
-	}
-	public void setRandomNumberArray(int[] randomNumberArray) {
-		this.randomNumberArray = randomNumberArray;
-	}
 	public int[][] getFallBlocks(){
 		return fallBlocks;
 	}
@@ -200,9 +193,7 @@ public class TetrisGame extends JFrame {
 		threadFactory.makeItemFromRival(n);
 	}
 	
-	// 상하좌후키, 스페이스바 - 움직이기
-	// ZXC키 - 이모티콘 보내기
-	// Shift키 - 아이템 사용
+	// 키 입력 이벤트
 	class MyKeyListener extends KeyAdapter {
 		private static final int UP = 0;
 		private static final int DOWN = 1;
@@ -215,24 +206,30 @@ public class TetrisGame extends JFrame {
 				return;
 			if (!gameStart)
 				return;
-
+			// 입력이 발생하였을 때 처리하고 있는 이벤트가 없는 경우 MoveThread 생성
 			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-				threadFactory.makeMoveThread(SPACE);
+				if(!keySleep)
+					threadFactory.makeMoveThread(SPACE);
 			} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-				threadFactory.makeMoveThread(DOWN);
+				if(!keySleep)
+					threadFactory.makeMoveThread(DOWN);
 			} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-				threadFactory.makeMoveThread(LEFT);
+				if(!keySleep)
+					threadFactory.makeMoveThread(LEFT);
 			} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-				threadFactory.makeMoveThread(RIGHT);
+				if(!keySleep)
+					threadFactory.makeMoveThread(RIGHT);
 			} else if (e.getKeyCode() == KeyEvent.VK_UP && spinable == true) {
-				threadFactory.makeMoveThread(UP);
+				if(!keySleep)
+					threadFactory.makeMoveThread(UP);
 			}
+			keySleep = false;
 		}
 
 		public void keyReleased(KeyEvent e) {
 			if (!gameStart)
 				return;
-
+			// 이모티콘 관련 처리
 			if (e.getKeyCode() == KeyEvent.VK_Z) {
 				gameManager.sendEmoji(1);
 			} else if (e.getKeyCode() == KeyEvent.VK_X) {
@@ -248,15 +245,14 @@ public class TetrisGame extends JFrame {
 			}
 		}
 	}
+	// 패널 변경 스레드
 	class GameModeThread extends Thread {
 		public void run() {
 			while (true) {
+				// 변경을 요청할 때 마다 게임 패널을 변경함
 				if (isChange) {
 					isChange = false;
 					gameModeChanged();
-				}
-				if (player1Dead && player2Dead) {
-
 				}
 				repaint();
 				try {
@@ -267,7 +263,7 @@ public class TetrisGame extends JFrame {
 			}
 		}
 	}
-	
+	// 게임 패널을 클릭한 경우 chatPanel의 포커스를 없애고 gamePanel에 포커스를 적용
 	class GameFocusListener extends MouseAdapter{
 		@Override
 		public void mouseClicked(MouseEvent e) {

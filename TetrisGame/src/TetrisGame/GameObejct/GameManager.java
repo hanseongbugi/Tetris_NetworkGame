@@ -143,13 +143,13 @@ public class GameManager {
 	// 제거 라인 체크하는 함수 라인 제거 시 상대방에게 공격이 가능하고 일정 라인 제거시 아이템을 쓸 수 있게된다
 	public void checkLine() {
 		for (int i = 0; i < 10; i++) {
-			if (gamePanel.board[i][19].getStatus().equals("AlreadySet")) {
+			if (gamePanel.board[i][19].getStatus().equals("StopBlock")) {
 				tetrisGame.isDead = true;
 				WaitingPanel.SendMessage(new UserMessage(WaitingPanel.userName, "405"));
 				for (int j = 0; j < 10; j++) {
 					for (int k = 0; k < 23; k++) {
-						if (gamePanel.board[j][k].getStatus().equals("AlreadySet")) {
-							drawBlock(j, k, '.', getImage('.'), "AlreadySet");
+						if (gamePanel.board[j][k].getStatus().equals("StopBlock")) {
+							drawBlock(j, k, '.', getImage('.'), "StopBlock");
 						}
 					}
 				}
@@ -159,7 +159,7 @@ public class GameManager {
 
 		for (int i = 0; i < 20; i++) {
 			for (int j = 0; j < 10; j++) {
-				if (!gamePanel.board[j][i].getStatus().equals("AlreadySet"))
+				if (!gamePanel.board[j][i].getStatus().equals("StopBlock"))
 					break;
 				if (j == 9) {
 					clearLine(i--);
@@ -231,8 +231,8 @@ public class GameManager {
 	public void attackFromRival(int lines) {
 		for (int i = 19; i >= lines; i--) {
 			for (int j = 0; j < 10; j++) {
-				if (!gamePanel.board[j][i - lines].getStatus().equals("CurrentFall")
-						|| !gamePanel.board[j][i].getStatus().equals("CurrentFall"))
+				if (!gamePanel.board[j][i - lines].getStatus().equals("FallingBlock")
+						|| !gamePanel.board[j][i].getStatus().equals("FallingBlock"))
 					drawBlock(j, i, gamePanel.board[j][i - lines].getType(),
 							getImage(gamePanel.board[j][i - lines].getType()),
 							gamePanel.board[j][i - lines].getStatus());
@@ -244,7 +244,7 @@ public class GameManager {
 			int n = r.nextInt(10);
 			for (int j = 0; j < 10; j++) {
 				if (n != j)
-					drawBlock(j, i, '.', getImage('.'), "AlreadySet");
+					drawBlock(j, i, '.', getImage('.'), "StopBlock");
 				else
 					drawBlock(j, i, ' ', null, "Empty");
 			}
@@ -415,13 +415,13 @@ public class GameManager {
 			afterType[15] = gamePanel.board[x - 1][y + 2].getType();
 
 			for (int i = 0; i < 16; i++) {
-				if (beforeStatus[i].equals("AlreadySet")) {
+				if (beforeStatus[i].equals("StopBlock")) {
 					return flag;
 				}
 			}
 
 			for (int i = 0; i < 16; i++) {
-				if (!beforeStatus[i].equals("AlreadySet")) {
+				if (!beforeStatus[i].equals("StopBlock")) {
 					if (beforeType[i] == ' ') {
 						temp[i].setBoard(beforeType[i], defaultColor1, beforeStatus[i]);
 					} else
@@ -464,13 +464,13 @@ public class GameManager {
 			afterType[3] = gamePanel.board[x][y].getType();
 
 			for (int i = 0; i < 4; i++) {
-				if (beforeStatus[i].equals("AlreadySet")) {
+				if (beforeStatus[i].equals("StopBlock")) {
 					return flag;
 				}
 			}
 
 			for (int i = 0; i < 4; i++) {
-				if (!beforeStatus[i].equals("AlreadySet")) {
+				if (!beforeStatus[i].equals("StopBlock")) {
 					if (beforeType[i] == ' ')
 						temp[i].setBoard(beforeType[i], defaultColor1, beforeStatus[i]);
 					else
@@ -543,13 +543,13 @@ public class GameManager {
 			afterType[7] = gamePanel.board[x][y + 1].getType();
 
 			for (int i = 0; i < 8; i++) {
-				if (beforeStatus[i].equals("AlreadySet")) {
+				if (beforeStatus[i].equals("StopBlock")) {
 					return -1;
 				}
 			}
 
 			for (int i = 0; i < 8; i++) {
-				if (!beforeStatus[i].equals("AlreadySet")) {
+				if (!beforeStatus[i].equals("StopBlock")) {
 					if (beforeType[i] == ' ')
 						temp[i].setBoard(beforeType[i], defaultColor1, beforeStatus[i]);
 					else
@@ -560,8 +560,8 @@ public class GameManager {
 		}
 	}
 
-	// 블록 생성시 그리는 함수 - 여러칸을 그린다는 뜻
-	public void drawEntireBlock(int x, int y, char type, Object color, String status) {
+	// 블록 생성시 그리는 함수 (테트리스 블록의 전체 형태를 보드에 저장)
+	public void drawTetrisBlock(int x, int y, char type, Object color, String status) {
 		if (type == 'O') {
 			gamePanel.board[x + 1][y + 1].setBoard(type, color, status);
 			gamePanel.board[x][y + 1].setBoard(type, color, status);

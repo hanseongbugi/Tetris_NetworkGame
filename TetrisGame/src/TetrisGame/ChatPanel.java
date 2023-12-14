@@ -85,9 +85,12 @@ public class ChatPanel extends JPanel{
 			textChat.setText("");
 		}
 	}
+	
+	// 체팅 입력을 위해 JTextField를 클릭한 경우 발생하는 이벤트 
 	class ChatFocusListener extends MouseAdapter{
 		@Override
 		public void mouseClicked(MouseEvent e) {
+			// TextField에 포커스를 적용
 			setConnectedFocus(true);
 			gamePanel.setFocusable(false);
 			
