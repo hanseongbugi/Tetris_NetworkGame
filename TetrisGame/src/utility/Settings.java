@@ -8,8 +8,10 @@ public class Settings
 	public static ImageIcon intro_background_img;
 	public static ImageIcon btn_start;
 	public static ImageIcon btn_exit;
+	public static ImageIcon btn_back;
 	public static ImageIcon hover_btn_start;
 	public static ImageIcon hover_btn_exit;
+	public static ImageIcon hover_btn_back;
 	
 	public static ImageIcon emoji1;
 	public static ImageIcon emoji2;
@@ -40,9 +42,11 @@ public class Settings
 		intro_background_img = new ImageIcon("images/introBackground.png");
 		btn_start = new ImageIcon("images/start.png");
 		btn_exit = new ImageIcon("images/exit.png");
+		btn_back = new ImageIcon("images/back.png");
 		
 		hover_btn_start = new ImageIcon("images/hoverStart.png");
 		hover_btn_exit = new ImageIcon("images/hoverExit.png");
+		hover_btn_back = new ImageIcon("images/hoverBack.png");
 	
 		emoji1 = new ImageIcon("images/emoticon1.png");
 		emoji2 = new ImageIcon("images/emoticon2.png");

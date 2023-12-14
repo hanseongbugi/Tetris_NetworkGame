@@ -35,8 +35,9 @@ public class GamePanel extends JPanel {
 		setLayout(null);
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		createBoard();
+		setBackground(new Color(173, 216, 250)); //배경색 하늘색 지정
 	}
-
+	
 	// 기본 틀을 그리는 함수
 	// 자신의 게임판, 힌트판, 아이템상자, 이모티콘 상자, 상대방의 게임판, 상대방의 상태판, 상대방의 이모티콘 등
 	public void createBoard() {
