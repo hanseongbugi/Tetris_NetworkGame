@@ -35,20 +35,20 @@ public class WaitingPanel extends JLayeredPane{
 	private ChatPanel chatPanel;
 	private GameManager gameManager;
 	
-	private Timer typingTimer;
+	// 기다리는 중에 Watiging 문구가 움직이는 것 처럼 보이게 만들기 위한 변수
+	private Timer typingTimer; 
     private int currentIndex;
     private String[] typingText = { "Waiting", "Waiting.", "Waiting..", "Waiting...", "Waiting...." };
 	
-	public static String userName;
-	private static int playerNum;
+	public static String userName; // 현재 WaitingPanel을 띄우고 있는 사용자 이름
 	
-	private JLabel p1NameLabel;
+	// 방에 접속한 사용자들 이름과 이미지를 출력하기 위한 Label
+	private JLabel p1NameLabel; 
 	private JLabel p2NameLabel;
-	
 	private JLabel imageLabel1;
 	private JLabel imageLabel2;
 	
-	private JLabel joinPlayer;
+	private JLabel joinPlayer; // 사용자 2명 접속시 연결 완료 출력
 	private JButton startBtn;
 	
 	private static Socket socket; // 연결소켓
@@ -60,11 +60,10 @@ public class WaitingPanel extends JLayeredPane{
 	private static ObjectInputStream ois;
 	private static ObjectOutputStream oos;
 	
-	public static String[] playerList = new String[2];
-	private String rival;
+	public static String[] playerList = new String[2]; // 사용자 명단
+	private String rival; // 라이벌 이름
 	
-	//private int rank = 2;
-	private boolean isReady = false;
+	private boolean isReady = false; // 준비 상태인지 준비 취소 상태인지 나타냄
 	public JLabel [] labelStatus = new JLabel[2];
 	
 	public WaitingPanel(String userName, TetrisGame tetris) {
@@ -89,7 +88,6 @@ public class WaitingPanel extends JLayeredPane{
 		joinPlayer = new JLabel("Waiting...");
 		joinPlayer.setBounds(250,300, 250, 100);
 		joinPlayer.setFont(new Font("Rockwell", Font.BOLD, 25));
-		//joinPlayer.setForeground(new Color(255,186,0));
 		joinPlayer.setForeground(Color.blue);
 		joinPlayer.setHorizontalAlignment(JTextField.CENTER);
 		add(joinPlayer);
@@ -169,12 +167,9 @@ public class WaitingPanel extends JLayeredPane{
 		
 		setOpaque(true);
 		
-		serverConnect();
+		serverConnect(); // 서버 연결
 	}
-	
-	public static int getPlayerNum() {
-		return playerNum;
-	}
+
 	public void setGamePanel(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
 	}
@@ -185,6 +180,7 @@ public class WaitingPanel extends JLayeredPane{
 		this.gameManager = gameManager;
 	}
 	
+	// 서버 연결을 위한 함수
 	private void serverConnect() {
 		try {
 			socket = new Socket("127.0.0.1",30000);
@@ -192,14 +188,14 @@ public class WaitingPanel extends JLayeredPane{
 			oos.flush();
 			ois = new ObjectInputStream(socket.getInputStream());
 
-			// SendMessage("/login " + userName);
-			UserMessage userMsg = new UserMessage(userName, "101");
+			UserMessage userMsg = new UserMessage(userName, "101"); // 로그인 메시지 생성
 			SendMessage(userMsg);
 
-			ListenServer listen = new ListenServer();
+			ListenServer listen = new ListenServer(); // 서버의 응답을 받는 스레드 생성
 			listen.start();
 
 		} catch (NumberFormatException | IOException e) {
+			// 소켓 생성 실패 시 초기 화면으로 돌아감
 			JOptionPane.showMessageDialog(getParent(), "서버와 연결할 수 없습니다", "WARNING",
                     JOptionPane.WARNING_MESSAGE);
             tetris.isChange = true;
@@ -211,6 +207,7 @@ public class WaitingPanel extends JLayeredPane{
 		return rival;
 	}
 	
+	// 2명의 사용자가 모두 접속 하였을 때 호출
 	public void setAllJoinPlayer(String info[]) {
 		typingTimer.stop();
 		joinPlayer.setText("Player Connected");
@@ -225,13 +222,10 @@ public class WaitingPanel extends JLayeredPane{
 		
 		if (info[0].trim().equals("player1")) {
 			p2NameLabel.setText(info[1]);
-			playerNum = 1;
-			
 			imageLabel2.setVisible(true);
 		} else {
 			p1NameLabel.setText(info[1]);
 			p2NameLabel.setText(userName);
-			playerNum = 2;
 			imageLabel2.setVisible(true);  
 		}
 	}
@@ -260,14 +254,15 @@ public class WaitingPanel extends JLayeredPane{
 			}
 		}
 	}
-
-
+	
+	// 게임을 시작하도록 하는 함수
 	public void startGame() {
 		TetrisGame.isChange = true;
 		TetrisGame.isGame = true;
 		
 		setVisible(false);
 	}
+	// 게임을 종료하도록 하는 함수
 	public void exitGame() {
 		tetris.isChange = true;
 		tetris.isDead = true;
@@ -422,7 +417,6 @@ public class WaitingPanel extends JLayeredPane{
 						break;
 					}
 				} catch (IOException e) {
-					//AppendText("ois.readObject() error");
 					try {
 						ois.close();
 						oos.close();

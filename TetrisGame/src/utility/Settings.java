@@ -2,6 +2,7 @@ package utility;
 
 import javax.swing.ImageIcon;
 
+// Tetris Game에 필요한 이미지들을 생성하는 Class 
 public class Settings
 {		
 	public static ImageIcon intro_background_img;

@@ -18,8 +18,9 @@ import javax.swing.JTextField;
 import TetrisGame.TetrisGame;
 import utility.Settings;
 
+// 게임의 초기 화면 (닉네임, 게임 시작, 게임 종료)
 public class GameInitPanel extends JPanel {
-    private RoundJTextField userName; // 변경된 부분
+    private RoundJTextField userName; // 모서리가 둥근 JTextField
     private Image backImg;
     private JLabel startBtn;
     private JLabel exitBtn;
@@ -70,18 +71,19 @@ public class GameInitPanel extends JPanel {
         return userName.getText();
     }
 
+    // 버튼 클릭 이벤트
     class ImageButtonEvent extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent e) {
             JLabel btn = (JLabel) e.getSource();
-            if (btn == startBtn) {
+            if (btn == startBtn) { // 시작 버튼인 경우
                 if (!userName.getText().isEmpty()) {
                     TetrisGame.isChange = true;
-                    TetrisGame.isWaitingRoom = true;
+                    TetrisGame.isWaitingRoom = true; // 대기방으로 이동
                     GameInitPanel.this.setVisible(false);
                 }
             }
-            if (btn == exitBtn) {
+            if (btn == exitBtn) { // 종료 버튼인 경우
                 btn.setIcon(Settings.btn_exit);
                 int answer = JOptionPane.showConfirmDialog(getParent(), "종료하시겠습니까?", "confirm",
                         JOptionPane.YES_NO_OPTION);
@@ -96,14 +98,16 @@ public class GameInitPanel extends JPanel {
         @Override
         public void mouseEntered(MouseEvent e) {
             JLabel btn = (JLabel) e.getSource();
+            // 버튼에 마우스를 올릴 경우 
             if (btn == startBtn)
-                btn.setIcon(Settings.hover_btn_start);
+                btn.setIcon(Settings.hover_btn_start); 
             if (btn == exitBtn)
                 btn.setIcon(Settings.hover_btn_exit);
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
+        	// 버튼에 마우스를 뺀 경우
             JLabel btn = (JLabel) e.getSource();
             if (btn == startBtn)
                 btn.setIcon(Settings.btn_start);
@@ -112,6 +116,7 @@ public class GameInitPanel extends JPanel {
         }
     }
 
+    // 모서리가 둥근 JTextField Class
     class RoundJTextField extends JTextField {
         private Shape shape;
 
@@ -119,13 +124,13 @@ public class GameInitPanel extends JPanel {
             super(size);
             setOpaque(false);
         }
-
+        // 배경을 둥글게 만든다
         protected void paintComponent(Graphics g) {
             g.setColor(getBackground());
             g.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 15, 15);
             super.paintComponent(g);
         }
-
+        // Border를 둥글게 만든다
         protected void paintBorder(Graphics g) {
             g.setColor(getForeground());
             g.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 15, 15);

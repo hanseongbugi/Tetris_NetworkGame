@@ -289,16 +289,15 @@ public class GameManager {
 		showEmoji(-1, n);
 	}
 
-	// Game Panel 관리
 	// 블록을 회전 시킨 후 바뀐 회전축을 리턴하는 함수
 	public int rotateBlock(int x, int y, char type, Object color) {
 
 		int flag = -1;
-		if (type == 'O') {
+		if (type == 'O') { // O 블록의 경우 회전 없음
 			return flag;
 		}
 
-		else if (type == 'I') {
+		else if (type == 'I') { // I 블록의 경우
 			if (x == -2) {
 				flag = 5;
 				x += 3;
@@ -341,7 +340,7 @@ public class GameManager {
 			temp[14] = gamePanel.board[x - 1][y + 1];
 			temp[15] = gamePanel.board[x - 1][y + 2];
 
-			String[] beforeStatus = new String[16];
+			String[] beforeStatus = new String[16]; // 블록의 상태를 저장
 			beforeStatus[0] = gamePanel.board[x][y].getStatus();
 			beforeStatus[1] = gamePanel.board[x][y + 1].getStatus();
 			beforeStatus[2] = gamePanel.board[x + 1][y + 1].getStatus();
@@ -360,7 +359,7 @@ public class GameManager {
 			beforeStatus[14] = gamePanel.board[x][y - 1].getStatus();
 			beforeStatus[15] = gamePanel.board[x - 1][y - 1].getStatus();
 
-			char[] beforeType = new char[16];
+			char[] beforeType = new char[16]; // 블록의 Type을 저장
 			beforeType[0] = gamePanel.board[x][y].getType();
 			beforeType[1] = gamePanel.board[x][y + 1].getType();
 			beforeType[2] = gamePanel.board[x + 1][y + 1].getType();
@@ -379,44 +378,6 @@ public class GameManager {
 			beforeType[14] = gamePanel.board[x][y - 1].getType();
 			beforeType[15] = gamePanel.board[x - 1][y - 1].getType();
 
-			String[] afterStatus = new String[16];
-			afterStatus[0] = gamePanel.board[x][y + 1].getStatus();
-			afterStatus[1] = gamePanel.board[x + 1][y + 1].getStatus();
-			afterStatus[2] = gamePanel.board[x + 1][y].getStatus();
-			afterStatus[3] = gamePanel.board[x][y].getStatus();
-
-			afterStatus[4] = gamePanel.board[x][y + 2].getStatus();
-			afterStatus[5] = gamePanel.board[x + 1][y + 2].getStatus();
-			afterStatus[6] = gamePanel.board[x + 2][y + 2].getStatus();
-			afterStatus[7] = gamePanel.board[x + 2][y + 1].getStatus();
-			afterStatus[8] = gamePanel.board[x + 2][y].getStatus();
-			afterStatus[9] = gamePanel.board[x + 2][y - 1].getStatus();
-			afterStatus[10] = gamePanel.board[x + 1][y - 1].getStatus();
-			afterStatus[11] = gamePanel.board[x][y - 1].getStatus();
-			afterStatus[12] = gamePanel.board[x - 1][y - 1].getStatus();
-			afterStatus[13] = gamePanel.board[x - 1][y].getStatus();
-			afterStatus[14] = gamePanel.board[x - 1][y + 1].getStatus();
-			afterStatus[15] = gamePanel.board[x - 1][y + 2].getStatus();
-
-			char[] afterType = new char[16];
-			afterType[0] = gamePanel.board[x][y + 1].getType();
-			afterType[1] = gamePanel.board[x + 1][y + 1].getType();
-			afterType[2] = gamePanel.board[x + 1][y].getType();
-			afterType[3] = gamePanel.board[x][y].getType();
-
-			afterType[4] = gamePanel.board[x][y + 2].getType();
-			afterType[5] = gamePanel.board[x + 1][y + 2].getType();
-			afterType[6] = gamePanel.board[x + 2][y + 2].getType();
-			afterType[7] = gamePanel.board[x + 2][y + 1].getType();
-			afterType[8] = gamePanel.board[x + 2][y].getType();
-			afterType[9] = gamePanel.board[x + 2][y - 1].getType();
-			afterType[10] = gamePanel.board[x + 1][y - 1].getType();
-			afterType[11] = gamePanel.board[x][y - 1].getType();
-			afterType[12] = gamePanel.board[x - 1][y - 1].getType();
-			afterType[13] = gamePanel.board[x - 1][y].getType();
-			afterType[14] = gamePanel.board[x - 1][y + 1].getType();
-			afterType[15] = gamePanel.board[x - 1][y + 2].getType();
-
 			for (int i = 0; i < 16; i++) {
 				if (beforeStatus[i].equals("StopBlock")) {
 					return flag;
@@ -434,56 +395,7 @@ public class GameManager {
 
 			return flag;
 		}
-
-		else if (type == 'V') {
-			Board[] temp = new Board[4];
-			temp[0] = gamePanel.board[x][y + 1];
-			temp[1] = gamePanel.board[x + 1][y + 1];
-			temp[2] = gamePanel.board[x + 1][y];
-			temp[3] = gamePanel.board[x][y];
-
-			String[] beforeStatus = new String[4];
-			beforeStatus[0] = gamePanel.board[x][y].getStatus();
-			beforeStatus[1] = gamePanel.board[x][y + 1].getStatus();
-			beforeStatus[2] = gamePanel.board[x + 1][y + 1].getStatus();
-			beforeStatus[3] = gamePanel.board[x + 1][y].getStatus();
-
-			char[] beforeType = new char[4];
-			beforeType[0] = gamePanel.board[x][y].getType();
-			beforeType[1] = gamePanel.board[x][y + 1].getType();
-			beforeType[2] = gamePanel.board[x + 1][y + 1].getType();
-			beforeType[3] = gamePanel.board[x + 1][y].getType();
-
-			String[] afterStatus = new String[8];
-			afterStatus[0] = gamePanel.board[x][y + 1].getStatus();
-			afterStatus[1] = gamePanel.board[x + 1][y + 1].getStatus();
-			afterStatus[2] = gamePanel.board[x + 1][y].getStatus();
-			afterStatus[3] = gamePanel.board[x][y].getStatus();
-
-			char[] afterType = new char[8];
-			afterType[0] = gamePanel.board[x][y + 1].getType();
-			afterType[1] = gamePanel.board[x + 1][y + 1].getType();
-			afterType[2] = gamePanel.board[x + 1][y].getType();
-			afterType[3] = gamePanel.board[x][y].getType();
-
-			for (int i = 0; i < 4; i++) {
-				if (beforeStatus[i].equals("StopBlock")) {
-					return flag;
-				}
-			}
-
-			for (int i = 0; i < 4; i++) {
-				if (!beforeStatus[i].equals("StopBlock")) {
-					if (beforeType[i] == ' ')
-						temp[i].setBoard(beforeType[i], defaultColor1, beforeStatus[i]);
-					else
-						temp[i].setBoard(beforeType[i], color, beforeStatus[i]);
-				}
-			}
-			return flag;
-		}
-
-		else {
+		else { // 이외 모든 블록의 경우
 			if (x <= 0) {
 				flag = 0;
 				x++;
@@ -524,26 +436,6 @@ public class GameManager {
 			beforeType[5] = gamePanel.board[x][y - 1].getType();
 			beforeType[6] = gamePanel.board[x - 1][y - 1].getType();
 			beforeType[7] = gamePanel.board[x - 1][y].getType();
-
-			String[] afterStatus = new String[8];
-			afterStatus[0] = gamePanel.board[x + 1][y + 1].getStatus();
-			afterStatus[1] = gamePanel.board[x + 1][y].getStatus();
-			afterStatus[2] = gamePanel.board[x + 1][y - 1].getStatus();
-			afterStatus[3] = gamePanel.board[x][y - 1].getStatus();
-			afterStatus[4] = gamePanel.board[x - 1][y - 1].getStatus();
-			afterStatus[5] = gamePanel.board[x - 1][y].getStatus();
-			afterStatus[6] = gamePanel.board[x - 1][y + 1].getStatus();
-			afterStatus[7] = gamePanel.board[x][y + 1].getStatus();
-
-			char[] afterType = new char[8];
-			afterType[0] = gamePanel.board[x + 1][y + 1].getType();
-			afterType[1] = gamePanel.board[x + 1][y].getType();
-			afterType[2] = gamePanel.board[x + 1][y - 1].getType();
-			afterType[3] = gamePanel.board[x][y - 1].getType();
-			afterType[4] = gamePanel.board[x - 1][y - 1].getType();
-			afterType[5] = gamePanel.board[x - 1][y].getType();
-			afterType[6] = gamePanel.board[x - 1][y + 1].getType();
-			afterType[7] = gamePanel.board[x][y + 1].getType();
 
 			for (int i = 0; i < 8; i++) {
 				if (beforeStatus[i].equals("StopBlock")) {
