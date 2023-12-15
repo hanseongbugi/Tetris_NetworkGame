@@ -35,13 +35,11 @@ public class EndingPanel extends JPanel {
         
         imageLabel3 = new JLabel();
 		imageLabel3.setBounds(300,90,300,250); // 이미지의 위치와 크기 설정
-		ImageIcon imageIcon3 = new ImageIcon("images/happy.png"); // 이미지 설정
-		imageLabel3.setIcon(imageIcon3);
+		imageLabel3.setIcon(Settings.winnerImage);
 		
 		imageLabel4 = new JLabel();
 		imageLabel4.setBounds(300,90,300,250); // 이미지의 위치와 크기 설정
-		ImageIcon imageIcon4 = new ImageIcon("images/sad.png"); // 이미지 설정
-		imageLabel4.setIcon(imageIcon4);
+		imageLabel4.setIcon(Settings.loserImage);
 
 		// 게임 승패 상태 메시지 라벨 초기화
         state = new JLabel();

@@ -104,9 +104,9 @@ public class GameManager {
 
 	// 아이템을 라이벌에게 보내는 함수
 	public void sendItem(int n) {
-		UserMessage msg = new UserMessage(WaitingPanel.userName, "403");
-		msg.setItem(n);
-		WaitingPanel.SendMessage(msg);
+		UserMessage msg = new UserMessage(WaitingPanel.userName, "403"); // 아이템 메시지 생성
+		msg.setItem(n); // 아이템 번호 저장
+		WaitingPanel.SendMessage(msg); // 서버에 메시지 전송
 	}
 
 	// 상대방의 아이템 상태 업데이트 하기
@@ -124,9 +124,10 @@ public class GameManager {
 				}
 			}
 		}
+		// 아이템이 아무 것도 보내지지 않았다면
 		if(!item1&&!item2&&!item3)
 			gamePanel.rivalItemBox.setIcon(null);
-		else {
+		else { // 3개의 아이템 중 하나가 보내졌다면
 			if (item1)
 				gamePanel.rivalItemBox.setIcon(Settings.Item1ImgIcon);
 			
@@ -177,12 +178,12 @@ public class GameManager {
 			removeLine -= 2;
 		}
 		
-		// 라이벌에게 라인 공격을 보낸다.
+		// 2줄 이상 지웠다면 라이벌에게 라인 공격을 보낸다.
 		if (countAttackLine >= 2) {
-			UserMessage msg = new UserMessage(WaitingPanel.userName, "402");
-			msg.setAttackLines(countAttackLine - 1);
+			UserMessage msg = new UserMessage(WaitingPanel.userName, "402"); // 라인 공격 메시지 생성
+			msg.setAttackLines(countAttackLine - 1); // 라인 공격 수 저장
 			countAttackLine = 0;
-			WaitingPanel.SendMessage(msg);
+			WaitingPanel.SendMessage(msg); // 서버에 메시지 전송
 		}
 		gamePanel.repaint();
 	}
@@ -204,20 +205,22 @@ public class GameManager {
 	// 아이템을 얻는 함수
 	public void setItem() {
 		Random r = new Random();
-		r.nextInt(3);
+		r.nextInt(3); // 3종류의 아이템 중 랜덤으로 하나를 얻는다.
 		tetrisGame.setCurrentItem(r.nextInt(3) + 1);
 		gamePanel.itemBox.setIcon(getItemIcon(tetrisGame.getCurrentItem()));
 	}
 
-	// 자신의 블록 상태 보내기
+	// 자신의 블록 상태 및 아이템 상태 보내기
 	public void sendStatusToRival(int sendItemNumber) {
-		UserMessage msg = new UserMessage(WaitingPanel.userName, "401");
-		char[][] blockStatus = msg.getBlockStatus();
+		UserMessage msg = new UserMessage(WaitingPanel.userName, "401"); // 메시지 생성
+		char[][] blockStatus = msg.getBlockStatus(); 
 		for (int i = 0; i < 10; i++) {
 			for (int j = 0; j < 20; j++) {
 				blockStatus[i][j] = gamePanel.board[i][j].getType();
 			}
 		}
+		msg.setBlockStatus(blockStatus); // 메시지에 나의 블록 상태 저장
+		
 		boolean[] itemStatus = msg.getItemStatus();
 	
 		for(int i = 0;i<itemStatus.length;i++) {
@@ -225,9 +228,9 @@ public class GameManager {
 		}
 		if(sendItemNumber!=0)
 			itemStatus[sendItemNumber-1] = true;
-
-		msg.setItemStatus(itemStatus);
-		WaitingPanel.SendMessage(msg);
+	
+		msg.setItemStatus(itemStatus); // 메시지에 나의 아이템 상태 저장
+		WaitingPanel.SendMessage(msg); // 서버에 전송
 	}
 
 	// 상대방에게 공격 받는 함수 공격 받은 만큼 블럭들이 위로 올라간다
@@ -272,9 +275,9 @@ public class GameManager {
 
 	// 자신 혹은 상대방의 이모티콘 업데이트
 	public void showEmoji(int player, int type) {
-		if (player == -1) {
+		if (player == -1) { // 나의 경우
 			gamePanel.myEmoji.setIcon(getEmoji(type));
-		} else {
+		} else { 
 			gamePanel.rivalEmoji.setIcon(getEmoji(type));
 		}
 		gamePanel.repaint();
@@ -282,11 +285,11 @@ public class GameManager {
 
 	// 이모티콘 보내기
 	public void sendEmoji(int n) {
-		UserMessage msg = new UserMessage(WaitingPanel.userName, "404");
-		msg.setEmoji(n);
-		WaitingPanel.SendMessage(msg);
+		UserMessage msg = new UserMessage(WaitingPanel.userName, "404"); // 이모티콘 메시지 생성
+		msg.setEmoji(n); // 이모티콘 설정
+		WaitingPanel.SendMessage(msg); // 메시지 전송
 
-		showEmoji(-1, n);
+		showEmoji(-1, n); // 나의 이모티콘을 띄운다
 	}
 
 	// 블록을 회전 시킨 후 바뀐 회전축을 리턴하는 함수

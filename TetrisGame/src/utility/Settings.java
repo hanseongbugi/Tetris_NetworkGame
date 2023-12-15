@@ -39,6 +39,10 @@ public class Settings
 	
 	public static ImageIcon gameBackground;
 	
+	public static ImageIcon playerImage1;
+	public static ImageIcon playerImage2;
+	public static ImageIcon winnerImage;
+	public static ImageIcon loserImage;
 	public Settings()
 	{
 		
@@ -75,5 +79,10 @@ public class Settings
 		btn_send =  new ImageIcon("images/send.png");
 		
 		gameBackground = new ImageIcon("images/bg_ground.png");
+		
+		playerImage1 = new ImageIcon("images/kurome.png");
+		playerImage2 = new ImageIcon("images/mymelody.png");
+		winnerImage = new ImageIcon("images/happy.png"); 
+		loserImage =  new ImageIcon("images/sad.png"); 
 	}
 }

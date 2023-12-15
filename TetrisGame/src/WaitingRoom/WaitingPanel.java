@@ -95,9 +95,7 @@ public class WaitingPanel extends JLayeredPane{
 		imageLabel1 = new JLabel();
 		imageLabel1.setBounds(100,100,250,150); //이미지의 위치와 크기 설정
 		add(imageLabel1, JLayeredPane.DEFAULT_LAYER);
-		
-		ImageIcon imageIcon1 = new ImageIcon("images/kurome.png"); //이미지 설정
-		imageLabel1.setIcon(imageIcon1);
+		imageLabel1.setIcon(Settings.playerImage1);
 		
 		font = new Font("HBIOS-SYS", Font.PLAIN, 30);
 		p1NameLabel = new JLabel(userName);
@@ -113,9 +111,7 @@ public class WaitingPanel extends JLayeredPane{
 		imageLabel2.setBounds(500,100,280,160); //이미지의 위치와 크기 설정
 		imageLabel2.setVisible(false);
 		add(imageLabel2, JLayeredPane.DEFAULT_LAYER);
-		
-		ImageIcon imageIcon2 = new ImageIcon("images/mymelody.png"); //이미지 설정
-		imageLabel2.setIcon(imageIcon2);
+		imageLabel2.setIcon(Settings.playerImage2);
 		
 		font = new Font("HBIOS-SYS", Font.PLAIN, 30);
 		p2NameLabel = new JLabel("");
@@ -236,7 +232,7 @@ public class WaitingPanel extends JLayeredPane{
 		SendMessage(msg);
 	}
 	
-	// Server에게 network으로 전송
+	// Server에게 메시지를 전송
 	public static void SendMessage(UserMessage msg) {
 		try {
 			oos.writeObject(msg);
@@ -267,25 +263,25 @@ public class WaitingPanel extends JLayeredPane{
 		tetris.isChange = true;
 		tetris.isDead = true;
 		tetris.gameStart = false;
-		UserMessage msg = new UserMessage(userName,"600");
-		SendMessage(msg);
+		UserMessage msg = new UserMessage(userName,"600"); // 로그아웃 메시지 생성
+		SendMessage(msg); // 서버에 메시지 전송
 	}
-	// 상대방 준비 상태를 set
+	// 준비 상태 
 	public void setReady(String name) {
-		if(p1NameLabel.getText().equals(name)) {
+		if(p1NameLabel.getText().equals(name)) { // 내가 준비 상태인 경우
 			labelStatus[0].setIcon(Settings.ready_icon);
 		}
-		else {
+		else { // 라이벌이 준비 대기 상태인 경우
 			labelStatus[1].setIcon(Settings.ready_icon);
 		}
 	}
 
-	// 상대방 준비 상태를 끔
+	// 준비 대기 상태
 	public void setNotReady(String name) {
-		if(p1NameLabel.getText().equals(name)) {
+		if(p1NameLabel.getText().equals(name)) { // 내가 준비 대기 상태인 경우
 			labelStatus[0].setIcon(null);
 		}
-		else {
+		else { // 라이벌이 준비 대기 상태인 경우
 			labelStatus[1].setIcon(null);
 		}
 	}
@@ -377,7 +373,7 @@ public class WaitingPanel extends JLayeredPane{
 						tetris.attackCount++;
 						break;
 					case "404":
-						// 상대 이모티콘 박스 변경
+						// 이모티콘 박스 변경
 						if (!TetrisGame.gameStart)
 							break;
 						if (!msg.getUserName().equals(userName)) {
@@ -407,7 +403,7 @@ public class WaitingPanel extends JLayeredPane{
 						exitGame();
 						break;
 					case "600":
-						// 로그아웃
+						// 상대방 로그아웃
 						if (TetrisGame.gameStart) {
 							UserMessage sendMsg = new UserMessage(userName, "500");
 							sendMsg.setData(userName);
