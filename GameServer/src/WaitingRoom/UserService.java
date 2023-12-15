@@ -179,6 +179,9 @@ public class UserService extends Thread {
 						msg.setCode("300");
 					WriteAll(msg);
 					break;
+				case "203": // 채팅
+					WriteAll(msg);
+					break;
 				case "401": // 상태 업데이트
 				case "402": // 라인 추가 (공격)
 				case "403": // 상대방에게 아이템
@@ -187,9 +190,6 @@ public class UserService extends Thread {
 					break;
 				case "405": // 상대방의 죽음 게임 종료 (이긴 대상은 승리 표시)
 					WriteOthers(msg);
-					break;
-				case "203": // 채팅
-					WriteAll(msg);
 					break;
 				case "500": // 게임 종료
 					WriteOthers(msg);
