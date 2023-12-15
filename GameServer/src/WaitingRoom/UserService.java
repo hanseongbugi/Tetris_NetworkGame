@@ -189,7 +189,6 @@ public class UserService extends Thread {
 					WriteOthers(msg);
 					break;
 				case "203": // 채팅
-				case "300": // 게임 시작
 					WriteAll(msg);
 					break;
 				case "500": // 게임 종료
