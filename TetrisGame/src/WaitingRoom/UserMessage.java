@@ -9,7 +9,7 @@ public class UserMessage implements Serializable{
 	private String code; // 메시지 코드
 	private String userName; // 사용자 이름
 	private int userNum; // 사용자 번호
-	private String data; // 메시지에 포함된 데이터
+	private String chatMessage; // 메시지에 포함된 데이터
 	private String[] userList = new String[2]; // 서버 접속 명단
 	private char[][] blockStatus = new char[10][20]; // 테트리스 블록 상태
 	private boolean[] itemStatus = new boolean[3]; // 라이벌이 받는 공격 종류
@@ -35,8 +35,8 @@ public class UserMessage implements Serializable{
 	}
 
 	// 데이터 값 반환 메서드
-	public String getData() {
-		return data;
+	public String getChatMessage() {
+		return chatMessage;
 	}
 
 	// 사용자 ID 반환 메서드
@@ -50,8 +50,8 @@ public class UserMessage implements Serializable{
 	}
 
 	//데이터 값 설정 메서드
-	public void setData(String data) {
-		this.data = data;
+	public void setChatMessage(String chatMessage) {
+		this.chatMessage = chatMessage;
 	}
 	
 	//사용자 번호 반환 메서드

@@ -228,7 +228,7 @@ public class WaitingPanel extends JLayeredPane{
 	//채팅 보내기
 	public void sendChat(String chatMsg) {
 		UserMessage msg = new UserMessage(userName, "203");
-		msg.setData(chatMsg);
+		msg.setChatMessage(chatMsg);
 		SendMessage(msg);
 	}
 	
@@ -331,7 +331,7 @@ public class WaitingPanel extends JLayeredPane{
 						break;
 					case "203":
 						// 채팅 출력
-						chatPanel.setChatMessage(msg.getUserName(), msg.getData());
+						chatPanel.setChatMessage(msg.getUserName(), msg.getChatMessage());
 						break;
 					case "300":
 						// 게임 시작
@@ -406,7 +406,6 @@ public class WaitingPanel extends JLayeredPane{
 						// 상대방 로그아웃
 						if (TetrisGame.gameStart) {
 							UserMessage sendMsg = new UserMessage(userName, "500");
-							sendMsg.setData(userName);
 							SendMessage(sendMsg);
 							exitGame();
 						}
