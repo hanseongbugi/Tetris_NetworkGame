@@ -6,7 +6,7 @@ import java.io.*;
 public class UserMessage implements Serializable{
 	private static final long serialVersionID = 1L;
 	private int userID; // 사용자 고유 ID
-	private String code; // 메시지 코드 (100: 로그인, 400: 로그아웃, 200: 채팅메시지)
+	private String code; // 메시지 코드
 	private String userName; // 사용자 이름
 	private int userNum; // 사용자 번호
 	private String data; // 메시지에 포함된 데이터
