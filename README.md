@@ -26,5 +26,5 @@
 ![그림2](https://github.com/hanseongbugi/Tetris_NetworkGame/assets/105718365/b083f9b9-8d66-45d1-8ad6-54c90623e01e)
 
 # 실행 영상
-https://github.com/hanseongbugi/Tetris_NetworkGame/assets/105718365/86eef938-c1fd-4c23-96e7-1dc554f396fc
+https://github.com/hanseongbugi/Tetris_NetworkGame/assets/105718365/6e382dcf-bdea-4c1d-ac03-126e796ff686
 
